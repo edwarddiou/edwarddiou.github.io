@@ -14,12 +14,46 @@
 <body>
   <div class="bg-grid" aria-hidden="true"></div>
 
+  <header class="topnav">
+    <div class="topnav-inner">
+      <a class="topnav-brand" href="index.html">EDWARD CHIU</a>
+      <nav class="topnav-links" aria-label="Primary">
+        <a class="nav-item" href="index.html" aria-current="page">
+          <span class="nav-en">Home</span>
+          <span class="nav-zh">首頁</span>
+        </a>
+        <a class="nav-item" href="education.html">
+          <span class="nav-en">Education</span>
+          <span class="nav-zh">學歷</span>
+        </a>
+        <a class="nav-item" href="experience.html">
+          <span class="nav-en">Experience</span>
+          <span class="nav-zh">工作經歷</span>
+        </a>
+        <a class="nav-item" href="projects.html">
+          <span class="nav-en">Projects</span>
+          <span class="nav-zh">專案</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
   <main>
     <!-- ───── HERO ───── -->
     <section class="hero">
-      <div class="status">
-        <span class="dot"></span>
-        <span>Available for research collaboration</span>
+      <div class="status-list">
+        <div class="status">
+          <span class="dot"></span>
+          <span>Available for research collaboration</span>
+        </div>
+        <div class="status">
+          <span class="dot"></span>
+          <span>Happy to chat &amp; discuss ideas</span>
+        </div>
+        <div class="status">
+          <span class="dot"></span>
+          <span>Open to new opportunities</span>
+        </div>
       </div>
 
       <h1>Edward Chiu</h1>
@@ -34,18 +68,20 @@
 
       <div class="bio">
         <p>
-          I'm an AI engineer specializing in Natural Language Processing, with a focus on
-          designing and researching novel model architectures. My work spans
-          <strong>Large Language Models</strong>, classical <strong>Machine Learning</strong>,
-          <strong>Graph Neural Networks</strong>, and Transformer-based architectures — and
-          how to weave them together into systems that are controllable, reasoning-aware,
-          and grounded in real-world use.
+          I am an AI engineer specializing in Large Language Model (LLM) post-training and fine-tuning, with hands-on
+          experience across SFT, DPO/SimPO, RLHF/PPO, and parameter- efficient methods such as LoRA and QLoRA.
+          My work centers on adapting and aligning LLMs for downstream tasks and on building agent systems on top
+          of fine-tuned models. I bring a broader background in NLP, Transformer architectures, Graph Neural Networks
+          (GNNs), and traditional Machine Learning, which informs my approach to model design and reasoning.
+          
         </p>
         <p>
-          In an era dominated by LLMs, I believe mature techniques like ML and GNNs are
-          far from obsolete. They remain uniquely powerful for structured knowledge
-          modeling, interpretability, and controllability. I'm interested in combining
-          them with LLMs to build the next generation of AI systems.
+          I believe mature techniques such as classical ML and GNNs remain highly relevant in the LLM era, offering
+          complementary strengths in structured knowledge modeling, interpretability, and controllability. I actively explore
+          frontier directions in LLM training, with particular interest in the joint training of Knowledge Graphs and LLMs as
+          a path toward stronger structured reasoning and factual grounding. By combining these approaches with modern
+          post-training methods, I aim to build next-generation AI systems that are more controllable, reasoning-aware, and
+          better aligned with real-world applications.
         </p>
       </div>
 
@@ -65,188 +101,11 @@
       </nav>
     </section>
 
-    <!-- ───── EXPERIENCE ───── -->
-    <section id="experience">
-      <h2><span class="h2-marker"></span>Experience</h2>
-
-      <article class="card">
-        <header class="card-head">
-          <div class="card-meta">2025.10 — Present</div>
-          <h3>Algorithm Engineer</h3>
-          <div class="card-company">TPIsoftware · Taipei</div>
-        </header>
-        <p>
-          Responsible for end-to-end AI solution development and the core conversational
-          architecture of the <em>Coach</em> product. Designed and implemented a
-          memory-aware, realistic, and reasoning-capable Multi-Agent chat system that goes
-          beyond standalone LLMs, enabling deeper intelligence and decision-making. Led
-          key architectural decisions from system design to production deployment.
-        </p>
-        <ul class="bullets">
-          <li>
-            <span class="bullet-tag">2 mo.</span>
-            Designed and shipped a memory- and reasoning-capable conversational system.
-          </li>
-          <li>
-            <span class="bullet-tag">Ongoing</span>
-            Continuously added experimental tooling — visualization, single-point testing
-            utilities, and other internal instrumentation.
-          </li>
-        </ul>
-      </article>
-
-      <article class="card">
-        <header class="card-head">
-          <div class="card-meta">2024.09 — 2025.06</div>
-          <h3>NLP Engineer</h3>
-          <div class="card-company">Tenfold AI · Taipei</div>
-        </header>
-        <p>
-          AI engineer at an early-stage startup, building end-to-end AI products from
-          scratch and integrating them into customer systems. Worked across the full AI
-          stack — agents, RAG, LLM integration, custom model training, NLP applications,
-          and AWS deployment — focused on scalable, reliable, production-grade systems.
-        </p>
-        <ul class="bullets">
-          <li>
-            <span class="bullet-tag">1 mo.</span>
-            Built a LangGraph-based RAG chatbot and an accompanying evaluation method to
-            validate LLM response quality.
-          </li>
-          <li>
-            <span class="bullet-tag">6+ mo.</span>
-            Iterated on token-usage tracking, response-quality optimization, and a
-            reranking module.
-          </li>
-          <li>
-            <span class="bullet-tag">4 mo.</span>
-            Designed a customizable confidence-scoring system, evolving from generic
-            LLM-based scoring into a domain-adaptive architecture that trains
-            domain-specific confidence models per client.
-          </li>
-        </ul>
-      </article>
-    </section>
-
-    <!-- ───── PROJECTS ───── -->
-    <section id="projects">
-      <h2><span class="h2-marker"></span>Projects</h2>
-
-      <article class="card project">
-        <header class="card-head">
-          <div class="card-meta">2025.10 — Present</div>
-          <div class="tags">
-            <span class="tag tag-product">Product</span>
-            <span class="tag tag-dev">In Development</span>
-          </div>
-          <h3>Coach — AI Training System for Sales &amp; Customer Service</h3>
-        </header>
-        <p>
-          Coach is a realistic simulation environment for interactions between sales
-          professionals and customers, complete with dialogue scoring and actionable
-          feedback. Primarily designed for internal corporate training — sales scripting
-          and educational scenarios — with customizable persona-based agents and a
-          progressively learning model architecture.
-        </p>
-        <p class="callout">
-          E.SUN Bank and Taishin Bank have expressed strong interest in adopting Coach.
-        </p>
-      </article>
-
-      <article class="card project">
-        <header class="card-head">
-          <div class="card-meta">2025.06 — Present</div>
-          <div class="tags">
-            <span class="tag tag-research">Research</span>
-            <span class="tag tag-dev">In Development</span>
-          </div>
-          <h3>KG-Guided Pretraining for Memory- and Personality-Aware LLMs</h3>
-        </header>
-        <p>
-          Training a large language model with explicit memory capabilities. The project
-          builds on LLM and graph-based architectures to develop a memory- and
-          personality-aware language model via pretraining and continued pretraining,
-          integrating graph-encoded memory as trainable soft prompts.
-        </p>
-        <p>
-          Leverages <strong>SFT</strong>, <strong>CLM</strong>, and <strong>PPO</strong> to
-          align generation with structured memory, consistent behavior, and stable
-          personality traits.
-        </p>
-      </article>
-
-      <article class="card project">
-        <header class="card-head">
-          <div class="card-meta">2024.09 — 2025.06</div>
-          <div class="tags">
-            <span class="tag tag-research">Research</span>
-            <span class="tag tag-product">Product</span>
-          </div>
-          <h3>Multi-step AI Agent &amp; Feedback Learning Loop</h3>
-        </header>
-        <p>
-          A multi-agent chatbot with a customizable confidence-scoring system. Uses
-          Retrieval-Augmented Generation to integrate user-provided documents, proprietary
-          knowledge, and real-time web data — enabling accurate, personalized responses.
-        </p>
-        <p>
-          Emphasizes precise retrieval and structured reasoning, supported by a dynamic
-          evaluation framework that incorporates human feedback to continuously improve
-          response quality and reliability.
-        </p>
-      </article>
-
-      <article class="card project">
-        <header class="card-head">
-          <div class="card-meta">2023.07 — 2025.02</div>
-          <div class="tags">
-            <span class="tag tag-research">Master's Thesis</span>
-          </div>
-          <h3>G3-RAG — Multi-step Reasoning RAG over Knowledge Graphs</h3>
-        </header>
-        <p>
-          A graph-guided Retrieval-Augmented Generation framework that integrates
-          knowledge graphs to support multi-hop retrieval and reasoning — improving
-          answer accuracy, consistency, and evidence traceability in large language
-          models.
-        </p>
-        <p class="callout">
-          Received faculty approval and proceeded to journal submission.
-        </p>
-      </article>
-    </section>
-
-    <!-- ───── EDUCATION ───── -->
-    <section id="education">
-      <h2><span class="h2-marker"></span>Education</h2>
-
-      <article class="card edu">
-        <div class="card-meta">2020.01 — 2025.01</div>
-        <h3>National Taiwan University of Science and Technology</h3>
-        <div class="card-company">M.S., Computer Science</div>
-        <p>
-          Graduate research in NLP, GNNs, and LLMs — focused on LLM and RAG systems.
-          Teaching Assistant for Linear Algebra for two semesters.
-        </p>
-      </article>
-
-      <article class="card edu">
-        <div class="card-meta">2013.01 — 2018.01</div>
-        <h3>Tunghai University</h3>
-        <div class="card-company">B.S., Industrial Engineering</div>
-        <p>
-          Focus on manufacturing management — production management and quality
-          management.
-        </p>
-      </article>
-    </section>
-
     <!-- ───── CONTACT ───── -->
     <section id="contact" class="contact">
       <h2><span class="h2-marker"></span>Contact</h2>
       <p class="contact-line">
-        Always happy to talk about LLMs, reasoning systems, graph-based memory,
-        or collaboration on novel architectures.
+        Always happy to talk about <span class="nobr">LLMs</span>, <span class="nobr">Agentic-Agent</span>, <span class="nobr">graph-based memory</span>, <span class="nobr">RLHF/RLAIF</span> or collaboration on novel architectures.
       </p>
       <a class="contact-cta" href="mailto:edwarddiou@gmail.com">
         edwarddiou@gmail.com<span class="link-arrow">→</span>
@@ -255,7 +114,7 @@
   </main>
 
   <footer>
-    <span>© 2025 Edward Chiu</span>
+    <span>© 2026 Edward Chiu</span>
     <span class="footer-sep">·</span>
     <span>Built with HTML &amp; CSS</span>
   </footer>

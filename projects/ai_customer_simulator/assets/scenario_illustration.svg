@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 660"
+     font-family="-apple-system, 'Helvetica Neue', 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans CJK TC', sans-serif">
+
+  <defs>
+    <linearGradient id="windowBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0e1219"/>
+      <stop offset="100%" stop-color="#0a0d13"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ============ TITLE ============ -->
+  <text x="450" y="30" text-anchor="middle" fill="#e6e8ec" font-size="18" font-weight="600" letter-spacing="0.5">
+    模擬對話場景 · Sales × Simulated Customer
+  </text>
+  <text x="450" y="52" text-anchor="middle" fill="#97a3b6" font-size="12" font-style="italic">
+    示意圖 · 對白為示範用途，非真實使用畫面
+  </text>
+
+  <!-- ============ WINDOW FRAME ============ -->
+  <rect x="40" y="75" width="820" height="540" rx="10"
+        fill="url(#windowBg)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+
+  <!-- Window header bar -->
+  <path d="M 40 85 Q 40 75 50 75 L 850 75 Q 860 75 860 85 L 860 115 L 40 115 Z"
+        fill="rgba(255,255,255,0.03)"/>
+  <line x1="40" y1="115" x2="860" y2="115" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <circle cx="62" cy="95" r="5" fill="rgba(239,68,68,0.55)"/>
+  <circle cx="80" cy="95" r="5" fill="rgba(234,179,8,0.55)"/>
+  <circle cx="98" cy="95" r="5" fill="rgba(34,197,94,0.55)"/>
+  <text x="450" y="100" text-anchor="middle" fill="#97a3b6" font-size="12"
+        font-family="ui-monospace, 'SF Mono', 'Cascadia Code', monospace">
+    AI Customer Simulator · 業務訓練模擬
+  </text>
+  <text x="845" y="100" text-anchor="end" fill="#22d3ee" font-size="11"
+        font-family="ui-monospace, 'SF Mono', 'Cascadia Code', monospace">● LIVE</text>
+
+  <!-- Vertical divider: chat area | memory snapshot -->
+  <line x1="610" y1="125" x2="610" y2="600" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,4"/>
+
+  <!-- ============ CUSTOMER TURN 1 ============ -->
+  <!-- Avatar -->
+  <circle cx="72" cy="158" r="16" fill="rgba(34,211,238,0.15)" stroke="#22d3ee" stroke-width="1.2"/>
+  <text x="72" y="163" text-anchor="middle" fill="#67e8f9" font-size="13" font-weight="600">顧</text>
+  <text x="98" y="148" fill="#97a3b6" font-size="11">林先生 · 45 歲 · 製造業中階主管</text>
+
+  <!-- Bubble -->
+  <rect x="98" y="153" width="475" height="58" rx="10"
+        fill="rgba(34,211,238,0.08)" stroke="rgba(34,211,238,0.35)" stroke-width="1"/>
+  <text x="113" y="175" fill="#e6e8ec" font-size="13">
+    保險喔…我朋友前陣子才跟我抱怨他那張，
+  </text>
+  <text x="113" y="195" fill="#e6e8ec" font-size="13">
+    說當初業務也是講得天花亂墜。你這個有什麼不一樣？
+  </text>
+
+  <!-- Reasoning trace label -->
+  <text x="98" y="232" fill="#5b6577" font-size="10"
+        font-family="ui-monospace, 'SF Mono', monospace" letter-spacing="0.12em">
+    REASONING TRACE · 此輪四步推理
+  </text>
+
+  <!-- Reasoning trace pills -->
+  <g font-size="10.5">
+    <rect x="98" y="240" width="113" height="28" rx="6"
+          fill="rgba(34,211,238,0.06)" stroke="rgba(34,211,238,0.35)"/>
+    <text x="107" y="258" fill="#67e8f9" font-weight="700">① Persona</text>
+    <text x="166" y="258" fill="#97a3b6">精打細算</text>
+
+    <rect x="218" y="240" width="113" height="28" rx="6"
+          fill="rgba(34,211,238,0.06)" stroke="rgba(34,211,238,0.35)"/>
+    <text x="227" y="258" fill="#67e8f9" font-weight="700">② Mood</text>
+    <text x="278" y="258" fill="#97a3b6">半信半疑</text>
+
+    <rect x="338" y="240" width="113" height="28" rx="6"
+          fill="rgba(34,211,238,0.06)" stroke="rgba(34,211,238,0.35)"/>
+    <text x="347" y="258" fill="#67e8f9" font-weight="700">③ Reason</text>
+    <text x="406" y="258" fill="#97a3b6">先試探</text>
+
+    <rect x="458" y="240" width="113" height="28" rx="6"
+          fill="rgba(34,211,238,0.06)" stroke="rgba(34,211,238,0.35)"/>
+    <text x="467" y="258" fill="#67e8f9" font-weight="700">④ Flow</text>
+    <text x="514" y="258" fill="#97a3b6">反問業務</text>
+  </g>
+
+  <!-- ============ SALES TURN ============ -->
+  <text x="592" y="298" text-anchor="end" fill="#97a3b6" font-size="11">業務（受訓中）</text>
+  <circle cx="585" cy="324" r="16" fill="rgba(255,255,255,0.06)"
+          stroke="rgba(255,255,255,0.30)" stroke-width="1.2"/>
+  <text x="585" y="329" text-anchor="middle" fill="#e6e8ec" font-size="13" font-weight="600">業</text>
+
+  <rect x="290" y="305" width="275" height="58" rx="10"
+        fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <text x="305" y="327" fill="#e6e8ec" font-size="13">
+    林先生您好，我理解您的疑慮。
+  </text>
+  <text x="305" y="347" fill="#e6e8ec" font-size="13">
+    能不能先聊聊您最在意的保障？
+  </text>
+
+  <!-- ============ CUSTOMER TURN 2 ============ -->
+  <circle cx="72" cy="408" r="16" fill="rgba(34,211,238,0.15)" stroke="#22d3ee" stroke-width="1.2"/>
+  <text x="72" y="413" text-anchor="middle" fill="#67e8f9" font-size="13" font-weight="600">顧</text>
+
+  <rect x="98" y="395" width="475" height="58" rx="10"
+        fill="rgba(34,211,238,0.08)" stroke="rgba(34,211,238,0.35)" stroke-width="1"/>
+  <text x="113" y="417" fill="#e6e8ec" font-size="13">
+    嗯…其實我兩個小孩還在念書，但太太前陣子才換工作，
+  </text>
+  <text x="113" y="437" fill="#e6e8ec" font-size="13">
+    所以我現在不太想再多一筆固定支出。
+  </text>
+
+  <!-- Reasoning trace 2 -->
+  <text x="98" y="474" fill="#5b6577" font-size="10"
+        font-family="ui-monospace, 'SF Mono', monospace" letter-spacing="0.12em">
+    REASONING TRACE · 此輪四步推理
+  </text>
+
+  <g font-size="10.5">
+    <rect x="98" y="482" width="113" height="28" rx="6"
+          fill="rgba(34,211,238,0.06)" stroke="rgba(34,211,238,0.35)"/>
+    <text x="107" y="500" fill="#67e8f9" font-weight="700">① Persona</text>
+    <text x="166" y="500" fill="#97a3b6">兩孩．經濟</text>
+
+    <rect x="218" y="482" width="113" height="28" rx="6"
+          fill="rgba(34,211,238,0.06)" stroke="rgba(34,211,238,0.35)"/>
+    <text x="227" y="500" fill="#67e8f9" font-weight="700">② Mood</text>
+    <text x="278" y="500" fill="#97a3b6">鬆動而謹慎</text>
+
+    <rect x="338" y="482" width="113" height="28" rx="6"
+          fill="rgba(34,211,238,0.06)" stroke="rgba(34,211,238,0.35)"/>
+    <text x="347" y="500" fill="#67e8f9" font-weight="700">③ Reason</text>
+    <text x="406" y="500" fill="#97a3b6">透露現況</text>
+
+    <rect x="458" y="482" width="113" height="28" rx="6"
+          fill="rgba(34,211,238,0.06)" stroke="rgba(34,211,238,0.35)"/>
+    <text x="467" y="500" fill="#67e8f9" font-weight="700">④ Flow</text>
+    <text x="514" y="500" fill="#97a3b6">為拒絕鋪墊</text>
+  </g>
+
+  <!-- ============ MEMORY SNAPSHOT (right column) ============ -->
+  <text x="630" y="148" fill="#5b6577" font-size="10"
+        font-family="ui-monospace, 'SF Mono', monospace" letter-spacing="0.12em">
+    MEMORY SNAPSHOT · 跨輪狀態
+  </text>
+
+  <g font-size="11">
+    <rect x="630" y="160" width="210" height="62" rx="6"
+          fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.10)"/>
+    <text x="642" y="180" fill="#e6e8ec" font-size="11.5" font-weight="600">人設記憶</text>
+    <text x="642" y="198" fill="#97a3b6" font-size="10.5">45 歲 · 製造業中階</text>
+    <text x="642" y="214" fill="#97a3b6" font-size="10.5">2 名子女 · 雙薪家庭</text>
+
+    <rect x="630" y="234" width="210" height="78" rx="6"
+          fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.10)"/>
+    <text x="642" y="254" fill="#e6e8ec" font-size="11.5" font-weight="600">對話記憶</text>
+    <text x="642" y="272" fill="#97a3b6" font-size="10.5">· 朋友被推銷之負面經驗</text>
+    <text x="642" y="288" fill="#97a3b6" font-size="10.5">· 太太剛換工作</text>
+    <text x="642" y="304" fill="#97a3b6" font-size="10.5">· 兩名子女就學中</text>
+
+    <rect x="630" y="324" width="210" height="92" rx="6"
+          fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.10)"/>
+    <text x="642" y="344" fill="#e6e8ec" font-size="11.5" font-weight="600">長期狀態</text>
+    <text x="642" y="362" fill="#97a3b6" font-size="10.5">態度軌跡：</text>
+    <!-- Trajectory mini chart -->
+    <g>
+      <line x1="642" y1="386" x2="826" y2="386" stroke="rgba(255,255,255,0.08)"/>
+      <polyline points="650,395 690,392 730,386 770,378 820,374"
+                fill="none" stroke="#22d3ee" stroke-width="1.6"/>
+      <circle cx="650" cy="395" r="2.5" fill="#22d3ee"/>
+      <circle cx="690" cy="392" r="2.5" fill="#22d3ee"/>
+      <circle cx="730" cy="386" r="2.5" fill="#22d3ee"/>
+      <circle cx="770" cy="378" r="2.5" fill="#22d3ee"/>
+      <circle cx="820" cy="374" r="2.5" fill="#67e8f9"/>
+    </g>
+    <text x="650" y="408" fill="#5b6577" font-size="9.5">戒備</text>
+    <text x="826" y="408" text-anchor="end" fill="#5b6577" font-size="9.5">緩和</text>
+  </g>
+
+  <!-- Bottom hint inside memory column -->
+  <text x="630" y="445" fill="#5b6577" font-size="10"
+        font-family="ui-monospace, 'SF Mono', monospace" letter-spacing="0.12em">
+    REASONING ← MEMORY
+  </text>
+  <text x="630" y="465" fill="#97a3b6" font-size="10.5">每一輪四步推理都會回看</text>
+  <text x="630" y="481" fill="#97a3b6" font-size="10.5">記憶模組，確保跨輪一致性。</text>
+
+  <!-- ============ ARROW: reasoning trace 1 → bubble ============ -->
+  <!-- subtle vertical tie indicating reasoning trace produced bubble above -->
+
+  <!-- ============ FOOTNOTE ============ -->
+  <text x="450" y="640" text-anchor="middle" fill="#5b6577" font-size="11">
+    場景示意 · 每輪顧客回應由 ① Persona → ② Mood → ③ Reason → ④ Flow 四步推理產出，並與記憶模組互動
+  </text>
+</svg>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Customer Simulator — Multi-step Reasoning — Edward Chiu</title>
+  <meta name="description" content="一個用於業務／客服訓練的 AI 顧客模擬器：用 multi-step reasoning 拆解「該怎麼回應業務」這件事，每一步只鎖一個維度，再疊出可信、可控的顧客回應。">
+  <meta name="author" content="Edward Chiu">
+  <meta property="og:title" content="AI Customer Simulator — Multi-step Reasoning — Edward Chiu">
+  <meta property="og:description" content="用 multi-step reasoning 模擬真實顧客的回應：Persona / Mood / Reason / Flow 分步推理，搭配記憶模組與外部評分。">
+  <meta property="og:type" content="article">
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <header class="topnav">
+    <div class="topnav-inner">
+      <a class="topnav-brand" href="../../index.html">EDWARD CHIU</a>
+      <nav class="topnav-links" aria-label="Primary">
+        <a class="nav-item" href="../../index.html">
+          <span class="nav-en">Home</span>
+          <span class="nav-zh">首頁</span>
+        </a>
+        <a class="nav-item" href="../../education.html">
+          <span class="nav-en">Education</span>
+          <span class="nav-zh">學歷</span>
+        </a>
+        <a class="nav-item" href="../../experience.html">
+          <span class="nav-en">Experience</span>
+          <span class="nav-zh">工作經歷</span>
+        </a>
+        <a class="nav-item" href="../../projects.html" aria-current="page">
+          <span class="nav-en">Projects</span>
+          <span class="nav-zh">專案</span>
+        </a>
+      </nav>
+    </div>
+    <div class="scroll-progress"><div class="scroll-progress-fill"></div></div>
+  </header>
+
+  <main>
+    <a class="back-link" href="../../projects.html">
+      <span class="link-arrow">←</span>
+      <span>回到 Projects</span>
+    </a>
+
+    <aside class="toc" aria-label="目錄">
+      <div class="toc-label">目錄 · TOC</div>
+      <ol class="toc-list">
+        <li><a href="#status">適用情境與現況</a></li>
+        <li><a href="#overview">系統概觀</a></li>
+        <li><a href="#problem">問題：單次 LLM 無法模擬一個真人</a></li>
+        <li><a href="#reasoning">Multi-step Reasoning：四個維度逐步鎖定</a></li>
+        <li><a href="#memory">記憶模組：跨輪一致性</a></li>
+        <li><a href="#scoring">外部評分：閉上訓練迴圈</a></li>
+      </ol>
+    </aside>
+
+    <!-- ───── HERO ───── -->
+    <section class="hero project-hero">
+      <div class="tags">
+        <span class="tag tag-product">Product</span>
+        <span class="tag tag-dev">In Development</span>
+      </div>
+      <h1>AI Customer Simulator</h1>
+      <p class="tagline">
+        <span>業務／客服訓練模擬器</span>
+        <span class="sep">/</span>
+        <span>Multi-step Reasoning</span>
+        <span class="sep">/</span>
+        <span>Persona × Memory × Scoring</span>
+      </p>
+      <p class="location">2025.10 — 進行中 · 企業內訓場景</p>
+
+      <div class="bio">
+        <p>
+          這個專案要解的問題很具體：讓<strong>業務新人</strong>有一個能反覆對話、
+          會有情緒、會猶豫、會講錯話、也會被打動的<strong>「模擬顧客」</strong>，
+          在進入真實客戶之前先把對話練到位。
+        </p>
+        <p>
+          做法上的取捨是：不靠單次 LLM 把整個顧客「演出來」，
+          而是把「該怎麼回應業務」這件事拆成<strong>多步驟推理</strong> ——
+          每一步只鎖一個維度（這個人是誰、現在的情緒、講話的動機、對話該往哪走），
+          下一步在上一步的約束下繼續推，最後才生成顧客的回覆。
+          這篇主要講<strong>為什麼必須拆成多步驟</strong>，
+          以及這樣拆出來的系統長什麼樣。
+        </p>
+      </div>
+    </section>
+
+    <!-- ───── NDA 全頁告示 ───── -->
+    <aside class="status-badge is-nda" role="note">
+      <p>
+        本專案因與企業客戶簽訂<strong>保密協議（NDA）</strong>，
+        本頁所呈現之系統架構圖、模擬對話場景、評分視覺化等所有圖片，
+        皆為<strong>示意性質繪製</strong>，並非實際產品畫面、實際使用截圖或真實量測值，
+        僅用以說明設計概念與系統運作邏輯。
+      </p>
+    </aside>
+
+    <!-- ───── 適用情境 ───── -->
+    <section id="status">
+      <h2><span class="h2-marker"></span>適用情境與現況</h2>
+      <article class="card">
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">適用領域</span>
+            目前的設計可遷移到任何「對話過程比結果更重要」的訓練場景 ——
+            高價商品銷售、客戶關係維護、客訴處理、諮詢類服務。
+            金融與保險產業已表達高度興趣。
+          </li>
+          <li>
+            <span class="bullet-tag">主要場景</span>
+            系統提供可組合的訓練素材 ——
+            <strong>業務情境</strong>、<strong>不同類型的客戶個性</strong>、
+            <strong>對話腳本</strong>、<strong>不同產品的推銷領域</strong>
+            都能依需求搭配，作為企業內部員工訓練的素材庫。
+            讓訓練不被綁在單一案例上，而是能涵蓋實務上會遇到的各種變化。
+          </li>
+          <li>
+            <span class="bullet-tag">現況</span>
+            產品開發中。架構已確立並可運作，
+            當前的工作集中在<strong>顧客真實感</strong>與<strong>評分穩定度</strong>
+            這兩個維度的迭代上。
+          </li>
+        </ul>
+
+        <figure class="arch-figure arch-figure-lg">
+          <div class="arch-credit">示意圖 · 對白為示範用途，非實際畫面</div>
+          <img src="assets/scenario_illustration.svg"
+               alt="模擬對話場景示意：業務與 AI 模擬顧客互動，旁側顯示四步推理痕跡與記憶模組狀態" loading="lazy">
+          <figcaption>
+            模擬對話場景 · 每一輪顧客回應由四步推理產出，並與記憶模組互動 ·
+            <em>對白與人物為示意，非實際使用畫面</em>
+          </figcaption>
+        </figure>
+      </article>
+    </section>
+
+    <!-- ───── 系統概觀 ───── -->
+    <section id="overview">
+      <h2><span class="h2-marker"></span>系統概觀</h2>
+
+      <article class="card">
+        <p>
+          整個系統圍繞三個模組互相牽動：
+          <strong>Reasoning Pipeline</strong> 負責「這次該怎麼回」的多步推理、
+          <strong>Memory Module</strong> 負責「先前發生過什麼」的跨輪狀態、
+          <strong>外部評分</strong> 負責回頭評估業務這次表現得好不好。
+          三者圍繞同一個對話 session 運作，不是獨立的後處理。
+        </p>
+
+        <figure class="arch-figure arch-figure-lg">
+          <div class="arch-credit">原創架構設計 · Edward Chiu · 細節已模糊處理</div>
+          <img src="assets/ai_customer_simulator_blurred.png" alt="AI Customer Simulator 系統架構（細節已模糊處理）" loading="lazy">
+          <figcaption>系統架構概觀 · 多步推理 + 記憶 + 評分 · 點圖可放大</figcaption>
+        </figure>
+
+      </article>
+    </section>
+
+    <!-- ───── 問題 ───── -->
+    <section id="problem">
+      <h2><span class="h2-marker"></span>問題：單次 LLM 無法模擬一個真人</h2>
+
+      <article class="card">
+        <p>
+          目前主流讓 LLM 做角色扮演的做法很一致：把人物 persona、對話紀錄、
+          再加上一份嚴格的行為規範，全部綁進<strong>同一份 prompt</strong>，
+          讓 LLM 在這個固定框架下生成回應。客服 demo、陪聊機器人這類場景靠這條路就能跑，
+          但放到<strong>業務訓練</strong>的情境會直接壞掉 ——
+          因為業務要應對的顧客<em>從來不是一個簡單標籤可以描述的人</em>，
+          而是一組相互牽動、隨情境變動的特徵組合。
+          把這種人壓進單一步驟，會撞到兩個結構性的問題。
+        </p>
+
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">複合人設被壓成清單</span>
+            業務場景裡的顧客是「複合個性」——
+            一個 45 歲、有兩個小孩、剛被資遣、對保險半信半疑、
+            講話喜歡繞圈但其實精打細算的客戶。要讓 LLM 演好這個人，
+            等於要把上面所有特徵都塞進同一段 persona 描述。
+            實務上 prompt 一旦寫到那個份量，
+            模型會自動<em>抓最顯著的幾個標籤反覆強調</em>，
+            次要特徵被稀釋掉，整段 persona 退化成一份<strong>「特徵清單」</strong>
+            而不是「一個人」—— 講出來的話像 NPC 的台詞，
+            不像會出現在客廳沙發上的那個顧客。
+          </li>
+          <li>
+            <span class="bullet-tag">指令式 persona 沒變化性</span>
+            Persona prompt 在寫法上本質是一份指令：「你的性格是…」
+            「你的口頭禪是…」「你不想被推銷時會說…」。
+            這種寫法的根本問題是<strong>把<em>狀態</em>當<em>規則</em>寫</strong> ——
+            但真實的人不是規則的執行者。同樣是「不想被推銷」，
+            他在第 1 輪、第 7 輪、被業務踩到痛點之後，
+            講出來的話應該完全不同。指令式 persona 缺乏這種隨情境演變的彈性，
+            每一輪的反應幾乎都長得一樣。業務在這種顧客面前練到的是
+            「破解一個固定模板」，不是「應對一個會變的人」——
+            訓練效果上，這跟沒練幾乎沒有差別。
+          </li>
+        </ul>
+
+        <p>
+          這兩件事的共通根因是：把「模擬一個人」全部壓進<strong>單一步驟</strong>，
+          等於要求 LLM 在同一個推理動作裡同時處理「他是誰」「他現在的狀態」
+          「他這一句該怎麼講」。這幾件事彼此相關、但<strong>不該同時決策</strong> ——
+          強迫一起決策的結果，就是上面那兩種失敗模式。
+          這個結構性的缺口，就是為什麼要把推理拆成多步驟。
+        </p>
+      </article>
+    </section>
+
+    <!-- ───── Multi-step Reasoning ───── -->
+    <section id="reasoning">
+      <h2><span class="h2-marker"></span>Multi-step Reasoning：四個維度逐步鎖定</h2>
+
+      <article class="card">
+        <p>
+          這個系統的核心設計是把顧客的回應切成<strong>四步推理</strong>，
+          每一步只負責收斂一個維度，把答案空間縮窄之後傳給下一步。
+          順序是<strong>由穩到動</strong> —— 從最不變的（這個人是誰）
+          一路推到最當下的（這一句該怎麼走）。
+        </p>
+
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">① Persona</span>
+            鎖定「這個人是誰」 —— 年齡、職業、家庭狀況、消費習慣、性格傾向。
+            這一層幾乎不隨對話內容變動，是<strong>後面三層共用的硬約束</strong>。
+            放在第一步的原因：人設一動，後面所有的情緒、動機、對話策略
+            都要跟著變；先把它釘死，後面才有穩定的參照系。
+          </li>
+          <li>
+            <span class="bullet-tag">② Mood</span>
+            鎖定「現在的情緒」 —— 在 Persona 已經確定的前提下，
+            考慮「<em>這個人</em>在<em>這個情境</em>下會處於什麼狀態」。
+            一樣是焦慮的 35 歲客戶，跟焦慮的 60 歲客戶，講出來的句子完全不同 ——
+            Mood 必須建立在 Persona 上才有意義，這是順序在這層的取捨。
+          </li>
+          <li>
+            <span class="bullet-tag">③ Reason</span>
+            鎖定「為什麼這樣回應」 —— 動機層。
+            一個猶豫的回應背後可能是「真的有疑慮」「在試探業務」「想多聽一下」
+            「準備拒絕但不想撕破臉」——
+            這幾個動機講出來的句子有時候字面很像，但<em>下一句</em>的走向完全不同。
+            Reason 鎖住的不是當下這句話，而是<strong>讓對話有方向</strong>。
+          </li>
+          <li>
+            <span class="bullet-tag">④ Flow</span>
+            鎖定「這一句該往哪走」 —— 對話策略層。
+            在 Persona × Mood × Reason 都已經給定的情況下，這一步處理的是
+            「我要繼續這個話題、轉移、反問、還是收尾」這種戰術選擇。
+            這層最動態、最跟「上一句業務說了什麼」綁定，
+            因此放在最後一步，才能吃到前三層的所有約束。
+          </li>
+        </ul>
+
+        <p>
+          四步走完之後，才進入<strong>Response Generation</strong> ——
+          這個生成步驟拿到的不是一個籠統的 prompt，
+          而是一組<strong>已經被四個維度收窄到很小的可能性空間</strong>。
+          模型不需要再「同時思考四件事」，只需要把這組約束<em>講出來</em>。
+          這就是 multi-step reasoning 在這個場景的真正價值：
+          不是讓系統做了更多事，而是讓<strong>每一個 LLM 呼叫只做它擅長做的事</strong>。
+        </p>
+      </article>
+
+      <aside class="tip-card">
+        <span class="tip-label">Tips</span>
+        <h3>為什麼是這個順序，不是別的順序</h3>
+        <p>
+          順序背後的判準是「<strong>後一層的合理性需要前一層作為前提</strong>」。
+          沒有 Persona，Mood 就是憑空的情緒；沒有 Mood，Reason 就是冷冰冰的策略；
+          沒有 Reason，Flow 就只是話術。倒過來做（先決定要轉移話題、再回去找動機、
+          再補一個情緒）會得到一個「事後合理化」的顧客，<em>看起來</em>有道理，
+          但人設層面是空的 —— 業務練不到真實顧客的反應。
+        </p>
+        <p>
+          所以這四步不是並列的功能模組，是<strong>有依存方向的推理鏈</strong>。
+          這也是為什麼這個系統的設計重點是「拆得對」，不是「拆得多」。
+        </p>
+      </aside>
+    </section>
+
+    <!-- ───── Memory Module ───── -->
+    <section id="memory">
+      <h2><span class="h2-marker"></span>記憶模組：跨輪一致性</h2>
+
+      <article class="card">
+        <p>
+          四步推理解決的是「<em>這一輪</em>怎麼回」，但業務訓練是長對話 ——
+          十幾輪、幾十輪都有可能。這時會冒出另一個問題：
+          顧客在第 3 輪講過的家庭狀況、第 7 輪流露的猶豫、第 12 輪鬆動的態度，
+          如果系統不記得，這個顧客就會在<strong>每一輪重新做人</strong>。
+          記憶模組要處理的是這個跨輪一致性。
+        </p>
+
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">人設記憶</span>
+            存放 Persona 層的硬設定，跨輪幾乎不更新 ——
+            它的功能是讓四步推理在每一輪都從同一個「人」出發，
+            不會被局部對話拉著走。
+          </li>
+          <li>
+            <span class="bullet-tag">對話記憶</span>
+            記錄這個 session 裡顧客講過什麼、業務問過什麼、雙方達成什麼共識
+            或產生什麼分歧。Reason 跟 Flow 在推理時會回看這層，
+            避免講出跟先前矛盾的話。
+          </li>
+          <li>
+            <span class="bullet-tag">長期狀態</span>
+            記錄這個顧客在這段關係裡的「進展」 ——
+            從一開始的防備、到中段的觀望、到後段可能的鬆動或拒絕。
+            這層是讓對話有<strong>弧線</strong>而不是<em>原地打轉</em>的關鍵：
+            真實顧客的態度是會被累積影響的，記憶模組要把這種「被慢慢說動」
+            或「被慢慢勸退」的軌跡保留下來。
+          </li>
+        </ul>
+
+        <p>
+          這三層記憶共同支撐了一件事：顧客在第 N 輪講出的話，
+          不只是對「業務剛剛那句」的回應，而是<strong>對前面 N−1 輪所有互動的回應</strong>。
+          這也是業務訓練真正需要的場景 —— 練的是長期應對，不是單句機智回覆。
+        </p>
+      </article>
+    </section>
+
+    <!-- ───── Scoring ───── -->
+    <section id="scoring">
+      <h2><span class="h2-marker"></span>外部評分：閉上訓練迴圈</h2>
+
+      <article class="card">
+        <p>
+          模擬顧客只完成了訓練系統的一半。另一半是：業務這次表現得好嗎？
+          哪些地方做對了、哪些該換一種方式？
+          這個系統設計了一個獨立的評分模組，
+          在對話結束或階段性節點對整段互動做回顧式評估，
+          把表現轉換成<strong>多面向、可解讀</strong>的分數。
+        </p>
+
+        <p>
+          評分不是給一個籠統的「優／良／可」總評，
+          而是針對業務在這場對話裡的<strong>具體表現維度</strong>逐項打分。
+          目前涵蓋的<strong>五個主要維度</strong>如下：
+        </p>
+
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">需求挖掘深度</span>
+            業務有沒有真正問出顧客的需求、預算、顧慮、現有狀況 ——
+            還是急著推產品而跳過了挖掘階段。這項評的是「<em>對話起點</em>有沒有打好」——
+            起點沒打好，後面的推薦再漂亮也只是憑空產生。
+          </li>
+          <li>
+            <span class="bullet-tag">產品推薦合理性</span>
+            業務推給顧客的產品，是否真的對應到顧客的處境跟需求 ——
+            還是只是把好賣的、佣金高的產品先丟上來。
+            這一項評的是「有沒有<em>推對</em>東西」，不是「有沒有推得<em>多</em>」。
+          </li>
+          <li>
+            <span class="bullet-tag">場景應對契合度</span>
+            顧客丟出來的問題、情緒、抗拒，業務有沒有讀懂並做出對應的反應 ——
+            該深入追問時有沒有追問、該安撫時有沒有安撫、
+            該收尾時有沒有收尾。這項評的是「有沒有讀對<em>場景</em>」。
+          </li>
+          <li>
+            <span class="bullet-tag">專業態度表現</span>
+            講話的節奏、用詞的得體、面對質疑時的穩定度、
+            對商品條款的熟悉度。態度層的東西在訓練場景下的重要性不會輸給話術內容 ——
+            業務常常輸的不是知識，是節奏跟分寸。
+          </li>
+          <li>
+            <span class="bullet-tag">顧客信任度變化</span>
+            對話過程中，顧客對業務的信任是<em>上升</em>、<em>持平</em>、還是<em>下降</em>。
+            這一項是<strong>縱向的</strong>（看軌跡，不是看單句），
+            通常比其他維度更接近真實成交的領先指標 ——
+            一場分數不錯但信任度下降的對話，
+            其實是在埋下未來流失的種子。
+          </li>
+        </ul>
+
+        <figure class="arch-figure arch-figure-md">
+          <div class="arch-credit">示意圖 · 非實際量測值</div>
+          <img src="assets/scoring_radar_illustration.svg" alt="業務表現評分五大維度雷達圖（示意）" loading="lazy">
+          <figcaption>評分維度雷達 · 五項分數共同描繪整場對話的表現輪廓 · 此處為示意圖，分數僅供示範</figcaption>
+        </figure>
+
+        <p>
+          每一項分數都附帶<strong>判分依據</strong>：
+          是哪幾句對話讓這一項得高分或低分、依照什麼準則判定、
+          可以怎麼改進。業務拿到的不是一個冷冰冰的數字，
+          而是一份能對得回對話原文的回饋報告。
+        </p>
+
+        <p>
+          整個流程因此形成一個閉環：對話 → 多面向評分 → 業務看回饋並調整 → 下一次對話再驗證。
+          這是這個系統作為<strong>訓練工具</strong>而不是<em>chatbot</em>
+          的本質差別 —— chatbot 只需要回得好；
+          訓練工具要回得好、<em>而且</em>能告訴使用者哪裡好、哪裡不好、
+          為什麼那樣判定。
+        </p>
+      </article>
+    </section>
+
+    <a class="back-link back-link-bottom" href="../../projects.html">
+      <span class="link-arrow">←</span>
+      <span>回到 Projects</span>
+    </a>
+  </main>
+
+  <footer>
+    <span>© 2026 Edward Chiu</span>
+    <span class="footer-sep">·</span>
+    <span>Built with HTML &amp; CSS</span>
+  </footer>
+
+  <!-- Lightbox for architecture diagrams -->
+  <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog">
+    <button class="lightbox-close" aria-label="關閉">&times;</button>
+    <img id="lightbox-img" src="" alt="">
+    <div class="lightbox-hint">點圖放大 · 拖動查看細節 · ESC 關閉</div>
+  </div>
+
+  <script>
+    (function() {
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lightbox-img');
+      const closeBtn = lb.querySelector('.lightbox-close');
+
+      function openLb(img) {
+        lbImg.src = img.src;
+        lbImg.alt = img.alt;
+        lbImg.classList.remove('zoomed');
+        lb.scrollTop = 0;
+        lb.scrollLeft = 0;
+        lb.classList.add('open');
+        lb.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeLb() {
+        lb.classList.remove('open');
+        lbImg.classList.remove('zoomed');
+        lb.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      document.querySelectorAll('.arch-figure img').forEach(img => {
+        img.addEventListener('click', () => openLb(img));
+      });
+
+      lbImg.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const goingToZoom = !lbImg.classList.contains('zoomed');
+        lbImg.classList.toggle('zoomed');
+        if (goingToZoom) {
+          const rect = lbImg.getBoundingClientRect();
+          const ratioX = (e.clientX - rect.left) / rect.width;
+          const ratioY = (e.clientY - rect.top) / rect.height;
+          requestAnimationFrame(() => {
+            const newW = lbImg.offsetWidth;
+            const newH = lbImg.offsetHeight;
+            lb.scrollLeft = newW * ratioX - window.innerWidth / 2;
+            lb.scrollTop  = newH * ratioY - window.innerHeight / 2;
+          });
+        }
+      });
+
+      closeBtn.addEventListener('click', closeLb);
+      lb.addEventListener('click', (e) => { if (e.target === lb) closeLb(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lb.classList.contains('open')) closeLb();
+      });
+    })();
+
+    // Scroll progress + active TOC section
+    (function() {
+      const progressFill = document.querySelector('.scroll-progress-fill');
+      const tocLinks = Array.from(document.querySelectorAll('.toc-list a'));
+      const sections = tocLinks
+        .map(link => document.querySelector(link.getAttribute('href')))
+        .filter(Boolean);
+      if (!progressFill && !sections.length) return;
+
+      let ticking = false;
+      function update() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+        if (progressFill) progressFill.style.width = progress.toFixed(2) + '%';
+
+        if (sections.length) {
+          const trigger = scrollTop + 140;
+          let activeIdx = -1;
+          sections.forEach((s, i) => {
+            if (s.offsetTop <= trigger) activeIdx = i;
+          });
+          tocLinks.forEach((link, i) => {
+            link.classList.toggle('active', i === activeIdx);
+          });
+        }
+        ticking = false;
+      }
+      function onScroll() {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      update();
+    })();
+  </script>
+</body>
+</html>

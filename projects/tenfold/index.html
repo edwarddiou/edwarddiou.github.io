@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tenfold AI — Legal Advisor Chatbot — Edward Chiu</title>
+  <meta name="description" content="Edward Chiu 在 Tenfold AI 打造的最一開始法律顧問 AI Chatbot：針對法律領域設計的特殊 Retrieval、多步驟架構（Rerank、法規檢查），並附上驗證後的信心程度。">
+  <meta name="author" content="Edward Chiu">
+  <meta property="og:title" content="Tenfold AI — Legal Advisor Chatbot — Edward Chiu">
+  <meta property="og:description" content="法律顧問 AI Chatbot：法律領域特化的 Retrieval、多步驟架構（Rerank、法規檢查）、驗證後的信心程度。">
+  <meta property="og:type" content="article">
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <header class="topnav">
+    <div class="topnav-inner">
+      <a class="topnav-brand" href="../../index.html">EDWARD CHIU</a>
+      <nav class="topnav-links" aria-label="Primary">
+        <a class="nav-item" href="../../index.html">
+          <span class="nav-en">Home</span>
+          <span class="nav-zh">首頁</span>
+        </a>
+        <a class="nav-item" href="../../education.html">
+          <span class="nav-en">Education</span>
+          <span class="nav-zh">學歷</span>
+        </a>
+        <a class="nav-item" href="../../experience.html">
+          <span class="nav-en">Experience</span>
+          <span class="nav-zh">工作經歷</span>
+        </a>
+        <a class="nav-item" href="../../projects.html" aria-current="page">
+          <span class="nav-en">Projects</span>
+          <span class="nav-zh">專案</span>
+        </a>
+      </nav>
+    </div>
+    <div class="scroll-progress"><div class="scroll-progress-fill"></div></div>
+  </header>
+
+  <main>
+    <a class="back-link" href="../../projects.html">
+      <span class="link-arrow">←</span>
+      <span>回到 Projects</span>
+    </a>
+
+    <aside class="toc" aria-label="目錄">
+      <div class="toc-label">目錄 · TOC</div>
+      <ol class="toc-list">
+        <li><a href="#background">背景：法律領域的回答要求</a></li>
+        <li><a href="#architecture">多步驟架構</a></li>
+        <li><a href="#confidence">驗證後的信心程度</a></li>
+      </ol>
+    </aside>
+
+    <!-- ───── HERO ───── -->
+    <section class="hero project-hero">
+      <div class="tags">
+        <span class="tag tag-product">Product</span>
+      </div>
+      <h1>Tenfold AI · Legal Advisor Chatbot</h1>
+      <p class="tagline">
+        <span>法律領域 RAG</span>
+        <span class="sep">/</span>
+        <span>Multi-Step Architecture</span>
+        <span class="sep">/</span>
+        <span>驗證後的信心程度</span>
+      </p>
+      <p class="location">
+        <span class="card-meta">2024.09 — 2025.06</span>
+        <span class="location-detail">Tenfold AI · Taipei</span>
+      </p>
+
+      <div class="bio">
+        <p>
+          這是我加入新創公司 <strong>Tenfold AI</strong> 後打造的<strong>最一開始</strong>的產品 ——
+          一款<strong>法律顧問 AI Chatbot</strong>。法律是一個對「回答品質」要求極高的領域：
+          答案要<strong>引用正確的法條</strong>、要<strong>精確對應使用者實際的問題</strong>，
+          中間任何一步走偏，輸出的內容看起來像法律意見，但實際上沒辦法被信任。
+        </p>
+        <p>
+          一般 RAG 的做法在這個場景不夠用，因此我在 context 層設計了一套
+          <strong>法律領域特化的 Retrieval 機制</strong>，
+          並在整個回答流程上疊出一條<strong>多步驟架構</strong> ——
+          搭配 Rerank、法規檢查等工具，最後把每個回答都附上<strong>驗證後的信心程度</strong>，
+          讓使用者不只看到答案，還能看到這個答案背後的依據強不強。
+        </p>
+      </div>
+    </section>
+
+    <!-- ───── 背景 ───── -->
+    <section id="background">
+      <h2><span class="h2-marker"></span>背景：法律領域的回答要求</h2>
+
+      <article class="card">
+        <p>
+          法律問題跟一般客服問題的差別，不只是「需要更專業的詞彙」——
+          而是<strong>對錯的標準不一樣</strong>。
+          一句「大致上正確」的回答在客服可以接受，
+          在法律場景就是錯的 —— 條號錯一個字、適用情境少一個前提，
+          整個結論就會跟著歪掉。
+        </p>
+        <p>
+          這對 RAG 系統提出兩個具體要求：
+        </p>
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">引用要正確</span>
+            撈回來的法條必須是真的存在、條號正確、版本對得上的條文 ——
+            不是「語意上接近」就好。
+            一般通用的向量檢索很容易撈到「字面相關但實際不適用」的條文，
+            這在法律情境是直接的事實錯誤。
+          </li>
+          <li>
+            <span class="bullet-tag">回答要精確</span>
+            就算撈到對的條文，回答也要<strong>對齊使用者問題的具體情境</strong> ——
+            同一條法律在不同情境下適用方式不同，
+            模型不能把條文照本宣科貼上來就交差。
+            必須能根據問題的具體條件，挑出條文中真正適用的部分。
+          </li>
+        </ul>
+        <p>
+          這兩件事都不是把通用 LLM 接上一個普通 retriever 就能解決的。
+          整條 context pipeline 必須針對法律領域重新設計。
+        </p>
+      </article>
+    </section>
+
+    <!-- ───── 多步驟架構 ───── -->
+    <section id="architecture">
+      <h2><span class="h2-marker"></span>多步驟架構</h2>
+
+      <article class="card">
+        <p>
+          為了把上面兩件事同時做對，我設計了一條<strong>多步驟（Multi-Step）的回答流程</strong>，
+          每一步只解決一個明確的子問題，再把結果交給下一步繼續處理。
+          這個架構不是把所有事情塞給單次 LLM 呼叫，
+          而是讓每一步都能用<strong>最適合的工具</strong>去做最對的事。
+        </p>
+
+        <figure class="arch-figure arch-figure-lg">
+          <div class="arch-credit">示意圖 · Edward Chiu · 法律場景 · 非實際內部架構</div>
+          <img src="assets/multistep_chatbot_illustration.svg" alt="多步驟 Chatbot 法律場景示意圖：使用者提問 → 法律特化檢索 → Rerank → 法規檢查 → 分析與整合 → 計算信心值 → 回答 + 信心程度" loading="lazy">
+          <figcaption>
+            多步驟回答流程<strong>示意圖</strong> · 法律場景 · 從使用者提問到回答 + 信心程度的逐步流程 · 點圖可放大
+            <br><em>注意：此為示意圖，僅用於說明流程概念；並非 Tenfold 實際內部架構。</em>
+          </figcaption>
+        </figure>
+
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">Retrieval</span>
+            針對法律語料做特化的檢索 ——
+            從一般通用向量檢索擴展到能正確處理條號、法規版本、適用範圍的檢索層，
+            為後面的步驟提供乾淨、可信的素材。
+          </li>
+          <li>
+            <span class="bullet-tag">Rerank</span>
+            檢索回來的候選不是直接交給 LLM，而是經過 rerank 重新排序 ——
+            把「真正適用使用者問題」的條文推到前面，
+            讓 LLM 在生成時看到的是<strong>已經被篩選過</strong>的素材，
+            而不是一份排序粗糙的清單。
+          </li>
+          <li>
+            <span class="bullet-tag">法規檢查（Tool）</span>
+            在生成階段加入<strong>法規檢查工具</strong>，
+            主動驗證模型引用的條文是否真的存在、是否被誤用、
+            是否跟問題的情境對得上。
+            這一步是法律 RAG 跟一般 RAG 最大的差別之一 ——
+            把「事實正確性」變成 pipeline 裡的可驗證環節，
+            而不是寄望 LLM 自己不要幻覺。
+          </li>
+          <li>
+            <span class="bullet-tag">回答整合</span>
+            把通過檢查的條文跟使用者問題整合成最終回答 ——
+            保留法律引用的精確性，同時用使用者讀得懂的方式表達。
+          </li>
+        </ul>
+        <p>
+          每一步都是獨立可驗證的環節，整條 pipeline 上任何一步出問題都能被定位 ——
+          這對一個面向法律專業的產品來說，比「黑盒模型給一個漂亮答案」重要得多。
+        </p>
+
+        <figure class="arch-figure arch-figure-md">
+          <div class="arch-credit">實際架構（細節已模糊處理）· Edward Chiu</div>
+          <img src="assets/graph_resized_blurred.png" alt="多步驟回答流程的實際 LangGraph 架構（細節已模糊處理）" loading="lazy">
+          <figcaption>實際 LangGraph 架構 · 細節已模糊處理 · 點圖可放大</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <header class="card-head"><h3>迭代過程：準確率、效能與成本</h3></header>
+        <p>
+          這條 pipeline 不是一次到位 —— 整個 Tenfold 期間經歷多次改版，
+          從一個能跑但答得不夠準的雛形，
+          一路迭代到能交付給法律專業使用者使用的產品。
+          三個關鍵指標的具體進展：
+        </p>
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">準確率</span>
+            回答客戶問題的正確率從<strong>約 50%</strong> 提升到 <strong>95%</strong> ——
+            這個提升主要來自把單一 LLM 呼叫拆成可驗證的多步驟、
+            以及法規檢查工具把「引用對不對」這件事從寄望 LLM 變成可驗證環節。
+          </li>
+          <li>
+            <span class="bullet-tag">回應延遲</span>
+            改用 <strong>LangGraph</strong> 重新編排，
+            把彼此沒有依賴關係的節點（例如不同類型的檢索與檢查）
+            抽出來做<strong>平行化執行</strong> ——
+            只讓真正需要前一步結果的節點留在序列上。
+            最終 LLM response latency <strong>提升 35%</strong>，
+            回答品質沒有退步。
+          </li>
+          <li>
+            <span class="bullet-tag">Token 成本</span>
+            搭配 prompt 精簡與 retrieval 結果的更嚴格篩選，
+            整體 token 使用量減少約 <strong>60%</strong> ——
+            少餵冗餘文本給 LLM，等於同時改善了延遲、成本、跟回答的訊噪比。
+          </li>
+        </ul>
+        <p>
+          同時，pipeline 也根據使用者需求支援兩種輸出模式 ——
+          <strong>簡答</strong>給只想快速確認的情境，
+          <strong>詳答</strong>給需要看完整條文引用跟推論過程的情境。
+          同一條 multi-step pipeline 在不同模式下調整最後的整合步驟，
+          而不是切兩條完全獨立的流程，
+          確保兩種輸出的法律事實基底是一致的。
+        </p>
+      </article>
+    </section>
+
+    <!-- ───── 信心程度 ───── -->
+    <section id="confidence">
+      <h2><span class="h2-marker"></span>驗證後的信心程度</h2>
+
+      <article class="card">
+        <p>
+          多步驟架構解決了「回答怎麼生出來」的問題，
+          但還有一個更根本的問題：
+          <strong>使用者怎麼知道這個回答可不可信？</strong>
+          法律場景下，使用者面對 AI 的回答，要嘛全信、要嘛全不信 ——
+          中間缺少一個讓他「<em>判斷依據強不強</em>」的訊號。
+        </p>
+        <p>
+          因此每個回答都會附上一份<strong>驗證後的信心程度</strong>。
+          但這個分數的<em>產生方式</em>，才是這套系統真正不同的地方。
+        </p>
+      </article>
+
+      <article class="card">
+        <header class="card-head"><h3>為什麼單純讓 LLM 打分數不夠</h3></header>
+        <p>
+          坊間多數工具的信心值都是直接<strong>讓 LLM 依規則自評</strong> ——
+          給一段 prompt 描述評分標準，再讓 LLM 對自己的回答打 0–100。
+          這種做法看似合理，但在實際使用上會撞到一個結構性的問題：
+          <strong>分數鑑別度極低</strong>。
+        </p>
+        <p>
+          LLM 評分有強烈的<em>整數偏好</em>，輸出大量集中在 70、80、90 這幾個錨點上 ——
+          就算規則寫得再詳細，也很難讓模型穩定地分辨「81」跟「84」的差異。
+          結果是：一份「85 分」的答案跟一份「88 分」的答案，
+          在使用者眼中幾乎沒有差別，
+          分數本身退化成「過 / 沒過」的二元訊號，
+          失去了原本應該提供的<strong>細粒度可信度資訊</strong>。
+          這個問題不是規則沒寫好，而是把<em>連續性的判斷</em>
+          交給一個<em>token-level 採樣模型</em>本身就會發生的事。
+        </p>
+      </article>
+
+      <article class="card">
+        <header class="card-head"><h3>本系統的做法：從反饋資料訓練專屬信心模型</h3></header>
+        <p>
+          我設計的做法是把信心評分這件事
+          <strong>從 prompt 規則改成可訓練的模型</strong> ——
+          系統會持續收集<strong>客戶在使用時的反饋與修正</strong>
+          （哪些回答被採用、哪些被改寫、哪些被退回），
+          把這些訊號當作標註資料，訓練一個專屬的信心模型。
+          這樣產生的分數來自<em>實際使用情境的分布</em>，
+          而不是 LLM 對自己作答的事後自評，
+          鑑別度自然遠超過 rule-based 的版本。
+        </p>
+        <p>這個架構帶來兩個額外的延伸性：</p>
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">可遷移到不同領域</span>
+            「什麼算有信心」在不同領域的標準不同 ——
+            法律可以接受的把握度，到了<strong>醫療</strong>場景就要再嚴格一階。
+            這套架構因為依賴<em>該領域的標註資料</em>而不是固定 prompt，
+            只要收集到對應領域的反饋，
+            就能訓練出符合該領域標準的信心模型，
+            而不是用同一套 LLM 規則硬套到所有產業上。
+          </li>
+          <li>
+            <span class="bullet-tag">可按公司客製化</span>
+            同一個領域裡，不同公司對「好答案」的內部定義也不一樣 ——
+            公司 A 可能要求每個回答都引用條號，
+            公司 B 更看重語氣是否中立。
+            系統透過收集<strong>該公司內部的「好 / 不好」標註</strong>再訓練，
+            就能讓信心模型對齊<em>該公司</em>的評判標準，
+            而不是一份通用分數套到所有客戶。
+          </li>
+        </ul>
+
+        <figure class="arch-figure arch-figure-lg">
+          <div class="arch-credit">產品截圖 · Tenfold AI</div>
+          <img src="assets/tenfold_confidence.webp" alt="法律顧問 Chatbot 的信心程度視覺化：每個回答附上分數，讓使用者理解依據" loading="lazy">
+          <figcaption>每個回答附上信心程度，使用者能直接看到依據強度 · 點圖可放大</figcaption>
+        </figure>
+
+        <p class="callout">
+          <strong>關於揭露程度：</strong>
+          這套信心模型的訓練資料結構、特徵設計、與訓練流程的具體做法
+          受 Tenfold AI 保密協議限制，無法在此公開細節。
+          本節僅就<em>設計動機</em>與<em>架構特性</em>做說明。
+          整套信心模型由本人全權設計與開發。
+        </p>
+      </article>
+
+      <article class="card">
+        <p>
+          整個信心分數的設計意義，比「多顯示一個數字」深得多 ——
+          它把 AI 從一個「給結論的黑盒」變成一個<strong>能被檢視、能跟著用法演進的助手</strong>。
+          使用者拿到的不只是答案，而是答案<em>加上一份具鑑別度的依據強度</em>，
+          能自己決定要不要進一步查證、或直接採信。
+          對需要為自己決策負責的法律場景，這層透明度是必要的，而不是加分項。
+        </p>
+      </article>
+    </section>
+
+    <a class="back-link back-link-bottom" href="../../projects.html">
+      <span class="link-arrow">←</span>
+      <span>回到 Projects</span>
+    </a>
+  </main>
+
+  <footer>
+    <span>© 2026 Edward Chiu</span>
+    <span class="footer-sep">·</span>
+    <span>Built with HTML &amp; CSS</span>
+  </footer>
+
+  <!-- Lightbox for architecture diagrams -->
+  <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog">
+    <button class="lightbox-close" aria-label="關閉">&times;</button>
+    <img id="lightbox-img" src="" alt="">
+    <div class="lightbox-hint">點圖放大 · 拖動查看細節 · ESC 關閉</div>
+  </div>
+
+  <script>
+    (function() {
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lightbox-img');
+      const closeBtn = lb.querySelector('.lightbox-close');
+
+      function openLb(img) {
+        lbImg.src = img.src;
+        lbImg.alt = img.alt;
+        lbImg.classList.remove('zoomed');
+        lb.scrollTop = 0;
+        lb.scrollLeft = 0;
+        lb.classList.add('open');
+        lb.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeLb() {
+        lb.classList.remove('open');
+        lbImg.classList.remove('zoomed');
+        lb.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      document.querySelectorAll('.arch-figure img').forEach(img => {
+        img.addEventListener('click', () => openLb(img));
+      });
+
+      lbImg.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const goingToZoom = !lbImg.classList.contains('zoomed');
+        lbImg.classList.toggle('zoomed');
+        if (goingToZoom) {
+          const rect = lbImg.getBoundingClientRect();
+          const ratioX = (e.clientX - rect.left) / rect.width;
+          const ratioY = (e.clientY - rect.top) / rect.height;
+          requestAnimationFrame(() => {
+            const newW = lbImg.offsetWidth;
+            const newH = lbImg.offsetHeight;
+            lb.scrollLeft = newW * ratioX - window.innerWidth / 2;
+            lb.scrollTop  = newH * ratioY - window.innerHeight / 2;
+          });
+        }
+      });
+
+      closeBtn.addEventListener('click', closeLb);
+      lb.addEventListener('click', (e) => { if (e.target === lb) closeLb(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lb.classList.contains('open')) closeLb();
+      });
+    })();
+
+    // Scroll progress + active TOC section
+    (function() {
+      const progressFill = document.querySelector('.scroll-progress-fill');
+      const tocLinks = Array.from(document.querySelectorAll('.toc-list a'));
+      const sections = tocLinks
+        .map(link => document.querySelector(link.getAttribute('href')))
+        .filter(Boolean);
+      if (!progressFill && !sections.length) return;
+
+      let ticking = false;
+      function update() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+        if (progressFill) progressFill.style.width = progress.toFixed(2) + '%';
+
+        if (sections.length) {
+          const trigger = scrollTop + 140;
+          let activeIdx = -1;
+          sections.forEach((s, i) => {
+            if (s.offsetTop <= trigger) activeIdx = i;
+          });
+          tocLinks.forEach((link, i) => {
+            link.classList.toggle('active', i === activeIdx);
+          });
+        }
+        ticking = false;
+      }
+      function onScroll() {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      update();
+    })();
+  </script>
+</body>
+</html>

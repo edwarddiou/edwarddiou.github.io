@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects — Edward Chiu</title>
+  <meta name="description" content="Edward Chiu's projects — LLM training, knowledge graph integration, multi-agent systems, and RAG research.">
+  <meta name="author" content="Edward Chiu">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <header class="topnav">
+    <div class="topnav-inner">
+      <a class="topnav-brand" href="index.html">EDWARD CHIU</a>
+      <nav class="topnav-links" aria-label="Primary">
+        <a class="nav-item" href="index.html">
+          <span class="nav-en">Home</span>
+          <span class="nav-zh">首頁</span>
+        </a>
+        <a class="nav-item" href="education.html">
+          <span class="nav-en">Education</span>
+          <span class="nav-zh">學歷</span>
+        </a>
+        <a class="nav-item" href="experience.html">
+          <span class="nav-en">Experience</span>
+          <span class="nav-zh">工作經歷</span>
+        </a>
+        <a class="nav-item" href="projects.html" aria-current="page">
+          <span class="nav-en">Projects</span>
+          <span class="nav-zh">專案</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="projects">
+      <h2><span class="h2-marker"></span>Projects</h2>
+
+      <article class="card project">
+        <header class="card-head">
+          <div class="card-meta is-ongoing">2026.05 — Present</div>
+          <div class="tags">
+            <span class="tag tag-research">Research</span>
+            <span class="tag tag-dev">In Development</span>
+          </div>
+          <h3>Domain Knowledge Internalization — Insurance Advisor as a Case Study</h3>
+        </header>
+        <p>
+          A research exploration of an alternative to RAG for structured domains: instead
+          of retrieving knowledge at inference time, jointly train a knowledge graph with
+          a small LLM (Qwen3-0.6B) so that structured product knowledge lives inside the
+          model weights. The assistant answers without any retrieval step at inference.
+        </p>
+        <p>
+          Insurance is the case study — a domain where retrieval-based answers tend to
+          be "literally relevant but structurally misaligned". The full training pipeline
+          (CLM → SFT → DPO → PPO) runs on a single RTX 3090, with depth on a single
+          product (Taiwan reimbursement-based medical insurance) rather than breadth.
+        </p>
+        <a class="read-more" href="projects/insurance-advisor/index.html">
+          閱讀完整介紹（中文）<span class="link-arrow">→</span>
+        </a>
+      </article>
+
+      <article class="card project">
+        <header class="card-head">
+          <div class="card-meta is-ongoing">2025.10 — 2026.05</div>
+          <div class="tags">
+            <span class="tag tag-product">Product</span>
+            <span class="tag tag-dev">In Development</span>
+          </div>
+          <h3>AI Customer Simulator — Multi-step Reasoning for Sales Training</h3>
+        </header>
+        <p>
+          A realistic simulation environment where an AI plays the role of a customer
+          interacting with sales or service staff — complete with dialogue scoring and
+          actionable feedback. The core design uses <strong>multi-step reasoning</strong>
+          to decompose the customer's response into separate dimensions (persona, mood,
+          motivation, conversation flow) so the simulated customer behaves like a specific
+          person rather than an averaged-out polite assistant.
+        </p>
+        <p class="callout">
+          Major players in the financial industry have expressed strong interest in adopting the system.
+        </p>
+        <a class="read-more" href="projects/ai_customer_simulator/index.html">
+          閱讀完整介紹（中文）<span class="link-arrow">→</span>
+        </a>
+      </article>
+
+      <article class="card project">
+        <header class="card-head">
+          <div class="card-meta">2024.09 — 2025.06</div>
+          <div class="tags">
+            <span class="tag tag-product">Product</span>
+          </div>
+          <h3>Tenfold AI — Legal Advisor Chatbot &amp; Multi-step Architecture</h3>
+        </header>
+        <p>
+          The founding product I built at Tenfold AI: a legal advisor chatbot for a
+          domain where answers must cite the right statute and address the actual
+          question. A general-purpose RAG pipeline isn't enough — the retrieval layer
+          needs to be tuned for legal context, and the answer needs to come with
+          evidence the user can trust.
+        </p>
+        <p>
+          I designed a <strong>multi-step architecture</strong> with rerank, regulation
+          check, and other verification tools, capped by a <strong>verified confidence
+          score</strong> attached to each response — so users not only get an answer,
+          but understand <em>how grounded</em> that answer is in the underlying law.
+        </p>
+        <a class="read-more" href="projects/tenfold/index.html">
+          閱讀完整介紹（中文）<span class="link-arrow">→</span>
+        </a>
+      </article>
+
+      <article class="card project">
+        <header class="card-head">
+          <div class="card-meta">2023.07 — 2025.02</div>
+          <div class="tags">
+            <span class="tag tag-research">Master's Thesis</span>
+          </div>
+          <h3>G3-RAG — Multi-step Reasoning RAG over Knowledge Graphs</h3>
+        </header>
+        <p>
+          A graph-guided Retrieval-Augmented Generation framework that addresses
+          information loss in long-context LLMs by constructing a structured knowledge
+          graph via relation extraction and combining it with graph-based retrieval —
+          improving multi-hop reasoning, multi-source integration, and answer accuracy.
+        </p>
+        <p class="callout">
+          Received faculty approval and proceeded to journal submission.
+        </p>
+        <a class="read-more" href="projects/G3_rag/index.html">
+          閱讀完整介紹（中／英）<span class="link-arrow">→</span>
+        </a>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026 Edward Chiu</span>
+    <span class="footer-sep">·</span>
+    <span>Built with HTML &amp; CSS</span>
+  </footer>
+</body>
+</html>

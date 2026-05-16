@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 880" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Multi-step chatbot illustrative diagram for legal scenarios">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" markerWidth="8" markerHeight="8" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#22d3ee"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="900" height="880" fill="#0e1219" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="44" text-anchor="middle" font-family="Inter, sans-serif" font-size="22" font-weight="700" fill="#e6e8ec">Multi-step Chatbot · 法律場景示意圖</text>
+  <text x="450" y="68" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="12" fill="#97a3b6">Illustrative diagram · 非實際內部架構</text>
+
+  <!-- Disclaimer banner -->
+  <rect x="150" y="86" width="600" height="32" rx="6" fill="rgba(251, 191, 36, 0.08)" stroke="#fbbf24" stroke-opacity="0.35"/>
+  <text x="450" y="106" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="11" fill="#fbbf24">⚠  此為示意圖，僅為流程說明；並非 Tenfold 實際內部架構</text>
+
+  <!-- ===== Stage 1: INPUT (y=140) ===== -->
+  <rect x="150" y="140" width="600" height="72" rx="10" fill="#131826" stroke="#2a3245" stroke-width="1" stroke-dasharray="5 4"/>
+  <rect x="170" y="160" width="64" height="22" rx="11" fill="rgba(151, 163, 182, 0.12)"/>
+  <text x="202" y="175" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#97a3b6">INPUT</text>
+  <text x="450" y="178" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#e6e8ec">使用者法律提問</text>
+  <text x="450" y="198" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="12" fill="#97a3b6">User legal query</text>
+
+  <line x1="450" y1="216" x2="450" y2="240" stroke="#2a3245" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ===== Stage 2: STEP 1 - Legal Retrieval (y=244) ===== -->
+  <rect x="150" y="244" width="600" height="72" rx="10" fill="#131826" stroke="#2a3245" stroke-width="1"/>
+  <rect x="170" y="264" width="64" height="22" rx="11" fill="rgba(34, 211, 238, 0.12)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="202" y="279" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#22d3ee">STEP 1</text>
+  <text x="450" y="282" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#e6e8ec">法律特化檢索</text>
+  <text x="450" y="302" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="12" fill="#97a3b6">Legal-tuned retrieval  ·  條號 / 版本 / 適用範圍</text>
+
+  <line x1="450" y1="320" x2="450" y2="344" stroke="#2a3245" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ===== Stage 3: STEP 2 - Rerank (y=348) ===== -->
+  <rect x="150" y="348" width="600" height="72" rx="10" fill="#131826" stroke="#2a3245" stroke-width="1"/>
+  <rect x="170" y="368" width="64" height="22" rx="11" fill="rgba(34, 211, 238, 0.12)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="202" y="383" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#22d3ee">STEP 2</text>
+  <text x="450" y="386" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#e6e8ec">候選重新排序（Rerank）</text>
+  <text x="450" y="406" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="12" fill="#97a3b6">Rerank candidates  ·  把真正適用的條文推到前面</text>
+
+  <line x1="450" y1="424" x2="450" y2="448" stroke="#2a3245" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ===== Stage 4: STEP 3 - Regulation Check (y=452) ===== -->
+  <rect x="150" y="452" width="600" height="72" rx="10" fill="#131826" stroke="#2a3245" stroke-width="1"/>
+  <rect x="170" y="472" width="64" height="22" rx="11" fill="rgba(34, 211, 238, 0.12)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="202" y="487" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#22d3ee">STEP 3</text>
+  <text x="450" y="490" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#e6e8ec">法規檢查工具</text>
+  <text x="450" y="510" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="12" fill="#97a3b6">Regulation check tool  ·  驗證條文是否真實存在、是否適用情境</text>
+
+  <line x1="450" y1="528" x2="450" y2="552" stroke="#2a3245" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ===== Stage 5: STEP 4 - Analyze & Synthesize (y=556) ===== -->
+  <rect x="150" y="556" width="600" height="72" rx="10" fill="#131826" stroke="#2a3245" stroke-width="1"/>
+  <rect x="170" y="576" width="64" height="22" rx="11" fill="rgba(34, 211, 238, 0.12)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="202" y="591" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#22d3ee">STEP 4</text>
+  <text x="450" y="594" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#e6e8ec">分析與回答整合</text>
+  <text x="450" y="614" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="12" fill="#97a3b6">Analyze &amp; synthesize  ·  條文與使用者問題對齊後生成回答</text>
+
+  <line x1="450" y1="632" x2="450" y2="656" stroke="#2a3245" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ===== Stage 6: STEP 5 - Confidence (y=660) ===== -->
+  <rect x="150" y="660" width="600" height="72" rx="10" fill="#131826" stroke="#2a3245" stroke-width="1"/>
+  <rect x="170" y="680" width="64" height="22" rx="11" fill="rgba(34, 211, 238, 0.12)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="202" y="695" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#22d3ee">STEP 5</text>
+  <text x="450" y="698" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#e6e8ec">計算信心值（訓練後的信心模型）</text>
+  <text x="450" y="718" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="12" fill="#97a3b6">Trained confidence model  ·  從反饋資料學出的可信度</text>
+
+  <line x1="450" y1="736" x2="450" y2="760" stroke="#2a3245" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ===== Stage 7: OUTPUT (y=764) ===== -->
+  <rect x="150" y="764" width="600" height="72" rx="10" fill="rgba(34, 211, 238, 0.06)" stroke="#22d3ee" stroke-width="1.5"/>
+  <rect x="170" y="784" width="64" height="22" rx="11" fill="#22d3ee"/>
+  <text x="202" y="799" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#07090d">OUTPUT</text>
+  <text x="450" y="802" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#e6e8ec">回答 + 信心程度</text>
+  <text x="450" y="822" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="12" fill="#67e8f9">Answer + verified confidence score</text>
+</svg>
