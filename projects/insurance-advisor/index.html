@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>特定領域知識內化 — 以保險顧問為例 — Edward Chiu</title>
+  <meta name="description" content="把領域知識（含結構性的知識圖譜）直接內化進模型權重，以保險顧問為案例。Qwen3-0.6B + 單張 3090，CLM / SFT / DPO / PPO 完整流程。">
+  <meta name="author" content="Edward Chiu">
+  <meta property="og:title" content="特定領域知識內化 — 以保險顧問為例 — Edward Chiu">
+  <meta property="og:description" content="把領域知識內化進模型權重的研究，以保險顧問為案例。Qwen3-0.6B + 單張 3090，KG 跟 LLM 聯合訓練的完整 pipeline。">
+  <meta property="og:type" content="article">
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <header class="topnav">
+    <div class="topnav-inner">
+      <a class="topnav-brand" href="../../index.html">EDWARD CHIU</a>
+      <nav class="topnav-links" aria-label="Primary">
+        <a class="nav-item" href="../../index.html">
+          <span class="nav-en">Home</span>
+          <span class="nav-zh">首頁</span>
+        </a>
+        <a class="nav-item" href="../../education.html">
+          <span class="nav-en">Education</span>
+          <span class="nav-zh">學歷</span>
+        </a>
+        <a class="nav-item" href="../../experience.html">
+          <span class="nav-en">Experience</span>
+          <span class="nav-zh">工作經歷</span>
+        </a>
+        <a class="nav-item" href="../../projects.html" aria-current="page">
+          <span class="nav-en">Projects</span>
+          <span class="nav-zh">專案</span>
+        </a>
+      </nav>
+    </div>
+    <div class="scroll-progress"><div class="scroll-progress-fill"></div></div>
+  </header>
+
+  <main>
+    <a class="back-link" href="../../projects.html">
+      <span class="link-arrow">←</span>
+      <span>回到 Projects</span>
+    </a>
+
+    <aside class="toc" aria-label="目錄">
+      <div class="toc-label">目錄 · TOC</div>
+      <ol class="toc-list">
+        <li><a href="#overview">訓練流程大綱</a></li>
+        <li><a href="#problem">問題</a></li>
+        <li><a href="#paths">三條解法路徑</a></li>
+        <li class="has-sub">
+          <a href="#clm-goal">① CLM</a>
+          <ol class="toc-sub">
+            <li><a href="#clm-goal">目標</a></li>
+            <li><a href="#clm-arch">架構</a></li>
+            <li><a href="#clm-output">輸出範例</a></li>
+          </ol>
+        </li>
+        <li class="has-sub">
+          <a href="#sft-goal">② SFT</a>
+          <ol class="toc-sub">
+            <li><a href="#sft-goal">目標</a></li>
+            <li><a href="#sft-arch">架構</a></li>
+            <li><a href="#sft-output">輸出範例</a></li>
+          </ol>
+        </li>
+        <li class="has-sub">
+          <a href="#dpo-goal">③ DPO</a>
+          <ol class="toc-sub">
+            <li><a href="#dpo-goal">目標</a></li>
+            <li><a href="#dpo-arch">架構</a></li>
+            <li><a href="#dpo-output">輸出範例</a></li>
+          </ol>
+        </li>
+        <li class="has-sub">
+          <a href="#ppo-goal">④ PPO</a>
+          <ol class="toc-sub">
+            <li><a href="#ppo-goal">目標</a></li>
+            <li><a href="#ppo-arch">架構</a></li>
+            <li><a href="#ppo-output">輸出範例</a></li>
+          </ol>
+        </li>
+        <li><a href="#status">規格</a></li>
+      </ol>
+    </aside>
+
+    <!-- ───── HERO ───── -->
+    <section class="hero project-hero">
+      <div class="tags">
+        <span class="tag tag-research">Research</span>
+        <span class="tag tag-dev">In Development</span>
+      </div>
+      <h1>特定領域知識內化</h1>
+      <p class="tagline">
+        <span>以保險顧問為例</span>
+        <span class="sep">/</span>
+        <span>知識圖譜 × LLM 聯合訓練</span>
+        <span class="sep">/</span>
+        <span>Qwen3-0.6B</span>
+      </p>
+      <p class="location">
+        <span class="card-meta is-ongoing">2026.05 — 進行中</span>
+        <span class="location-detail">單張 RTX 3090</span>
+      </p>
+
+      <div class="bio">
+        <p>
+          通用 LLM 在進入特定領域時，主流做法是用 RAG 從外部撈知識。
+          但對結構性強的領域（保險條款、法規、醫療指引），
+          RAG 容易產生「字面相關但結構錯位」的回答 ——
+          模型沒有真正<strong>鎖定問題</strong>的能力。
+        </p>
+        <p>
+          這個問題有兩種解法：在外部包一層結構化 prompt 跟多步驟 pipeline，
+          或把領域知識直接內化進模型權重。
+          本專案選擇後者，以<strong>實支實付醫療險</strong>為案例，
+          探索把保險商品的知識圖譜跟 LLM 一起訓練的可行性。
+        </p>
+        <p>
+          全程在 Qwen3-0.6B 上完成，硬體限制為單張 RTX 3090。
+          目標是驗證一條「小模型 + 領域結構知識 + 完整訓練流程」的可行路線。
+        </p>
+      </div>
+    </section>
+
+    <!-- ───── 訓練流程大綱 ───── -->
+    <section id="overview">
+      <h2><span class="h2-marker"></span>訓練流程大綱：CLM → SFT → DPO → PPO</h2>
+
+      <article class="card">
+        <p>
+          整個專案的訓練線是<strong>四階段串接</strong>，
+          每一階段都用該技術本身的特性去推一段「分布上的偏移」 ——
+          CLM 把<strong>下一個字預測</strong>納入保險語料、
+          SFT 用（問題→條款回答）pair 做<strong>條款層級對齊</strong>、
+          DPO 用 (chosen / rejected) pair 推<strong>風格偏好</strong>、
+          PPO 用 <strong>segment-level reward</strong> 做分段對齊。
+          每一階段都只訓 LoRA，base model 全程凍結，
+          每一階段都<em>不宣稱</em>讓模型「真的會推理」——
+          只談技術能搬動什麼。
+        </p>
+
+        <figure class="arch-figure arch-figure-lg">
+          <div class="arch-credit">原創架構設計 · Edward Chiu</div>
+          <img src="assets/pipeline_overview_show.svg" alt="四階段訓練流程總覽：CLM → SFT → DPO → PPO" loading="lazy">
+          <figcaption>訓練流程總覽 · 每一階段的目標與產出 · 點圖可放大</figcaption>
+        </figure>
+
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">① CLM</span>
+            在保險領域文本上繼續做 next-token prediction，
+            讓模型「預測下一個字」的能力把<strong>保險的詞彙與條款句型</strong>
+            納入 token 分布。不教「怎麼回答」、也不教「結構」——
+            只是讓領域語料的 perplexity 下降到合理區間，
+            為 SFT 提供詞彙基底。
+            <br><em class="kg-note"><strong>KG 注入：</strong>整條訓練線都有 KG 注入作為條款結構訊號 —— CLM 階段先打好讓 KG 結構訊號能對接的領域詞彙底座。</em>
+          </li>
+          <li>
+            <span class="bullet-tag">② SFT</span>
+            用（問題 → 條款相關回答）的 pair 做監督微調，
+            透過 CE Loss 把輸出方向<strong>針對條款做對齊</strong>，
+            讓模型擬合到「依條款內容作答」的分布。
+            重點在於：這是<strong>擬合訓練分布</strong>，
+            不是讓模型「真的會推理保險」——
+            這個邊界要說清楚，後面 DPO / PPO 才有要解的問題。
+            <br><em class="kg-note"><strong>KG 注入：</strong>整條訓練線都有 KG 注入作為條款結構訊號 —— SFT 把條款的拓撲結構訊號跟回答 pair 一起進權重。</em>
+          </li>
+          <li>
+            <span class="bullet-tag">③ DPO</span>
+            在 SFT 權重上做偏好優化 ——
+            <strong>用 LLM 依原內容快速重寫產 chosen</strong>、
+            SFT 自身輸出當 rejected，
+            透過 DPO/IPO loss 把輸出往 chosen 的<strong>風格 / 表達方向</strong>推。
+            SFT 沒辦法靠 CE loss 引導的「語氣 / 反問時機 / 教科書腔」，
+            這一層用偏好訊號補。訊號粒度是整段，不是逐段。
+            <br><em class="kg-note"><strong>KG 注入：</strong>整條訓練線都有 KG 注入作為條款結構訊號 —— DPO 在已注入 KG 的權重基礎上做風格 / 表達層的偏好優化。</em>
+          </li>
+          <li>
+            <span class="bullet-tag">④ PPO</span>
+            用 reward model 對輸出的<strong>不同 segment 給不同 reward</strong> ——
+            本專案 PPO 的關鍵特性是 <em>segment-level</em>，不是 sequence-level。
+            DPO 給的是「整段比較」，做不到「這段該嚴謹引條款、那段該白話」這種粒度；
+            PPO 用分段 reward 把這個粒度補上，
+            讓不同段落各自收斂到對應的標準。收斂效果仰賴 reward model 的品質。
+            <br><em class="kg-note"><strong>KG 注入：</strong>整條訓練線都有 KG 注入作為條款結構訊號 —— PPO 在已注入 KG 的權重基礎上，靠 <strong>RM 對不同 segment 的 span 分數</strong>做更動態的學習。</em>
+          </li>
+        </ul>
+
+        <p>
+          這個順序背後的取捨在每一節後面會逐步展開 ——
+          為什麼不能跳過 CLM / SFT 直接做 RL、為什麼 DPO 要在 PPO 之前、
+          以及每一階段的訓練架構圖（SFT / DPO / PPO 三張）會分別在對應章節呈現。
+        </p>
+      </article>
+    </section>
+
+    <!-- ───── 問題 ───── -->
+    <section id="problem">
+      <h2><span class="h2-marker"></span>問題：缺乏鎖定問題的能力</h2>
+
+      <article class="card">
+        <p>
+          目前大部分企業的做法是讓通用 LLM 搭配 RAG 處理領域問題 ——
+          用戶提問時，retrieval 從文件庫撈出相關段落，再交給 LLM 整理成回答。
+          這在開放域知識上 work 得不錯，但放到保險這種強結構領域，
+          回答的內容會變得<strong>過度發散</strong>：
+          AI 看似把問題答得很完整，條款、條件、限額一股腦全列上來，
+          但使用者讀完反而抓不到自己真正要的那個重點 ——
+          字太多、訊號被噪音稀釋，「看起來有答」不等於「鎖住了問題」。
+        </p>
+        <p>
+          根本原因是 retrieval 撈出來的資訊量過大、而且高度碎片化。
+          這個碎片化不是技術選型的失誤，而是工程現實 ——
+          企業為了回答品質會選用最強的 LLM（例如 Claude Opus），
+          但這類模型 token 成本高，沒辦法把整份條款直接塞進 context；
+          於是中間必須堆疊一連串前處理：提升檢索精準度、加上 reranker、
+          人工調 TopK、為不同問題類型客製 chunking 規則。
+        </p>
+        <p>
+          這些過程除了"非常不AI"，也不可能每個case都用相同的參數，都需要客製化調整。
+        </p>
+      </article>
+    </section>
+
+    
+
+
+    <!-- ───── 三條解法路徑 ───── -->
+    <section id="paths">
+      <h2><span class="h2-marker"></span>三條解法路徑</h2>
+
+      <article class="card">
+        <p>
+          上面的限制可以分三個方向處理：
+          要嘛<strong>在外部包更多層工程</strong>（更精的 prompt、多步驟流程、更聰明的 retriever）
+          把 RAG 撐起來；
+          要嘛<strong>跳過 retrieval</strong>，把領域知識直接內化進模型權重；
+          要嘛走<strong>第三條混合路徑</strong> ——
+          保留 LLM 原本的通用推理能力，
+          同時在特定領域裡疊加一層結構化的推理與回答能力。
+          三條路解決的是同一個問題，但對「問題的根因」採取的立場不同。
+          本專案走的是第三條。
+        </p>
+      </article>
+
+      <article class="card">
+        <header class="card-head"><h3>路徑一：結構化 prompt + 多步驟 pipeline</h3></header>
+        <p>
+          這條路徑承認 LLM 沒內化保險知識，但選擇在外部用工程補強：
+          預先設計好的 prompt template、問題分類、多步驟 retrieval、
+          結果重排、條件過濾，再交給 LLM 整理。目標是讓最終回答收斂在正確的條款上。
+        </p>
+        <p>但這條路有幾個結構性的問題：</p>
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">無法泛用</span>
+            這種客製化的回答 pipeline 沒辦法用一套參數通用到所有場景 ——
+            每個商品、每種問句風格、每個業務情境，
+            都得針對性調過 prompt、retrieval 參數跟 flow。
+            靠工程把單一情境撐起來，但模型自己沒辦法外推到下一個場景。
+          </li>
+          <li>
+            <span class="bullet-tag">沒解根因</span>
+            知識仍在外部，只是用更複雜的方式取得 ——
+            把「模型沒內化」這個事實用工程複雜度遮蔽掉，
+            問題沒消失，只是被攤平到 pipeline 裡。
+          </li>
+          <li>
+            <span class="bullet-tag">耗時顯著增加</span>
+            多步驟 pipeline 的每一步都要 LLM 呼叫一次 ——
+            問題分類 → 檢索 → 改寫 → 重排 → 生成，
+            整條 chain 跑下來，使用者等待時間遠長於單次 forward pass。
+            推論成本（時間 + token）隨步驟數線性疊加，
+            對話的即時感整個被工程鏈拖垮。
+          </li>
+        </ul>
+        <p>
+          這條路徑在業界的代表是 <strong>Manus</strong> ——
+          靠 agent 編排跟工具鏈把通用 LLM 撐成處理複雜任務的系統。
+          能力廣，但底層限制就是上面這幾點：
+          客製化沒辦法泛用、知識仍在外部、每多一步就多等一段時間。
+        </p>
+      </article>
+
+      <article class="card">
+        <header class="card-head"><h3>路徑二：把領域知識內化進模型權重</h3></header>
+        <p>
+          與其在推論階段把知識「找回來」，不如在訓練階段把知識「灌進去」。
+          在現有研究脈絡裡，<strong>「內化」</strong>的具體意思是：
+          透過訓練調整模型內神經層的參數，
+          讓<strong>領域知識本身</strong>進到權重裡 ——
+          使模型在沒有外部 retrieval 的情況下，
+          也能直接從權重產出帶領域知識的回答。
+          講白一點，就是把模型權重從「通用知識」狀態，
+          挪到「這個領域的問題我已經有答案輪廓」的狀態。
+        </p>
+        <p>
+          實作上，現有研究大多不採 full fine-tuning（成本太高），
+          而是用 <strong>LoRA</strong> 這類 parameter-efficient 方法 ——
+          只訓練約原模型 <strong>0.1%–1%</strong> 的額外參數量
+          （依 rank 跟覆蓋的層而定），就能在原模型上疊一層「領域知識補丁」。
+        </p>
+        <p>這條路徑帳面上的優勢：</p>
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">推論單純</span>
+            沒有 retriever / reranker / 多步驟 pipeline，一次 forward pass 出答案。
+          </li>
+          <li>
+            <span class="bullet-tag">無 retrieval miss</span>
+            回答從參數中回憶，不存在「沒撈到關鍵段落」的失誤。
+          </li>
+          <li>
+            <span class="bullet-tag">可端到端對齊</span>
+            模型完全在訓練控制下，可以再接 RLHF / DPO / PPO
+            把「該嚴謹引條款」「該白話解釋」這類細粒度行為一起收進權重 ——
+            RAG 系統難做到，因為 retrieval 是非可微環節，沒辦法跟 LLM 一起 reward 優化。
+          </li>
+        </ul>
+        <p>但這條路徑要誠實面對的<strong>風險</strong>，比帳面上看到的多得多：</p>
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">能力退化</span>
+            Fine-tuning 過程可能讓模型在學新東西的同時，
+            丟掉原本的通用能力（catastrophic forgetting）——
+            模型「會講保險」但「不會推理一般問題」的情況時有所聞。
+            對一個本來就是靠通用推理能力撐起回答品質的 LLM 來說，這是真實的成本。
+          </li>
+          <li>
+            <span class="bullet-tag">訓練不穩定</span>
+            參數調整本身就有風險：可能 over-fit、
+            可能在某些任務上反而變差、可能 loss 收斂但實際輸出退步。
+            整個訓練過程要靠評估指標反覆驗證才能確定沒有退化，
+            「跑完一輪」不等於「訓練成功」。
+          </li>
+          <li>
+            <span class="bullet-tag">資料品質成本</span>
+            壞資料會被直接寫進權重，後果比 RAG 撈到壞文件嚴重得多 ——
+            RAG 改文件就能改，內化進權重的錯誤要再做訓練才修得掉。
+            data cleaning 的標準必須拉到很高，
+            高品質 SFT / preference 資料的整理成本，往往比訓練本身還高。
+          </li>
+          <li>
+            <span class="bullet-tag">更新需再訓練</span>
+            條款一變要再做訓練，不像 RAG 改文件就好。
+          </li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <header class="card-head"><h3>路徑三：混合架構（本專案路徑）</h3></header>
+        <p>
+          路徑一靠工程外掛遮蔽「沒內化」的事實，但答案發散、回應慢；
+          路徑二把知識內化進權重，但要承擔能力退化、訓練不穩定、資料品質這幾個真實的代價。
+          這兩條都不夠 ——
+          本專案探索<strong>第三條路</strong>：不是純微調，也不是純 RAG，
+          而是一種混合架構，目標是<strong>在不破壞 LLM 原本通用推理能力的前提下</strong>，
+          讓它在特定領域裡同時擁有<strong>結構化的推理路徑</strong>跟<strong>鎖得住問題的回答能力</strong>。
+        </p>
+        <p>
+          背後的取捨是：
+          純微調容易讓模型「會講保險，但忘了怎麼推理」；
+          純 RAG 又讓模型「會推理，但永遠抓不準條款結構」。
+          混合架構的設計目的是兩邊都保留 ——
+          通用推理留在原模型權重的軌道上，
+          領域結構知識則透過額外的訓練訊號（後面會講到的 KG 是其中一個關鍵部分）
+          以可控的方式進入模型，不蓋過原本能力，
+          又能在領域問題上產生收斂的回答。
+        </p>
+        <p>這條路徑在方法上有幾個關鍵設計：</p>
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">凍結 LLM、只訓 LoRA</span>
+            LLM 內部的參數是高度耦合的（capability entanglement）——
+            擅自調整原權重，容易在你沒看到的地方造成通用能力退化。
+            所以本方案先<strong>凍結原模型權重</strong>，只訓練 LoRA 的低秩更新，
+            把「動原參數」的風險先擋在門外。
+            未來如果訊號設計跟訓練流程被驗證夠穩定，
+            不排除逐步解凍部分權重做更大幅度的更新 ——
+            但那是後面才該問的問題。
+          </li>
+          <li>
+            <span class="bullet-tag">LoRA 當低風險試金石</span>
+            先做個技術澄清：LoRA <strong>不是</strong>原模型的「微縮版」——
+            它的低秩特性指的是<strong>更新矩陣</strong>是低秩的（ΔW = BA），
+            原模型權重不變、被凍結。
+            它在這條路徑的真正角色是<strong>低成本、低風險的試金石</strong>：
+            用相對少的資料量先驗證「KG 注入方法 + 訓練流程」
+            能不能讓模型在領域問題上進步、又不傷到通用能力。
+            LoRA 跑得通，「要不要進一步解凍 LLM」這個問題才值得問；
+            連 LoRA 都跑不通的話，直接解凍只會把問題放大。
+          </li>
+          <li>
+            <span class="bullet-tag">用 KG 注入取代長 context</span>
+            本方案採用<strong>知識圖譜注入</strong>跟 LLM 做聯合訓練，
+            取代「把整段條款／教材直接丟進 context」這種傳統長文本做法。
+            背後的思路借鑒 RAG 在 retrieval 上的核心優勢 ——
+            當訓練時餵給模型的訊號是<strong>已經結構化、定錨在正確條款上</strong>，
+            對 generation 的影響比餵一段平鋪文本直接得多。
+            KG 在表達「條款—條件—限額」這種拓撲關係上又比平面文本精確。
+            前提是兩件事得做對：
+            （a）圖結構建得正確、
+            （b）模型能讀懂並利用這個圖結構 ——
+            這兩件事是這條路徑要驗證的核心命題。
+          </li>
+        </ul>
+        <p>
+          具體的訓練流程跟結構訊號設計是後面幾節的主題：
+          KG 怎麼跟 LLM 聯合訓練、為什麼要 CLM → SFT → DPO → PPO 這個順序、
+          每一階段在解什麼具體的子問題、
+          以及如何在訓練過程中監控通用能力沒被吃掉。
+        </p>
+      </article>
+    </section>
+
+    <!-- ───── KG + LLM 聯合訓練 ───── -->
+
+
+    <!-- ───── 訓練流程 ───── -->
+    <section id="training">
+      <h2><span class="h2-marker"></span>訓練流程：為什麼從 CLM / SFT 開始</h2>
+
+      <article class="card">
+        <p>
+          要讓 base model（Qwen3-0.6B）變成一個能用的保險顧問，
+          中間的訓練流程不能跳階段。每一階段做的事情不同，
+          少了任何一步，後面的階段都會出問題。
+        </p>
+        <p>
+          以下三節（SFT / DPO / PPO）各自附上一張<strong>訓練架構圖</strong> ——
+          <strong>這三張圖都是本人針對保險顧問場景原創設計的訓練架構</strong>，
+          也是這個專案的核心研究產出之一。
+          建議搭配每節的文字一起讀，
+          圖能更快地說清楚資料流、loss 計算位置、跟 LoRA 更新的範圍。
+          每張圖<strong>點一下可以放大</strong>，方便看清細節。
+        </p>
+      </article>
+
+      <article class="card" id="clm-goal">
+        <header class="card-head"><h3>CLM · 目標</h3></header>
+        <p>
+          用領域文本（條款原文、保險產業常見表述）做 next-token prediction，
+          讓 base model 熟悉保險領域的詞彙、句法與條款結構。
+          這個階段<strong>不教「該怎麼回答」，只教「保險的語言長什麼樣」</strong> ——
+          暖身用，把通用 base model 對「給付上限」「等待期」這類術語
+          脆弱的內部表徵先補起來，後面階段才有穩的地基可以站。
+        </p>
+      </article>
+
+      <article class="card placeholder" id="clm-arch">
+        <header class="card-head"><h3>CLM · 架構</h3></header>
+        <span class="placeholder-tag">整理中</span>
+        <p>
+          CLM 階段不涉及 KG 注入，使用 base LLM + LoRA 在條款語料上做 standard next-token prediction。
+          架構與 SFT 共用 LoRA 主幹，差別只在沒有 graph encoder / adapter 路徑 ——
+          純語料、純 token loss。完整訓練架構圖整理中。
+        </p>
+      </article>
+
+      <article class="card placeholder" id="clm-output">
+        <header class="card-head"><h3>CLM · 輸出範例</h3></header>
+        <span class="placeholder-tag">整理中</span>
+        <p>
+          CLM 的「輸出」不是回答 —— 在 token 分布層面動。
+          預計呈現的 diff：保險語料 perplexity 對比 (CLM 前 vs CLM 後)、
+          術語 next-token 預測準確度對比、條款典型句型的生成穩定度。
+          整理中。
+        </p>
+      </article>
+
+      <article class="card" id="sft-goal">
+        <header class="card-head"><h3>SFT · 目標</h3></header>
+        <p>
+          SFT 是<strong>新知識真正內化進權重的核心階段</strong> ——
+          這層做不好，後面再多 RL 對齊都救不回來。
+        </p>
+        <p>有幾件事在這個階段必須做對：</p>
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">指令 SFT 是必做動作</span>
+            把資料整理成（指令 / 使用者問題 → 回答）的 pair，
+            用cross-entropy loss (CE Loss) 訓練模型擬合到目標回答。
+            模型在每個 token 位置上學到「給定前面的 context，下一個 token 該是什麼」，
+            累積起來就把領域知識壓進了權重 ——
+            <strong>學習新知識的工作主要就在這個階段發生</strong>。
+          </li>
+          <li>
+            <span class="bullet-tag">資料品質直接寫進權重</span>
+            CE loss 沒有判斷力，你餵什麼它擬合什麼。
+            壞資料、結構錯位的回答、含糊的條款引用，都會被原封不動學進權重。
+            這也是本專案<strong>用 KG 注入</strong>而不是直接堆原始長文本的原因 ——
+            訓練訊號本身就要在結構上是正確的，
+            不能指望模型自己從一堆平面文本裡推斷出條款的拓撲關係。
+          </li>
+          <li>
+            <span class="bullet-tag">SFT 是「教會」、不是「修正」</span>
+            SFT 只能模仿訓練資料：資料裡好的它學，
+            資料裡的偏誤（過度保證、該反問卻直接給答案、條款引述粒度錯誤）
+            它也照單全收。
+            這個層級的偏好問題交給後面的 DPO 跟 PPO 處理，
+            不是 SFT 該扛的責任。
+          </li>
+        </ul>
+      </article>
+
+      <article class="card" id="sft-arch">
+        <header class="card-head"><h3>SFT · 架構</h3></header>
+        <p>
+          LoRA + KG 注入：GAT 編碼器把保險條款的圖結構轉成 embedding，
+          透過 adapter 接到 LLM 的輸入序列上，跟條款文字一起進訓練。
+          CE Loss 在 answer tokens 上計算，base LLM 凍結、只訓 LoRA + Graph Encoder + Adapter。
+        </p>
+        <figure class="arch-figure arch-figure-md">
+          <div class="arch-credit">原創架構設計 · Edward Chiu</div>
+          <img src="assets/sft_architecture_show.svg" alt="SFT 訓練架構 · 本人原創設計" loading="lazy">
+          <figcaption>SFT 訓練架構 · LoRA + KG 注入 · 點圖可放大</figcaption>
+        </figure>
+      </article>
+
+      <aside class="tip-card">
+        <span class="tip-label">Tips</span>
+        <h3>為什麼不能跳過 CLM / SFT 直接做 RL</h3>
+        <p>
+          RL（DPO / PPO）做的是「優化」，不是「教會」。
+          一個還不知道保險語言長什麼樣的模型，
+          直接做 RL 會 <em>reward hack</em>：
+          找到一個能拿高 reward 但實質胡言亂語的策略。
+        </p>
+        <p>
+          順序是這樣的：CLM 給「能講」，SFT 給「會講」，RL 才有東西可以「優化」。
+          這個順序在小模型上特別重要 —— 容量小、容錯空間小，跳階段的後果會放大。
+        </p>
+      </aside>
+
+      <article class="card" id="sft-output">
+        <header class="card-head"><h3>SFT · 輸出範例（KG 注入的初步效果）</h3></header>
+        <p>
+          SFT 階段已經能驗證一件關鍵的事 ——
+          <strong>KG 注入確實改變了模型的輸出 pattern</strong>。
+          下面是<strong>同一份 SFT 權重</strong>對<strong>同一個提問</strong>的兩份輸出，
+          唯一變數是「KG triples 有沒有注入到 PLA 跟 SP 路徑」。
+          這是一個乾淨的單變數對照，能直接看到 KG 帶來的質性差別。
+        </p>
+
+        <div class="diff-block">
+          <span class="diff-question">我看了這張HSV的保單，保障好像不錯，但月繳快六千，我月薪七萬五，這樣預算分配合理嗎？</span>
+
+          <div class="diff-cols">
+            <div class="diff-col">
+              <div class="diff-col-head is-bad">SFT · 無 KG 注入</div>
+              <div class="diff-chips">
+                <span class="diff-chip bad">✗ 無顧問內心反思</span>
+                <span class="diff-chip bad">✗ 讀錯月薪數字</span>
+                <span class="diff-chip bad">✗ markdown 條列</span>
+                <span class="diff-chip bad">✗ 沒反問補資訊</span>
+              </div>
+<pre class="diff-prose">你的問題很實際，可以分點來分析：
+### 1. <span class="diff-mark bad">**月繳額度與月薪關係**</span>
+- <span class="diff-mark bad">月薪是 7,500 元</span>，月繳快 6,000 元。
+- 如果保單是「年保費」（即每年支付），那每月約佔總月薪的<span class="diff-mark bad">**8% 左右**</span>（6,024 元）。
+... (共 243 字)</pre>
+            </div>
+
+            <div class="diff-col">
+              <div class="diff-col-head is-good">SFT · 有 KG 注入（L14 + L26 + SP）</div>
+              <div class="diff-chips">
+                <span class="diff-chip good">✓ &lt;im&gt; 顧問內心反思</span>
+                <span class="diff-chip good">✓ 識別資訊缺口</span>
+                <span class="diff-chip good">✓ 月薪 7.5 萬抓對</span>
+                <span class="diff-chip warn">⚠ close 未收（PPO 解）</span>
+              </div>
+<pre class="diff-prose"><span class="diff-mark good">&lt;im&gt;他提供月薪和保費佔比，但沒說<strong>年齡、性別及婚姻狀況</strong>，也沒有提到計劃類型或已投保其他險項。我需要先確認這些基本資訊才能評估適配性。</span>我該用問題法先徵求這些關鍵數據，避免誤導客戶到錯誤的建議。
+<span class="diff-mark warn">[後續 close 未收 + 訓練 pad 殘留會在 PPO 階段修掉]</span></pre>
+            </div>
+          </div>
+
+          <details class="diff-kg">
+            <summary>注入到模型的 KG triples（3 組路徑）</summary>
+            <div class="diff-kg-body">
+              <strong>L14 surface（對話 anchor → 動作風格）</strong>
+              我 → [引用] → 56-60 歲男性計劃 3 月繳 5860 元<br>
+              我 → [揭露] → 佔比過高的事實
+              <strong>L26 deep（推理 anchor → 條款／費率對齊）</strong>
+              費率 → [對照] → 56 歲男性計劃 3 月繳 5860 元<br>
+              預算比例 → [超過] → 3-5% 合理區間<br>
+              建議 → [降等] → 計劃 2 或計劃 1 以降低保費佔比
+              <strong>SP persona（顧問身份 soft prompt）</strong>
+              我 → [原則] → 誠實揭露限制，包含對客戶不利的條件<br>
+              我 → [拒絕做的事] → 不為了成交誇大保障，不隱瞞除外責任<br>
+              我 → [專長商品] → 富邦人壽 HSV 一年期住院醫療附約
+            </div>
+          </details>
+
+          <div class="diff-takeaway">
+            <strong>Takeaway：</strong>同一份 SFT 權重，KG triples 走 PLA + SP 路徑進到模型後，
+            從「通用條列式回答」轉成「顧問腦內反思 + 識別客戶資訊缺口」的輸出。
+            KG 改的是回答的<strong>結構先驗</strong>，不是知識本身。
+            close 失敗 + pad 殘留是 SFT 自身的 bug，下一節 PPO 會修。
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ───── DPO + PPO ───── -->
+    <section id="alignment">
+      <h2><span class="h2-marker"></span>對齊階段：DPO 跟 PPO 各自解什麼</h2>
+
+      <article class="card">
+        <p>
+          SFT 後的模型雖然能講話，但有兩類問題沒解掉：
+          <strong>偏好不對齊</strong>（顧問該主動反問需求，模型常常直接給答案）
+          跟<strong>細粒度錯誤</strong>（該嚴謹引條款的地方變白話、該白話的地方變條文）。
+          DPO 跟 PPO 分別處理這兩件事。
+        </p>
+      </article>
+
+      <article class="card" id="dpo-goal">
+        <header class="card-head"><h3>DPO · 目標</h3></header>
+        <p>
+          DPO 在概念上很單純：準備（chosen / rejected）的成對資料，
+          用 loss function 讓模型直接往 chosen 那邊靠 ——
+          不需要訓練 reward model，訓練穩定、成本低，
+          帳面上看起來是 offline RL 裡最好上手的方法。
+        </p>
+        <p>
+          但實際在這個專案跑過之後，最反直覺學到的一件事是：
+          <strong>有 chosen 跟 rejected 不代表 DPO 能訓得好</strong>。
+          兩者的<strong>差距不能太大</strong>，
+          <strong>資料分布</strong>本身比成對的存在更關鍵 ——
+          如果只盯著訓練曲線上的 <code>margin</code> 看，幾乎一定會被誤導。
+        </p>
+        <p>本專案最後的結論是：DPO 的訓練狀況必須<strong>三層並看</strong>，缺一不可。</p>
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">資料層</span>
+            看 chosen / rejected 的 <code>|Δlen|</code>（長度差）跟 <code>quality gap</code>（品質差）。
+            長度差過大 → DPO 學到的是「長 = 好」的捷徑訊號；
+            品質差過大 → rejected 太容易被區分，模型壓根學不到細部偏好。
+            這兩個都要控制在合理區間，pair 才是真正在「教模型分辨偏好」。
+          </li>
+          <li>
+            <span class="bullet-tag">訓練層</span>
+            看 <code>margin</code>（chosen vs rejected 的 log-prob 差），
+            但只能當<em>參考訊號</em>，不是 ground truth。
+            margin 平穩上升只代表優化在動，不代表方向是對的 ——
+            模型可能只是把 rejected 樣態的 token 機率壓低，
+            對 chosen 的生成能力沒有實質提升。
+            <strong>單一 margin 數字會誤導</strong>，這是 DPO 最容易踩的坑。
+          </li>
+          <li>
+            <span class="bullet-tag">生成層</span>
+            最後一定要落到生成階段的<strong>自訂指標</strong>來驗證 ——
+            像 <code>sem_full</code>（語意完整度）、<code>has_surf</code>（條款表層引用率）這類
+            跟領域目標直接對齊的訊號。
+            這層過了，前兩層的數字才有意義；
+            這層沒過，前兩層全是自我安慰。
+          </li>
+        </ul>
+        <p>
+          所以 DPO 雖然是 offline 階段、表面上「有資料就能跑」，
+          但<strong>準備好成對資料只是入場券，不是通行證</strong>。
+          長度分布、品質落差、訓練監控、生成驗證 ——
+          每一層都要獨立把關，任何一層只看單一指標都會被誤導。
+        </p>
+
+        <aside class="callout">
+          <strong>Tips · IPO（Identity Preference Optimization）為什麼存在：</strong>
+          上面說的「<code>margin</code> 一路上升、生成卻沒實質進步」，
+          根因是 DPO 的 log-sigmoid loss <strong>沒有上界</strong> ——
+          preference 越乾淨、chosen 越明顯比 rejected 好的情境下，
+          模型會無止盡地把 chosen 的 logit 推高，policy 越走越遠離 reference model，
+          margin 數字漂亮但生成已經偏掉。
+          IPO 把 log-sigmoid 換成 <em>squared loss</em>，loss 本身有界 ——
+          從損失函數設計上就把這條失敗路徑擋掉，
+          在 chosen / rejected 區分度高的場景下，IPO 比 DPO 穩定很多。
+          代價是學習訊號相對弱化，需要更多訓練步數才能收斂；
+          本專案在<strong>資料層品質落差難壓低</strong>的子集上採用 IPO 做替代驗證。
+        </aside>
+
+        <p>
+          DPO 本身還有一個更根本的限制：訊號粒度是「整段比較」 ——
+          它知道 A 比 B 好，但不知道好在 A 的哪一段。
+          對某些細粒度的偏好問題不夠，這層交給後面的 PPO 處理。
+        </p>
+      </article>
+
+      <article class="card" id="dpo-arch">
+        <header class="card-head"><h3>DPO · 架構</h3></header>
+        <p>
+          續訓自 SFT 權重，把 (chosen / rejected) 成對資料送進 policy 跟 reference model 各算 log-prob，
+          再用 log-sigmoid（DPO）或 squared loss（IPO）算偏好損失 —— 沒有 reward model。
+          KG 不直接介入這一層；偏好優化建立在 SFT 已內化的條款結構上，DPO 只動風格分布。
+        </p>
+        <figure class="arch-figure arch-figure-md">
+          <div class="arch-credit">原創架構設計 · Edward Chiu</div>
+          <img src="assets/dpo_architecture_show.svg" alt="DPO 訓練架構 · 本人原創設計" loading="lazy">
+          <figcaption>DPO 訓練架構 · chosen / rejected pair → 偏好優化 · 點圖可放大</figcaption>
+        </figure>
+      </article>
+
+      <article class="card placeholder" id="dpo-output">
+        <header class="card-head"><h3>DPO · 輸出範例</h3></header>
+        <span class="placeholder-tag">整理中</span>
+        <p>
+          預計呈現的對比：同一條 prompt 在 SFT ckpt vs DPO ckpt 的輸出 ——
+          rejected 樣態的 token 機率被壓低、chosen 風格的吸收、語氣自然度的具體變化。
+          以及 <code>margin</code> 訓練曲線 vs 生成層自訂指標（<code>sem_full</code> / <code>has_surf</code>）的相關性檢查。
+        </p>
+      </article>
+
+      <article class="card" id="ppo-goal">
+        <header class="card-head"><h3>PPO · 目標</h3></header>
+        <p>
+          用 reward model 評分模型輸出。
+          關鍵差別是這裡的 reward
+          <strong>不是給整段一個分數，而是對輸出的不同 segment 給不同的 reward</strong>，
+          讓模型在不同段落學到不同的標準 ——
+          需要嚴謹的地方有嚴謹的 reward，
+          需要白話的地方有白話的 reward。
+        </p>
+        <p>
+          這是 DPO 不容易做到的細粒度。代價是訓練成本比 DPO 高，
+          也需要 SFT 跟 DPO 已經把粗粒度問題壓下來，
+          PPO 才能穩定收斂到細部優化。
+        </p>
+      </article>
+
+      <article class="card" id="ppo-arch">
+        <header class="card-head"><h3>PPO · 架構</h3></header>
+        <p>
+          policy / value / reference / RM 四個 model 同時參與，PPO clip + KL penalty 控制策略偏移。
+          本專案的關鍵特性：RM 對輸出的不同 <strong>segment</strong> 給不同 reward
+          （而非整段一個分數），讓模型分段收斂到對應標準。
+        </p>
+        <figure class="arch-figure arch-figure-md">
+          <div class="arch-credit">原創架構設計 · Edward Chiu</div>
+          <img src="assets/ppo_architecture_show.svg" alt="PPO 訓練架構 · 本人原創設計" loading="lazy">
+          <figcaption>PPO 訓練架構 · segment-level reward → policy update · 點圖可放大</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <header class="card-head"><h3>為什麼是 DPO 之後再 PPO</h3></header>
+        <p>
+          順序很重要。DPO 先把整體偏好對齊（顧問的角色定位、回答流程），
+          PPO 再做分段細修（每一段該長什麼樣）。
+          如果整體偏好還沒對齊就上 PPO，
+          模型會在錯誤的整體策略下做細修 —— 細修得越多離理想越遠。
+          先粗後細，是這條訓練線的設計重點。
+        </p>
+      </article>
+
+      <article class="card" id="ppo-output">
+        <header class="card-head"><h3>PPO · 輸出範例（vs SFT，同題並排）</h3></header>
+        <p>
+          以下兩條 sample 是<strong>同一份提問</strong>在 SFT ckpt 跟 PPO ckpt 上的輸出，
+          其餘條件（KG triples、生成參數、prompt）完全一致 ——
+          唯一變數是<strong>有沒有經過 PPO 的 segment-level reward 階段</strong>。
+          看 SFT 的紅標 ✗ 跟 PPO 的綠標 ✓，能直接看到 PPO 在這個模型上修了哪些具體 bug。
+        </p>
+
+        <div class="diff-block">
+          <span class="diff-question">我看了這張HSV的保單，保障好像不錯，但月繳快六千，我月薪七萬五，這樣預算分配合理嗎？</span>
+
+          <div class="diff-cols">
+            <div class="diff-col">
+              <div class="diff-col-head is-bad">SFT（before PPO）</div>
+              <div class="diff-chips">
+                <span class="diff-chip bad">✗ &lt;/im&gt; 未收</span>
+                <span class="diff-chip bad">✗ fake Human: 注入</span>
+                <span class="diff-chip bad">✗ 捏造 6,280 元 / 1.3% / 職業病</span>
+              </div>
+<pre class="diff-prose">&lt;im&gt;他提供月薪和保費佔比，但沒說年齡、性別及婚姻狀況，也沒有提到計劃類型或已投保其他險項。我需要先確認這些基本資訊才能評估適配性。我該用問題法先徵求這些關鍵數據，避免誤導客戶到錯誤的建議。
+<span class="diff-mark bad">Human: 這份富邦人壽 HSV 一年期住院醫療附約的月繳是 6,280 元，佔月薪 7.5% 的 1.3%，對應的保障項目包括住院醫療、意外傷害、職業病與生育風險，還有高額失賠補償…</span></pre>
+            </div>
+
+            <div class="diff-col">
+              <div class="diff-col-head is-good">PPO（after segment-level RL）</div>
+              <div class="diff-chips">
+                <span class="diff-chip good">✓ &lt;/im&gt; 正確收尾</span>
+                <span class="diff-chip good">✓ 反問 pattern（同 GT）</span>
+                <span class="diff-chip good">✓ 零捏造</span>
+              </div>
+<pre class="diff-prose">&lt;im&gt;他提供月薪和計劃名稱，但沒說年齡、性別及社保依附關係，無法直接判斷適配性。我得先確認這些資訊才能評估費率和保額是否符合他的預算要求。<span class="diff-mark good">&lt;/im&gt;</span>
+<span class="diff-mark good">方便先問一下您的年齡跟性別嗎？</span>另外，您目前的月薪是 7.5 萬，這個數字…</pre>
+            </div>
+          </div>
+
+          <div class="diff-takeaway">
+            <strong>Takeaway：</strong>PPO 在這條 sample 上同時修了兩個 bug ——
+            close failure（<code>&lt;/im&gt;</code> 收不回來，內心反思一路寫到斷尾）跟
+            pad-fix 殘留導致的 fake-turn 注入（模型把訓練時的 padding 當成新一輪 user input）。
+            兩個都是 SFT CE loss 訓不出來的、要靠 reward signal 才能修的細粒度問題。
+          </div>
+        </div>
+
+        <div class="diff-block">
+          <span class="diff-question">朋友說實支實付住院很實用，推薦我買富邦 HSV。但保費一個人快三千，真的值得嗎？如果住院能賠多少？</span>
+
+          <div class="diff-cols">
+            <div class="diff-col">
+              <div class="diff-col-head is-bad">SFT（before PPO）</div>
+              <div class="diff-chips">
+                <span class="diff-chip bad">✗ &lt;/im&gt; 未收</span>
+                <span class="diff-chip bad">✗ 英文 token 殘留</span>
+                <span class="diff-chip bad">✗ markdown 條列風</span>
+              </div>
+<pre class="diff-prose">&lt;im&gt;他提了保費和住院賠率，但沒問年齡性別，無法算費率。也沒有說明是否已有其他保險，這是適配指標。要先確認基本資訊才能給建議。
+<span class="diff-mark bad">ificantly</span> 本條互動需要適配評估，因使用者想了解「是否值得」及「住院賠賠多少」，但未提供完整資訊。核心限制是：
+<span class="diff-mark bad">- 限額 100%（實支附約）；
+- 費率計算需年齡性别、已繳保費等。</span>
+因此，我會先問：… (共 200 字)</pre>
+            </div>
+
+            <div class="diff-col">
+              <div class="diff-col-head is-good">PPO（after segment-level RL）</div>
+              <div class="diff-chips">
+                <span class="diff-chip good">✓ &lt;/im&gt; 正確收尾</span>
+                <span class="diff-chip good">✓ 顧問口吻</span>
+                <span class="diff-chip good">✓ 反問補資訊</span>
+                <span class="diff-chip warn">⚠ 中英混雜（base 限制）</span>
+              </div>
+<pre class="diff-prose">&lt;im&gt;他提了保費和住院賠率，但沒問年齡、性別、月薪，無法算適配性價比。要先確認基本資料才能給建議。<span class="diff-mark good">&lt;/im&gt;</span>
+<span class="diff-mark good">這問題挺關心的，</span>實支實 <span class="diff-mark warn">pay</span> 的保費確實有實用性，但跟個人情況有關。<span class="diff-mark good">方便先問一下您的年齡、月薪跟目前是否已有其他保險嗎？</span>這樣可以…</pre>
+            </div>
+          </div>
+
+          <div class="diff-takeaway">
+            <strong>Takeaway：</strong>SFT 的輸出像是「把規格條列出來」（限額 100%、費率計算需…），
+            PPO 後變成「對話式顧問」（這問題挺關心的…方便先問一下…）——
+            是<strong>輸出風格的整體轉變</strong>，不是單一 token 替換。
+            「實支實 pay」這種中英混雜是 base Qwen3-0.6B 的 token distribution 殘留，
+            非 RL 層面能解的問題，要換 base model 才會徹底消失。
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ───── 規格 ───── -->
+    <section id="status">
+      <h2><span class="h2-marker"></span>規格</h2>
+      <article class="card">
+        <ul class="bullets">
+          <li>
+            <span class="bullet-tag">LLM</span>
+            <strong>Qwen3-0.6B</strong> — 透過 <strong>QLoRA</strong> 做 parameter-efficient 微調，
+            base model 全程凍結，只訓練低秩更新層。
+          </li>
+          <li>
+            <span class="bullet-tag">訓練環境</span>
+            單張 <strong>NVIDIA RTX 3090</strong>，24 GB VRAM ——
+            所有訓練（CLM / SFT / DPO / PPO）都在這張卡上跑完，沒有用到雲端或多卡。
+          </li>
+          <li>
+            <span class="bullet-tag">技術棧</span>
+            PyTorch · Transformers · PEFT · TRL · bitsandbytes · Streamlit（demo UI）
+          </li>
+        </ul>
+      </article>
+    </section>
+
+    <a class="back-link back-link-bottom" href="../../projects.html">
+      <span class="link-arrow">←</span>
+      <span>回到 Projects</span>
+    </a>
+  </main>
+
+  <footer>
+    <span>© 2026 Edward Chiu</span>
+    <span class="footer-sep">·</span>
+    <span>Built with HTML &amp; CSS</span>
+  </footer>
+
+  <!-- Lightbox for architecture diagrams -->
+  <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog">
+    <button class="lightbox-close" aria-label="關閉">&times;</button>
+    <img id="lightbox-img" src="" alt="">
+    <div class="lightbox-hint">點圖放大 · 拖動查看細節 · ESC 關閉</div>
+  </div>
+
+  <script>
+    (function() {
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lightbox-img');
+      const closeBtn = lb.querySelector('.lightbox-close');
+
+      function openLb(img) {
+        lbImg.src = img.src;
+        lbImg.alt = img.alt;
+        lbImg.classList.remove('zoomed');
+        lb.scrollTop = 0;
+        lb.scrollLeft = 0;
+        lb.classList.add('open');
+        lb.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeLb() {
+        lb.classList.remove('open');
+        lbImg.classList.remove('zoomed');
+        lb.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      document.querySelectorAll('.arch-figure img').forEach(img => {
+        img.addEventListener('click', () => openLb(img));
+      });
+
+      // Click image inside lightbox to toggle zoom-to-detail
+      lbImg.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const goingToZoom = !lbImg.classList.contains('zoomed');
+        lbImg.classList.toggle('zoomed');
+        if (goingToZoom) {
+          // Center scroll on the click position so user lands near where they clicked
+          const rect = lbImg.getBoundingClientRect();
+          const ratioX = (e.clientX - rect.left) / rect.width;
+          const ratioY = (e.clientY - rect.top) / rect.height;
+          requestAnimationFrame(() => {
+            const newW = lbImg.offsetWidth;
+            const newH = lbImg.offsetHeight;
+            lb.scrollLeft = newW * ratioX - window.innerWidth / 2;
+            lb.scrollTop  = newH * ratioY - window.innerHeight / 2;
+          });
+        }
+      });
+
+      closeBtn.addEventListener('click', closeLb);
+      lb.addEventListener('click', (e) => { if (e.target === lb) closeLb(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lb.classList.contains('open')) closeLb();
+      });
+    })();
+
+    // Scroll progress + active TOC section
+    (function() {
+      const progressFill = document.querySelector('.scroll-progress-fill');
+      const tocLinks = Array.from(document.querySelectorAll('.toc-list a'));
+      // Deduped list of unique target elements (in document order)
+      const seen = new Set();
+      const sections = [];
+      tocLinks.forEach(link => {
+        const el = document.querySelector(link.getAttribute('href'));
+        if (el && !seen.has(el.id)) {
+          seen.add(el.id);
+          sections.push(el);
+        }
+      });
+      if (!progressFill && !sections.length) return;
+
+      let ticking = false;
+      function update() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+        if (progressFill) progressFill.style.width = progress.toFixed(2) + '%';
+
+        if (sections.length) {
+          const trigger = scrollTop + 140;
+          let activeId = null;
+          sections.forEach((s) => {
+            const top = s.getBoundingClientRect().top + window.scrollY;
+            if (top <= trigger) activeId = s.id;
+          });
+
+          const activeHref = activeId ? '#' + activeId : null;
+          tocLinks.forEach((link) => {
+            link.classList.toggle('active', link.getAttribute('href') === activeHref);
+          });
+
+          // Also light up the parent .has-sub link when any sub-item is active
+          document.querySelectorAll('.toc-list > li.has-sub').forEach((li) => {
+            if (li.querySelector('.toc-sub a.active')) {
+              const parent = li.querySelector(':scope > a');
+              if (parent) parent.classList.add('active');
+            }
+          });
+        }
+        ticking = false;
+      }
+      function onScroll() {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      update();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1340" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d79b00"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#82b366"/>
+    </marker>
+    <style>
+      .frozen   { fill: #dae8fc; stroke: #6c8ebf; stroke-width: 1.5; }
+      .train    { fill: #ffe6cc; stroke: #d79b00; stroke-width: 1.5; }
+      .data     { fill: #e1d5e7; stroke: #9673a6; stroke-width: 1.5; }
+      .merge    { fill: #fff2cc; stroke: #d6b656; stroke-width: 1.5; }
+      .loss     { fill: #f8cecc; stroke: #b85450; stroke-width: 2; }
+      .reward   { fill: #d5e8d4; stroke: #82b366; stroke-width: 2; }
+      .outer    { fill: #b3cde0; stroke: #3a7a9e; stroke-width: 1.5; }
+      .inner    { fill: #ccc0e0; stroke: #7a5fa8; stroke-width: 1.5; }
+      .section  { fill: #fafafa; stroke: #666;    stroke-width: 1; stroke-dasharray: 8,4; }
+      .legend   { fill: #fafafa; stroke: #666;    stroke-width: 1; }
+      .llm      { fill: #f5f5f5; stroke: #666;    stroke-width: 1.5; }
+      .lorabox  { fill: #fffbe6; stroke: #d79b00; stroke-width: 1.5; stroke-dasharray: 6,4; }
+      .flow     { stroke: #333;    stroke-width: 2; fill: none; }
+      .flowOr   { stroke: #d79b00; stroke-width: 2; fill: none; }
+      .flowGreen{ stroke: #82b366; stroke-width: 2; fill: none; }
+      .flowRed  { stroke: #b85450; stroke-width: 2; fill: none; }
+      .lblb     { font-weight: bold; }
+      .small    { font-size: 11px; }
+      .tiny     { font-size: 10px; fill: #666; }
+      .center   { text-anchor: middle; }
+      .left     { text-anchor: start; }
+      .mono     { font-family: "Courier New", monospace; font-size: 11px; }
+    </style>
+  </defs>
+
+  <!-- ============ TITLE ============ -->
+  <text x="700" y="32" class="center lblb" font-size="22">PPO Architecture — Reward-driven Policy Update</text>
+
+  <!-- ============ LEGEND ============ -->
+  <rect x="40" y="55" width="1320" height="75" rx="6" class="legend"/>
+  <rect x="60" y="73" width="20" height="20" class="frozen"/>
+  <text x="86" y="88" class="left small">Frozen</text>
+  <rect x="160" y="73" width="20" height="20" class="train"/>
+  <text x="186" y="88" class="left small">Trainable (LoRA)</text>
+  <rect x="320" y="73" width="20" height="20" class="data"/>
+  <text x="346" y="88" class="left small">Data</text>
+  <rect x="420" y="73" width="20" height="20" class="reward"/>
+  <text x="446" y="88" class="left small">Reward signal</text>
+  <rect x="560" y="73" width="20" height="20" class="loss"/>
+  <text x="586" y="88" class="left small">PPO Loss</text>
+  <rect x="680" y="73" width="20" height="20" class="inner"/>
+  <text x="706" y="88" class="left small">Inner span (inside &lt;im&gt;)</text>
+  <rect x="900" y="73" width="20" height="20" class="outer"/>
+  <text x="926" y="88" class="left small">Outer span (outside &lt;im&gt;)</text>
+  <text x="60" y="118" class="left small" fill="#666" font-style="italic">Response is split into inner + outer spans by &lt;im&gt; markers; both spans jointly drive RM attribution, producing per-span graded rewards.</text>
+
+  <!-- ============================================================== -->
+  <!-- ============ SECTION 1 : RM TRAINING (simplified) ============ -->
+  <!-- ============================================================== -->
+  <rect x="40" y="150" width="1320" height="220" rx="8" class="section"/>
+  <text x="700" y="177" class="center lblb" font-size="17">① Reward Model Training</text>
+
+  <rect x="80" y="205" width="340" height="140" rx="8" class="data"/>
+  <text x="250" y="230" class="center lblb">Response Samples</text>
+  <text x="250" y="250" class="center small">(prompt, response) pairs</text>
+  <line x1="100" y1="262" x2="400" y2="262" stroke="#9673a6" stroke-width="1"/>
+  <text x="250" y="284" class="center small">good response  →  label = 1</text>
+  <text x="250" y="305" class="center small">bad response   →  label = 0</text>
+  <text x="250" y="330" class="center tiny" fill="#9673a6" font-style="italic">binary quality labels</text>
+
+  <rect x="530" y="205" width="340" height="140" rx="8" class="train"/>
+  <text x="700" y="230" class="center lblb">Reward Model  (RM)</text>
+  <text x="700" y="250" class="center small">binary classifier</text>
+  <line x1="550" y1="262" x2="850" y2="262" stroke="#d79b00" stroke-width="1"/>
+  <text x="700" y="286" class="center small">predicts: response quality ∈ [0, 1]</text>
+  <text x="700" y="310" class="center small">trained via BCE Loss</text>
+  <text x="700" y="332" class="center tiny" fill="#7c5400" font-style="italic">learns what makes a "good" response</text>
+
+  <rect x="980" y="205" width="340" height="140" rx="8" class="frozen"/>
+  <text x="1150" y="230" class="center lblb">Trained RM  ✓</text>
+  <text x="1150" y="250" class="center small">(frozen during PPO)</text>
+  <line x1="1000" y1="262" x2="1300" y2="262" stroke="#6c8ebf" stroke-width="1"/>
+  <text x="1150" y="286" class="center small">scores any new response</text>
+  <text x="1150" y="310" class="center small">→ per-span graded rewards</text>
+  <text x="1150" y="332" class="center tiny" fill="#3a5570" font-style="italic">used to drive PPO updates</text>
+
+  <line x1="420" y1="275" x2="528" y2="275" class="flow" marker-end="url(#arrow)"/>
+  <text x="474" y="265" class="center tiny" font-style="italic">train</text>
+  <line x1="870" y1="275" x2="978" y2="275" class="flow" marker-end="url(#arrow)"/>
+  <text x="924" y="265" class="center tiny" font-style="italic">freeze</text>
+
+  <!-- ============================================================== -->
+  <!-- ============ SECTION 2 : PPO TRAINING LOOP ============ -->
+  <!-- ============================================================== -->
+  <rect x="40" y="400" width="1320" height="920" rx="8" class="section"/>
+  <text x="700" y="427" class="center lblb" font-size="17">② PPO Training Loop</text>
+
+  <!-- Prompt input -->
+  <rect x="80" y="470" width="280" height="130" rx="8" class="data"/>
+  <text x="220" y="496" class="center lblb">Prompt</text>
+  <line x1="100" y1="508" x2="340" y2="508" stroke="#9673a6" stroke-width="1"/>
+  <text x="220" y="533" class="center small">「我35歲女性，月薪6萬，</text>
+  <text x="220" y="553" class="center small">有公司團保，需要再買</text>
+  <text x="220" y="573" class="center small">實支實付嗎？」</text>
+
+  <!-- Policy π main block -->
+  <rect x="430" y="470" width="500" height="360" rx="8" class="llm"/>
+  <text x="680" y="498" class="center lblb" font-size="15">Policy  π   (LLM + LoRA)</text>
+  <line x1="450" y1="510" x2="910" y2="510" stroke="#666" stroke-width="1"/>
+
+  <rect x="460" y="530" width="440" height="180" rx="6" class="frozen"/>
+  <text x="680" y="554" class="center lblb">LLM  (frozen backbone)</text>
+  <rect x="490" y="570" width="380" height="28" rx="4" class="frozen"/>
+  <text x="680" y="589" class="center small">Decoder Layer</text>
+  <rect x="490" y="605" width="380" height="28" rx="4" class="frozen"/>
+  <text x="680" y="624" class="center small">Decoder Layer</text>
+  <text x="680" y="650" class="center small" fill="#666" font-style="italic">. . . (multiple frozen layers)</text>
+  <rect x="490" y="665" width="380" height="28" rx="4" class="frozen"/>
+  <text x="680" y="684" class="center small lblb">lm_head</text>
+
+  <rect x="460" y="730" width="440" height="90" rx="6" class="train"/>
+  <text x="680" y="753" class="center lblb">LoRA  (trainable adapters)</text>
+  <text x="680" y="775" class="center small">low-rank parallel branches</text>
+  <text x="680" y="795" class="center small">applied inside attention projections</text>
+  <text x="680" y="813" class="center tiny" fill="#7c5400" font-style="italic">→ only these weights get updated by PPO</text>
+
+  <!-- LoRA detail callout -->
+  <rect x="970" y="470" width="350" height="360" rx="8" class="lorabox"/>
+  <text x="1145" y="498" class="center lblb" fill="#7c5400">LoRA detail</text>
+  <text x="1145" y="515" class="center small" fill="#7c5400">parallel low-rank adapter</text>
+
+  <ellipse cx="1145" cy="545" rx="70" ry="18" fill="#fff" stroke="#000"/>
+  <text x="1145" y="549" class="center small">x  (hidden_state)</text>
+
+  <rect x="1030" y="585" width="100" height="120" class="frozen"/>
+  <text x="1080" y="635" class="center lblb" font-size="22">W</text>
+  <text x="1080" y="660" class="center small">attention proj</text>
+  <text x="1080" y="680" class="center small">frozen</text>
+
+  <rect x="1180" y="585" width="100" height="45" class="train"/>
+  <text x="1230" y="605" class="center lblb">A</text>
+  <text x="1230" y="622" class="center small">d → r</text>
+
+  <text x="1230" y="650" class="center lblb" fill="#d79b00">r (small)</text>
+
+  <rect x="1180" y="660" width="100" height="45" class="train"/>
+  <text x="1230" y="680" class="center lblb">B</text>
+  <text x="1230" y="697" class="center small">r → d</text>
+
+  <circle cx="1145" cy="740" r="18" fill="#fff" stroke="#000" stroke-width="2"/>
+  <text x="1145" y="747" class="center lblb" font-size="20">+</text>
+
+  <ellipse cx="1145" cy="790" rx="60" ry="18" fill="#fff" stroke="#000"/>
+  <text x="1145" y="794" class="center small">y</text>
+
+  <text x="1145" y="822" class="center small" fill="#7c5400" font-style="italic">y = W·x  +  B·A·x</text>
+
+  <line x1="1110" y1="560" x2="1080" y2="583" class="flow" marker-end="url(#arrow)"/>
+  <line x1="1185" y1="560" x2="1225" y2="583" class="flow" marker-end="url(#arrow)"/>
+  <line x1="1230" y1="630" x2="1230" y2="658" class="flowOr" marker-end="url(#arrow-orange)"/>
+  <line x1="1110" y1="705" x2="1133" y2="725" class="flow" marker-end="url(#arrow)"/>
+  <line x1="1205" y1="705" x2="1160" y2="727" class="flowOr" marker-end="url(#arrow-orange)"/>
+  <line x1="1145" y1="758" x2="1145" y2="772" class="flow" marker-end="url(#arrow)"/>
+
+  <!-- ===== Generated Response (smaller, condensed) ===== -->
+  <rect x="220" y="855" width="960" height="75" rx="8" class="data"/>
+  <text x="700" y="877" class="center lblb">Generated Response  (with &lt;im&gt; structure)</text>
+  <text x="700" y="906" class="center small">
+    <tspan fill="#7a5fa8" font-weight="bold">「&lt;im&gt;她35歲月薪6萬有團保，但沒說細節，需要先問清楚才能評估。&lt;/im&gt;</tspan>
+    <tspan fill="#3a7a9e" font-weight="bold">方便先分享您團保涵蓋哪些項目嗎？」</tspan>
+  </text>
+
+  <!-- ===== Unified Span Box (split into two halves) ===== -->
+  <!-- Header strip -->
+  <rect x="280" y="975" width="840" height="30" rx="8" fill="#fafafa" stroke="#333" stroke-width="2"/>
+  <text x="700" y="996" class="center lblb">Span Splitting  (by &lt;im&gt; markers — both fed jointly to RM)</text>
+
+  <!-- Two halves : INNER on LEFT (purple), OUTER on RIGHT (cyan) -->
+  <rect x="280" y="1005" width="420" height="90" class="inner" stroke-width="2"/>
+  <text x="490" y="1030" class="center lblb">Inner span</text>
+  <text x="490" y="1050" class="center small">"她35歲月薪6萬有團保，</text>
+  <text x="490" y="1068" class="center small">但沒說細節..."</text>
+  <text x="490" y="1086" class="center tiny" fill="#7a5fa8" font-style="italic">reasoning trace inside &lt;im&gt;</text>
+
+  <rect x="700" y="1005" width="420" height="90" class="outer" stroke-width="2"/>
+  <text x="910" y="1030" class="center lblb">Outer span</text>
+  <text x="910" y="1050" class="center small">"方便先分享您團保涵蓋</text>
+  <text x="910" y="1068" class="center small">哪些項目嗎？"</text>
+  <text x="910" y="1086" class="center tiny" fill="#3a7a9e" font-style="italic">visible reply outside &lt;im&gt;</text>
+
+  <!-- Outer thick frame around the unified box -->
+  <rect x="280" y="975" width="840" height="120" rx="8" fill="none" stroke="#333" stroke-width="3"/>
+
+  <!-- ===== Combined RM + Reward block ===== -->
+  <rect x="80" y="1135" width="920" height="170" rx="8" class="frozen" stroke-width="2"/>
+  <text x="540" y="1162" class="center lblb" font-size="15">Trained RM   (RM 推論 + 級距歸因)</text>
+  <line x1="100" y1="1175" x2="980" y2="1175" stroke="#6c8ebf" stroke-width="1"/>
+
+  <text x="540" y="1198" class="center small">RM 一起讀 inner + outer span  →  per-span binary logit</text>
+  <text x="540" y="1218" class="center small">→  tanh( logit / τ )  →  graded reward ∈ [−1, 1]</text>
+
+  <!-- r_inner / r_outer output mini-boxes -->
+  <rect x="180" y="1240" width="280" height="40" rx="6" class="inner"/>
+  <text x="320" y="1265" class="center small lblb">r_inner   ∈ [−1, 1]</text>
+
+  <rect x="620" y="1240" width="280" height="40" rx="6" class="outer"/>
+  <text x="760" y="1265" class="center small lblb">r_outer   ∈ [−1, 1]</text>
+
+  <text x="540" y="1297" class="center tiny" fill="#3a5570" font-style="italic">二分類預測 → 級距之間的歸因程度（每段獨立評分）</text>
+
+  <!-- ===== PPO Loss block (clipped surrogate + KL penalty, per-token) ===== -->
+  <rect x="1040" y="1135" width="280" height="170" rx="8" class="loss"/>
+  <text x="1180" y="1158" class="center lblb">PPO Loss</text>
+  <text x="1180" y="1174" class="center tiny" fill="#7a3030">clipped surrogate + KL penalty</text>
+  <line x1="1060" y1="1183" x2="1300" y2="1183" stroke="#b85450" stroke-width="1"/>
+  <text x="1180" y="1203" class="center mono small">r  =  π_new / π_old</text>
+  <text x="1180" y="1223" class="center mono small">A  =  reward − β · KL(π ‖ π_ref)</text>
+  <text x="1180" y="1252" class="center mono small">L = − min( r·A,  clip(r,1±ε)·A )</text>
+  <text x="1180" y="1277" class="center small lblb">∇  updates LoRA only</text>
+  <text x="1180" y="1295" class="center tiny" fill="#7a3030" font-style="italic">(base LLM stays frozen)</text>
+
+  <!-- ===== Arrows ===== -->
+  <!-- Prompt → Policy π -->
+  <line x1="360" y1="535" x2="428" y2="535" class="flow" marker-end="url(#arrow)"/>
+
+  <!-- Policy π → Response -->
+  <line x1="680" y1="828" x2="680" y2="853" class="flow" marker-end="url(#arrow)"/>
+  <text x="690" y="847" class="left tiny" font-style="italic">generate</text>
+
+  <!-- Response → Unified Span Box (single arrow into header) -->
+  <line x1="700" y1="930" x2="700" y2="972" class="flow" marker-end="url(#arrow)"/>
+  <text x="710" y="954" class="left tiny" font-style="italic">split_by_&lt;im&gt;_tags()</text>
+
+  <!-- Unified Span Box → Combined RM (single arrow from boundary down, both halves merge here) -->
+  <line x1="700" y1="1098" x2="700" y2="1133" class="flow" marker-end="url(#arrow)"/>
+  <text x="710" y="1122" class="left tiny" font-style="italic">jointly fed into RM</text>
+
+  <!-- Combined RM → PPO Loss -->
+  <line x1="1000" y1="1220" x2="1038" y2="1220" class="flowGreen" marker-end="url(#arrow-green)"/>
+  <text x="1006" y="1212" class="left tiny" fill="#3a5a2a" font-style="italic">rewards</text>
+
+  <!-- PPO Loss → Policy (feedback dashed, routed through gap to avoid Response box) -->
+  <line x1="1260" y1="1135" x2="1260" y2="843" class="flowOr" stroke-dasharray="6,4"/>
+  <line x1="1260" y1="843" x2="900" y2="843" class="flowOr" stroke-dasharray="6,4"/>
+  <line x1="900" y1="843" x2="900" y2="832" class="flowOr" stroke-dasharray="6,4" marker-end="url(#arrow-orange)"/>
+  <text x="1268" y="990" class="left tiny" fill="#7c5400" font-style="italic">∇ updates LoRA</text>
+  <text x="1268" y="1003" class="left tiny" fill="#7c5400" font-style="italic">inside Policy π</text>
+  <g class="watermark">
+    <text x="1390" y="1328" text-anchor="end" font-size="18" fill="#888" opacity="0.42" font-weight="500" font-family="Helvetica, Arial, sans-serif">© Edward Chiu · Original Architecture Design</text>
+  </g>
+</svg>

@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 900" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d79b00"/>
+    </marker>
+    <style>
+      .frozen { fill: #dae8fc; stroke: #6c8ebf; stroke-width: 1.5; }
+      .train  { fill: #ffe6cc; stroke: #d79b00; stroke-width: 1.5; }
+      .concat { fill: #fff2cc; stroke: #d6b656; stroke-width: 1.5; }
+      .loss   { fill: #f8cecc; stroke: #b85450; stroke-width: 1.5; }
+      .llm    { fill: #f5f5f5; stroke: #666;    stroke-width: 1.5; }
+      .lorabox{ fill: #fffbe6; stroke: #d79b00; stroke-width: 1.5; stroke-dasharray: 6,4; }
+      .legend { fill: #fafafa; stroke: #666;    stroke-width: 1; }
+      .flow   { stroke: #333;    stroke-width: 2; fill: none; }
+      .lblb   { font-weight: bold; }
+      .small  { font-size: 11px; }
+      .tiny   { font-size: 10px; fill: #666; }
+      .center { text-anchor: middle; }
+      .left   { text-anchor: start; }
+    </style>
+  </defs>
+
+  <!-- ============ TITLE ============ -->
+  <text x="650" y="30" class="center lblb" font-size="20">SFT Architecture — KG-Enhanced LLM with LoRA</text>
+
+  <!-- ============ KG (top-left) ============ -->
+  <rect x="40" y="60" width="240" height="160" rx="8" class="train"/>
+  <text x="160" y="80" class="center lblb">Knowledge Graph</text>
+  <circle cx="95" cy="125" r="15" fill="#fff" stroke="#d79b00" stroke-width="2"/>
+  <circle cx="215" cy="125" r="15" fill="#fff" stroke="#d79b00" stroke-width="2"/>
+  <circle cx="155" cy="185" r="15" fill="#fff" stroke="#d79b00" stroke-width="2"/>
+  <line x1="110" y1="125" x2="200" y2="125" stroke="#d79b00" stroke-width="1.5" marker-end="url(#arrow-orange)"/>
+  <line x1="210" y1="138" x2="167" y2="178" stroke="#d79b00" stroke-width="1.5" marker-end="url(#arrow-orange)"/>
+  <line x1="143" y1="178" x2="100" y2="138" stroke="#d79b00" stroke-width="1.5" marker-end="url(#arrow-orange)"/>
+
+  <!-- ============ PROMPT (top-right) ============ -->
+  <rect x="1010" y="100" width="180" height="60" rx="8" class="frozen"/>
+  <text x="1100" y="125" class="center lblb">Prompt</text>
+  <text x="1100" y="145" class="center small">(text input)</text>
+
+  <!-- ============ LEGEND ============ -->
+  <rect x="320" y="60" width="660" height="125" rx="6" class="legend"/>
+  <text x="650" y="80" class="center lblb">Legend</text>
+  <rect x="340" y="95" width="20" height="20" class="frozen"/>
+  <text x="368" y="110" class="left">Frozen  (LLM backbone, lm_head, encoder)</text>
+  <rect x="650" y="95" width="20" height="20" class="train"/>
+  <text x="678" y="110" class="left">Trainable  (Graph Encoder, Adapter, LoRA)</text>
+  <rect x="340" y="130" width="20" height="20" class="concat"/>
+  <text x="368" y="145" class="left">Merge point (adapter output + text)</text>
+  <rect x="650" y="130" width="20" height="20" class="loss"/>
+  <text x="678" y="145" class="left">Loss</text>
+  <text x="340" y="170" class="left small" fill="#7c5400" font-style="italic">LoRA is embedded inside the LLM at attention projections (low-rank parallel branches).</text>
+
+  <!-- ============ GRAPH ENCODER (GNN) ============ -->
+  <rect x="80" y="260" width="160" height="60" rx="6" class="train"/>
+  <text x="160" y="285" class="center lblb">Graph Encoder</text>
+  <text x="160" y="305" class="center small">GAT (2 layers)</text>
+
+  <!-- ============ EMBEDDING ============ -->
+  <rect x="1020" y="260" width="160" height="60" rx="6" class="frozen"/>
+  <text x="1100" y="285" class="center lblb">Word Embedding</text>
+  <text x="1100" y="305" class="center small">token embedding</text>
+
+  <!-- ============ ADAPTER ============ -->
+  <rect x="60" y="370" width="200" height="80" rx="6" class="train"/>
+  <text x="160" y="398" class="center lblb">Adapter  (適配器)</text>
+  <text x="160" y="420" class="center small">graph → LLM space</text>
+  <text x="160" y="438" class="center small">alignment</text>
+
+  <!-- ============ CONCAT ============ -->
+  <rect x="400" y="400" width="580" height="60" rx="6" class="concat"/>
+  <text x="690" y="425" class="center lblb">concat( adapter_output ,  text_embeds )</text>
+  <text x="690" y="444" class="center small">unified input sequence</text>
+
+  <!-- ============ LLM BACKBONE BOX ============ -->
+  <rect x="400" y="500" width="580" height="380" rx="8" class="llm"/>
+  <text x="690" y="525" class="center lblb">LLM  (frozen backbone)</text>
+
+  <!-- Generic decoder layers -->
+  <rect x="430" y="545" width="520" height="50" rx="6" class="frozen"/>
+  <text x="690" y="575" class="center">Decoder Layer</text>
+
+  <rect x="430" y="610" width="520" height="50" rx="6" class="frozen"/>
+  <text x="690" y="640" class="center">Decoder Layer</text>
+
+  <text x="690" y="685" class="center small" fill="#666" font-style="italic">. . .  (LoRA adapters inside each layer's attention)</text>
+
+  <rect x="430" y="705" width="520" height="50" rx="6" class="frozen"/>
+  <text x="690" y="735" class="center">Decoder Layer</text>
+
+  <rect x="430" y="775" width="520" height="40" rx="6" class="frozen"/>
+  <text x="690" y="800" class="center lblb">lm_head  (frozen)</text>
+
+  <rect x="430" y="830" width="520" height="40" rx="6" class="loss"/>
+  <text x="690" y="855" class="center lblb">CE Loss</text>
+
+  <!-- ============ LoRA DETAIL CALLOUT (right side) ============ -->
+  <rect x="1020" y="500" width="260" height="370" rx="8" class="lorabox"/>
+  <text x="1150" y="525" class="center lblb" fill="#7c5400">LoRA detail</text>
+  <text x="1150" y="543" class="center small" fill="#7c5400">low-rank adapter at attention</text>
+
+  <!-- x input -->
+  <ellipse cx="1150" cy="570" rx="65" ry="18" fill="#fff" stroke="#000"/>
+  <text x="1150" y="574" class="center small">x  (hidden_state)</text>
+
+  <!-- W matrix (square) -->
+  <rect x="1050" y="610" width="100" height="110" class="frozen"/>
+  <text x="1100" y="660" class="center lblb" font-size="22">W</text>
+  <text x="1100" y="685" class="center small">attention proj</text>
+  <text x="1100" y="705" class="center small">frozen</text>
+
+  <!-- A (down-proj) -->
+  <polygon points="1185,605 1265,605 1225,680" class="train"/>
+  <text x="1225" y="635" class="center lblb">A</text>
+  <text x="1225" y="655" class="center small">d → r</text>
+
+  <!-- r label -->
+  <text x="1225" y="700" class="center lblb" fill="#d79b00">r (small)</text>
+
+  <!-- B (up-proj) -->
+  <polygon points="1225,710 1265,790 1185,790" class="train"/>
+  <text x="1225" y="750" class="center lblb">B</text>
+  <text x="1225" y="770" class="center small">r → d</text>
+
+  <!-- sum circle -->
+  <circle cx="1150" cy="820" r="18" fill="#fff" stroke="#000" stroke-width="2"/>
+  <text x="1150" y="827" class="center lblb" font-size="20">+</text>
+
+  <!-- formula -->
+  <text x="1150" y="860" class="center small" fill="#7c5400" font-style="italic">y = W·x + B·A·x</text>
+
+  <!-- LoRA internal arrows -->
+  <line x1="1115" y1="586" x2="1090" y2="608" class="flow" marker-end="url(#arrow)"/>
+  <line x1="1185" y1="586" x2="1220" y2="603" class="flow" marker-end="url(#arrow)"/>
+  <line x1="1225" y1="680" x2="1225" y2="708" stroke="#d79b00" stroke-width="2" fill="none" marker-end="url(#arrow-orange)"/>
+  <line x1="1115" y1="720" x2="1138" y2="804" class="flow" marker-end="url(#arrow)"/>
+  <line x1="1205" y1="790" x2="1165" y2="810" stroke="#d79b00" stroke-width="2" fill="none" marker-end="url(#arrow-orange)"/>
+
+  <!-- LoRA pointer back to LLM (generic) -->
+  <line x1="1020" y1="690" x2="950" y2="690" stroke="#d79b00" stroke-width="2" stroke-dasharray="6,4" fill="none" marker-end="url(#arrow-orange)"/>
+  <text x="985" y="680" class="center tiny" fill="#7c5400" font-style="italic">applied inside attention</text>
+
+  <!-- ============ MAIN DATA FLOW ARROWS ============ -->
+  <!-- KG → Graph Encoder -->
+  <line x1="160" y1="220" x2="160" y2="258" class="flow" marker-end="url(#arrow)"/>
+  <!-- Graph Encoder → Graph Feature -->
+  <line x1="160" y1="320" x2="160" y2="368" class="flow" marker-end="url(#arrow)"/>
+  <!-- Graph Feature → Concat -->
+  <line x1="260" y1="410" x2="398" y2="425" class="flow" marker-end="url(#arrow)"/>
+  <!-- Prompt → Embedding -->
+  <line x1="1100" y1="160" x2="1100" y2="258" class="flow" marker-end="url(#arrow)"/>
+  <!-- Embedding → Concat -->
+  <line x1="1020" y1="290" x2="1000" y2="290" class="flow"/>
+  <line x1="1000" y1="290" x2="1000" y2="425" class="flow"/>
+  <line x1="1000" y1="425" x2="982" y2="425" class="flow" marker-end="url(#arrow)"/>
+  <!-- Concat → LLM -->
+  <line x1="690" y1="460" x2="690" y2="543" class="flow" marker-end="url(#arrow)"/>
+  <!-- LLM internal -->
+  <line x1="690" y1="595" x2="690" y2="608" class="flow" marker-end="url(#arrow)"/>
+  <line x1="690" y1="755" x2="690" y2="773" class="flow" marker-end="url(#arrow)"/>
+  <line x1="690" y1="815" x2="690" y2="828" class="flow" marker-end="url(#arrow)"/>
+  <g class="watermark">
+    <text x="1290" y="890" text-anchor="end" font-size="16" fill="#888" opacity="0.42" font-weight="500">© Edward Chiu · Original Architecture Design</text>
+  </g>
+</svg>

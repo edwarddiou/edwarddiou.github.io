@@ -1,0 +1,311 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <marker id="arrow-big" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#444"/>
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d79b00"/>
+    </marker>
+    <marker id="arrow-kg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9673a6"/>
+    </marker>
+    <style>
+      .frozen   { fill: #dae8fc; stroke: #6c8ebf; stroke-width: 1.5; }
+      .train    { fill: #ffe6cc; stroke: #d79b00; stroke-width: 1.5; }
+      .data     { fill: #e1d5e7; stroke: #9673a6; stroke-width: 1.5; }
+      .chosen   { fill: #d5e8d4; stroke: #82b366; stroke-width: 1.5; }
+      .reject   { fill: #f8cecc; stroke: #b85450; stroke-width: 1.5; }
+      .loss     { fill: #f8cecc; stroke: #b85450; stroke-width: 1.5; }
+      .stage    { fill: #ffffff; stroke: #333; stroke-width: 1.5; }
+      .stage-h  { fill: #f0f4fb; stroke: #6c8ebf; stroke-width: 1.5; }
+      .legend   { fill: #fafafa; stroke: #666; stroke-width: 1; }
+      .goalbox  { fill: #fff7e0; stroke: #d6b656; stroke-width: 1.2; }
+      .outbox   { fill: #eef9ee; stroke: #82b366; stroke-width: 1.2; }
+      .lblb     { font-weight: bold; }
+      .small    { font-size: 11px; }
+      .tiny     { font-size: 10px; fill: #555; }
+      .center   { text-anchor: middle; }
+      .left     { text-anchor: start; }
+      .stage-title { font-size: 18px; font-weight: bold; }
+      .stage-sub   { font-size: 11.5px; fill: #555; }
+      .tag      { font-size: 10.5px; font-weight: bold; letter-spacing: 0.5px; }
+    </style>
+  </defs>
+
+  <!-- ============ TITLE ============ -->
+  <text x="800" y="34" class="center lblb" font-size="22">Training Pipeline Overview — CLM → SFT → DPO / PPO</text>
+  <text x="800" y="56" class="center small" fill="#666">Base = Qwen3-0.6B · LoRA-only updates · Single RTX 3090</text>
+
+  <!-- ============ LEGEND ============ -->
+  <rect x="40" y="78" width="1520" height="58" rx="6" class="legend"/>
+  <text x="60" y="100" class="left lblb">Legend</text>
+  <rect x="140" y="92" width="18" height="18" class="frozen"/>
+  <text x="164" y="106" class="left small">Frozen base</text>
+  <rect x="260" y="92" width="18" height="18" class="train"/>
+  <text x="284" y="106" class="left small">Trainable (LoRA)</text>
+  <rect x="410" y="92" width="18" height="18" class="data"/>
+  <text x="434" y="106" class="left small">Data</text>
+  <rect x="490" y="92" width="18" height="18" class="goalbox"/>
+  <text x="514" y="106" class="left small">階段目標 (該技術實際在做什麼)</text>
+  <rect x="760" y="92" width="18" height="18" class="outbox"/>
+  <text x="784" y="106" class="left small">階段目標 (技術帶來的具體偏移)</text>
+  <rect x="1040" y="92" width="18" height="18" class="loss"/>
+  <text x="1064" y="106" class="left small">Loss / Objective</text>
+  <text x="1180" y="106" class="left small" fill="#7c5400" font-style="italic">LoRA only; base LLM frozen end-to-end.</text>
+
+  <!-- ============ BASE MODEL (left) ============ -->
+  <rect x="40" y="170" width="170" height="120" rx="10" class="frozen"/>
+  <text x="125" y="200" class="center lblb">Base LLM</text>
+  <text x="125" y="222" class="center small">Qwen3-0.6B</text>
+  <text x="125" y="244" class="center small" fill="#666">通用能力</text>
+  <text x="125" y="262" class="center small" fill="#666">無領域知識</text>
+  <text x="125" y="282" class="center tiny" fill="#666" font-style="italic">frozen backbone</text>
+
+  <!-- ============ STAGE 1: CLM ============ -->
+  <g>
+    <rect x="240" y="160" width="320" height="44" rx="8" class="stage-h"/>
+    <text x="400" y="180" class="center stage-title" fill="#1d4e89">① CLM</text>
+    <text x="400" y="197" class="center stage-sub">Continued Language Modeling</text>
+
+    <rect x="240" y="204" width="320" height="558" rx="8" class="stage"/>
+
+    <!-- Goal (top) -->
+    <rect x="256" y="220" width="288" height="110" rx="6" class="goalbox"/>
+    <text x="266" y="238" class="left tag" fill="#7c5400">階段目標</text>
+    <text x="266" y="258" class="left small">在保險領域文本上繼續做</text>
+    <text x="266" y="274" class="left small">next-token prediction，</text>
+    <text x="266" y="290" class="left small">讓模型「預測下一個字」的能力</text>
+    <text x="266" y="306" class="left small">把保險的詞彙與條款句型</text>
+    <text x="266" y="322" class="left small">納入 token 分布。</text>
+
+    <!-- Data -->
+    <rect x="256" y="344" width="288" height="64" rx="6" class="data"/>
+    <text x="266" y="362" class="left tag" fill="#5e3a7e">資料</text>
+    <text x="266" y="382" class="left small">條款原文、保險產業文本</text>
+    <text x="266" y="398" class="left tiny">unlabeled domain corpus</text>
+
+    <!-- Method -->
+    <rect x="256" y="422" width="288" height="64" rx="6" class="train"/>
+    <text x="266" y="440" class="left tag" fill="#7c5400">訓練方法</text>
+    <text x="266" y="460" class="left small">Next-token prediction</text>
+    <text x="266" y="476" class="left tiny">self-supervised · domain warm-up</text>
+
+    <!-- Trainable -->
+    <rect x="256" y="500" width="288" height="50" rx="6" class="train"/>
+    <text x="266" y="518" class="left tag" fill="#7c5400">可訓練參數</text>
+    <text x="266" y="538" class="left small">LoRA only (base frozen)</text>
+
+    <!-- Loss -->
+    <rect x="256" y="564" width="288" height="44" rx="6" class="loss"/>
+    <text x="266" y="582" class="left tag" fill="#7a3b3b">目標函數</text>
+    <text x="266" y="600" class="left small">CE Loss (token-level)</text>
+
+    <!-- Goal-after (bottom) -->
+    <rect x="256" y="622" width="288" height="126" rx="6" class="outbox"/>
+    <text x="266" y="640" class="left tag" fill="#3d6b3a">階段目標</text>
+    <text x="266" y="660" class="left small">Token 分布上的偏移：</text>
+    <text x="266" y="676" class="left small">• 保險術語出現的機率提升</text>
+    <text x="266" y="692" class="left small">• 條款典型句型較不容易生成亂掉</text>
+    <text x="266" y="708" class="left small">• 領域語料的 perplexity 下降</text>
+    <text x="266" y="724" class="left small">• 為 SFT 提供詞彙基底</text>
+  </g>
+
+  <!-- ============ STAGE 2: SFT ============ -->
+  <g>
+    <rect x="600" y="160" width="320" height="44" rx="8" class="stage-h"/>
+    <text x="760" y="180" class="center stage-title" fill="#1d4e89">② SFT</text>
+    <text x="760" y="197" class="center stage-sub">Supervised Fine-Tuning</text>
+
+    <rect x="600" y="204" width="320" height="558" rx="8" class="stage"/>
+
+    <rect x="616" y="220" width="288" height="110" rx="6" class="goalbox"/>
+    <text x="626" y="238" class="left tag" fill="#7c5400">階段目標</text>
+    <text x="626" y="258" class="left small">用（問題 → 條款相關回答）pair</text>
+    <text x="626" y="274" class="left small">做監督微調，透過 CE loss</text>
+    <text x="626" y="290" class="left small">把輸出方向<tspan font-weight="bold">針對條款做對齊</tspan> ——</text>
+    <text x="626" y="306" class="left small">讓模型的回答擬合到</text>
+    <text x="626" y="322" class="left small">「依條款內容作答」的分布。</text>
+
+    <rect x="616" y="344" width="288" height="64" rx="6" class="data"/>
+    <text x="626" y="362" class="left tag" fill="#5e3a7e">資料</text>
+    <text x="626" y="382" class="left small">(instruction → answer) pair</text>
+    <text x="626" y="398" class="left tiny">條款相關問答對</text>
+
+    <rect x="616" y="422" width="288" height="64" rx="6" class="train"/>
+    <text x="626" y="440" class="left tag" fill="#7c5400">訓練方法</text>
+    <text x="626" y="460" class="left small">Instruction SFT</text>
+    <text x="626" y="476" class="left tiny">監督微調 · CE loss on answer tokens</text>
+
+    <rect x="616" y="500" width="288" height="50" rx="6" class="train"/>
+    <text x="626" y="518" class="left tag" fill="#7c5400">可訓練參數</text>
+    <text x="626" y="538" class="left small">LoRA only (base frozen)</text>
+
+    <rect x="616" y="564" width="288" height="44" rx="6" class="loss"/>
+    <text x="626" y="582" class="left tag" fill="#7a3b3b">目標函數</text>
+    <text x="626" y="600" class="left small">CE Loss (on answer tokens)</text>
+
+    <rect x="616" y="622" width="288" height="126" rx="6" class="outbox"/>
+    <text x="626" y="640" class="left tag" fill="#3d6b3a">階段目標</text>
+    <text x="626" y="660" class="left small">擬合到條款的回答分布：</text>
+    <text x="626" y="676" class="left small">• 回答更傾向指向條款內容</text>
+    <text x="626" y="692" class="left small">• 條款定位收斂</text>
+    <text x="626" y="708" class="left small">• &lt;im&gt; 內 / 外 雙通道初步成形</text>
+  </g>
+
+  <!-- ============ STAGE 3: DPO ============ -->
+  <g>
+    <rect x="960" y="160" width="320" height="44" rx="8" class="stage-h"/>
+    <text x="1120" y="180" class="center stage-title" fill="#1d4e89">③ DPO</text>
+    <text x="1120" y="197" class="center stage-sub">Direct Preference Optimization</text>
+
+    <rect x="960" y="204" width="320" height="558" rx="8" class="stage"/>
+
+    <rect x="976" y="220" width="288" height="110" rx="6" class="goalbox"/>
+    <text x="986" y="238" class="left tag" fill="#7c5400">階段目標</text>
+    <text x="986" y="258" class="left small">在 SFT 權重上做偏好優化 ——</text>
+    <text x="986" y="274" class="left small">用 LLM 依原內容快速重寫產 chosen，</text>
+    <text x="986" y="290" class="left small">SFT 自身輸出當 rejected，</text>
+    <text x="986" y="306" class="left small">透過 DPO/IPO loss 把輸出</text>
+    <text x="986" y="322" class="left small">往 chosen 的風格方向推。</text>
+
+    <rect x="976" y="344" width="288" height="64" rx="6" class="data"/>
+    <text x="986" y="362" class="left tag" fill="#5e3a7e">資料 (chosen / rejected)</text>
+    <text x="986" y="382" class="left small">rejected = SFT 模型輸出</text>
+    <text x="986" y="398" class="left small" fill="#3d6b3a">chosen = LLM 依原內容快速重寫</text>
+
+    <rect x="976" y="422" width="288" height="64" rx="6" class="train"/>
+    <text x="986" y="440" class="left tag" fill="#7c5400">訓練方法</text>
+    <text x="986" y="460" class="left small">Preference learning</text>
+    <text x="986" y="476" class="left tiny">DPO / IPO loss · no reward model</text>
+
+    <rect x="976" y="500" width="288" height="50" rx="6" class="train"/>
+    <text x="986" y="518" class="left tag" fill="#7c5400">可訓練參數</text>
+    <text x="986" y="538" class="left small">LoRA (續訓自 SFT 權重)</text>
+
+    <rect x="976" y="564" width="288" height="44" rx="6" class="loss"/>
+    <text x="986" y="582" class="left tag" fill="#7a3b3b">目標函數</text>
+    <text x="986" y="600" class="left small">log-sigmoid (DPO) / squared (IPO)</text>
+
+    <rect x="976" y="622" width="288" height="126" rx="6" class="outbox"/>
+    <text x="986" y="640" class="left tag" fill="#3d6b3a">階段目標</text>
+    <text x="986" y="660" class="left small">風格 / 表達層的偏移：</text>
+    <text x="986" y="676" class="left small">• 輸出較靠近 chosen 的語感</text>
+    <text x="986" y="692" class="left small">• rejected 樣態的 token 機率被壓低</text>
+    <text x="986" y="708" class="left small">• 教科書腔被緩和，開始模擬人類口吻</text>
+  </g>
+
+  <!-- ============ STAGE 4: PPO ============ -->
+  <g>
+    <rect x="1320" y="160" width="240" height="44" rx="8" class="stage-h"/>
+    <text x="1440" y="180" class="center stage-title" fill="#1d4e89">④ PPO</text>
+    <text x="1440" y="197" class="center stage-sub">Proximal Policy Optimization</text>
+
+    <rect x="1320" y="204" width="240" height="558" rx="8" class="stage"/>
+
+    <rect x="1336" y="220" width="208" height="110" rx="6" class="goalbox"/>
+    <text x="1346" y="238" class="left tag" fill="#7c5400">階段目標</text>
+    <text x="1346" y="258" class="left small">RM 對輸出的不同 segment</text>
+    <text x="1346" y="274" class="left small">給不同的 span 分數 ——</text>
+    <text x="1346" y="290" class="left small">透過分段 reward，模型</text>
+    <text x="1346" y="306" class="left small">能在段落粒度上做</text>
+    <text x="1346" y="322" class="left small">更動態的學習。</text>
+
+    <rect x="1336" y="344" width="208" height="64" rx="6" class="data"/>
+    <text x="1346" y="362" class="left tag" fill="#5e3a7e">資料</text>
+    <text x="1346" y="382" class="left small">Prompt + Reward Model</text>
+    <text x="1346" y="398" class="left tiny">segment-level span scores</text>
+
+    <rect x="1336" y="422" width="208" height="64" rx="6" class="train"/>
+    <text x="1346" y="440" class="left tag" fill="#7c5400">訓練方法</text>
+    <text x="1346" y="460" class="left small">Online RL · segment reward</text>
+    <text x="1346" y="476" class="left tiny">policy / value / ref / RM(凍結)</text>
+
+    <rect x="1336" y="500" width="208" height="50" rx="6" class="train"/>
+    <text x="1346" y="518" class="left tag" fill="#7c5400">可訓練參數</text>
+    <text x="1346" y="538" class="left small">LoRA + value head（RM 凍結）</text>
+
+    <rect x="1336" y="564" width="208" height="44" rx="6" class="loss"/>
+    <text x="1346" y="582" class="left tag" fill="#7a3b3b">目標函數</text>
+    <text x="1346" y="600" class="left small">PPO clip + KL penalty</text>
+
+    <rect x="1336" y="622" width="208" height="126" rx="6" class="outbox"/>
+    <text x="1346" y="640" class="left tag" fill="#3d6b3a">階段目標</text>
+    <text x="1346" y="660" class="left small">分段對齊的偏移：</text>
+    <text x="1346" y="676" class="left small">• 嚴謹段往條款引用推</text>
+    <text x="1346" y="692" class="left small">• 白話段往口語表達推</text>
+    <text x="1346" y="708" class="left small">• 段落間切換比 DPO 細</text>
+    <text x="1346" y="740" class="left tiny" fill="#3d6b3a">→ 接近 demo 可上線型態</text>
+  </g>
+
+  <!-- ============ ARROWS between stages ============ -->
+  <line x1="212" y1="230" x2="236" y2="230" stroke="#444" stroke-width="1.8" marker-end="url(#arrow-big)"/>
+  <line x1="562" y1="480" x2="596" y2="480" stroke="#444" stroke-width="1.8" marker-end="url(#arrow-big)"/>
+  <line x1="922" y1="480" x2="956" y2="480" stroke="#444" stroke-width="1.8" marker-end="url(#arrow-big)"/>
+  <line x1="1282" y1="480" x2="1316" y2="480" stroke="#444" stroke-width="1.8" marker-end="url(#arrow-big)"/>
+
+  <!-- ============ KG SCHEMATIC PANEL (bottom) ============ -->
+  <g>
+    <!-- Panel background -->
+    <rect x="40" y="775" width="1520" height="100" rx="8"
+          fill="#f9f3fc" stroke="#9673a6" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+    <!-- Header -->
+    <text x="60" y="794" class="left lblb" fill="#5e3a7e" font-size="14">Knowledge Graph (保險條款拓撲)</text>
+    <text x="300" y="794" class="left small" fill="#7a5b8a" font-style="italic">— 訓練時作為條款結構性訊號注入整條 pipeline，所有階段都建立在這層結構上</text>
+
+    <!-- Column divider -->
+    <line x1="560" y1="800" x2="560" y2="870" stroke="#c9b5d4" stroke-width="1" stroke-dasharray="2,3"/>
+
+    <!-- ===== Col A: Mini KG graph ===== -->
+    <text x="60" y="812" class="left tag" fill="#5e3a7e">結構示意</text>
+
+    <!-- L0 root: 商品 -->
+    <rect x="125" y="818" width="72" height="16" rx="3" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1"/>
+    <text x="161" y="830" class="center" font-size="10">商品 HSV</text>
+
+    <!-- L1: 主約 / 附約 -->
+    <rect x="65" y="843" width="55" height="14" rx="3" fill="#e1d5e7" stroke="#9673a6" stroke-width="1"/>
+    <text x="92" y="853" class="center" font-size="9.5">主約</text>
+    <rect x="200" y="843" width="55" height="14" rx="3" fill="#e1d5e7" stroke="#9673a6" stroke-width="1"/>
+    <text x="228" y="853" class="center" font-size="9.5">附約</text>
+
+    <!-- L2: 條款 / 條件 / 限額 -->
+    <rect x="65" y="862" width="55" height="14" rx="3" fill="#fff2cc" stroke="#d6b656" stroke-width="1"/>
+    <text x="92" y="872" class="center" font-size="9.5">條款</text>
+    <rect x="130" y="862" width="48" height="14" rx="3" fill="#ffe6cc" stroke="#d79b00" stroke-width="1"/>
+    <text x="154" y="872" class="center" font-size="9.5">條件</text>
+    <rect x="188" y="862" width="48" height="14" rx="3" fill="#ffe6cc" stroke="#d79b00" stroke-width="1"/>
+    <text x="212" y="872" class="center" font-size="9.5">限額</text>
+
+    <!-- KG edges -->
+    <line x1="146" y1="834" x2="105" y2="843" stroke="#9673a6" stroke-width="1"/>
+    <line x1="176" y1="834" x2="215" y2="843" stroke="#9673a6" stroke-width="1"/>
+    <line x1="92" y1="857" x2="92" y2="862" stroke="#9673a6" stroke-width="1"/>
+    <line x1="120" y1="869" x2="130" y2="869" stroke="#9673a6" stroke-width="1"/>
+    <line x1="178" y1="869" x2="188" y2="869" stroke="#9673a6" stroke-width="1"/>
+
+    <!-- Edge type legend -->
+    <text x="278" y="828" class="left tiny" fill="#5e3a7e" font-weight="bold">typed edges:</text>
+    <text x="278" y="844" class="left tiny" fill="#444">從屬 · 含 · 條件 · 限額</text>
+    <text x="278" y="858" class="left tiny" fill="#7a5b8a" font-style="italic">每商品 ~50–200 nodes</text>
+
+    <!-- ===== Col B: pipeline-wide KG injection + why KG ===== -->
+    <text x="580" y="812" class="left tag" fill="#1d4e89">→ 訓練時注入</text>
+    <text x="580" y="830" class="left small" fill="#444">KG 結構訊號作為訓練訊號的一部分，</text>
+    <text x="580" y="846" class="left small" fill="#444">讓<tspan font-weight="bold">「條款—條件—限額」</tspan>這類拓撲</text>
+    <text x="580" y="862" class="left small" fill="#444">關係跟條款文字一起進入訓練流程。</text>
+
+    <text x="1080" y="812" class="left tag" fill="#7a3b3b">為何 KG（不用 vector）</text>
+    <text x="1080" y="830" class="left small" fill="#444">cosine 距離只比相似度，</text>
+    <text x="1080" y="846" class="left small" fill="#444">表達不出條款的<tspan font-weight="bold">從屬／條件結構</tspan>。</text>
+    <text x="1080" y="862" class="left small" fill="#444">KG 保留結構訊號，條款定位更穩。</text>
+  </g>
+
+  <!-- Watermark -->
+  <g>
+    <text x="1580" y="888" text-anchor="end" font-size="14" fill="#888" opacity="0.45" font-weight="500">© Edward Chiu · Original Architecture Design</text>
+  </g>
+</svg>

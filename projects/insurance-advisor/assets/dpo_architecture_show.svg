@@ -1,0 +1,234 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1280" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d79b00"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#82b366"/>
+    </marker>
+    <style>
+      .frozen   { fill: #dae8fc; stroke: #6c8ebf; stroke-width: 1.5; }
+      .train    { fill: #ffe6cc; stroke: #d79b00; stroke-width: 1.5; }
+      .data     { fill: #e1d5e7; stroke: #9673a6; stroke-width: 1.5; }
+      .reject   { fill: #f8cecc; stroke: #b85450; stroke-width: 1.5; }
+      .chosen   { fill: #d5e8d4; stroke: #82b366; stroke-width: 1.5; }
+      .merge    { fill: #fff2cc; stroke: #d6b656; stroke-width: 1.5; }
+      .loss     { fill: #f8cecc; stroke: #b85450; stroke-width: 2; }
+      .section  { fill: #fafafa; stroke: #666;    stroke-width: 1; stroke-dasharray: 8,4; }
+      .legend   { fill: #fafafa; stroke: #666;    stroke-width: 1; }
+      .flow     { stroke: #333;    stroke-width: 2; fill: none; }
+      .flowRed  { stroke: #b85450; stroke-width: 2; fill: none; }
+      .flowGreen{ stroke: #82b366; stroke-width: 2; fill: none; }
+      .lblb     { font-weight: bold; }
+      .small    { font-size: 11px; }
+      .tiny     { font-size: 10px; fill: #666; }
+      .center   { text-anchor: middle; }
+      .left     { text-anchor: start; }
+      .mono     { font-family: "Courier New", monospace; font-size: 11px; }
+    </style>
+  </defs>
+
+  <!-- ============ TITLE ============ -->
+  <text x="750" y="32" class="center lblb" font-size="22">DPO Architecture — Data Pipeline + IPO Training</text>
+
+  <!-- ============ LEGEND ============ -->
+  <rect x="40" y="55" width="1420" height="70" rx="6" class="legend"/>
+  <text x="750" y="74" class="center lblb">Legend</text>
+  <rect x="60" y="88" width="20" height="20" class="frozen"/>
+  <text x="86" y="103" class="left small">Frozen</text>
+  <rect x="160" y="88" width="20" height="20" class="train"/>
+  <text x="186" y="103" class="left small">Trainable (LoRA)</text>
+  <rect x="320" y="88" width="20" height="20" class="data"/>
+  <text x="346" y="103" class="left small">Data record</text>
+  <rect x="450" y="88" width="20" height="20" class="reject"/>
+  <text x="476" y="103" class="left small">rejected (SFT output)</text>
+  <rect x="640" y="88" width="20" height="20" class="chosen"/>
+  <text x="666" y="103" class="left small">chosen (LLM rewrite, KG-faithful)</text>
+  <rect x="900" y="88" width="20" height="20" class="merge"/>
+  <text x="926" y="103" class="left small">Merge / DPO pair</text>
+  <rect x="1080" y="88" width="20" height="20" class="loss"/>
+  <text x="1106" y="103" class="left small">Loss</text>
+  <text x="60" y="120" class="left tiny" fill="#666" font-style="italic">Key design: rejected = real SFT failures (not GT); chosen = LLM Rewriter reads KG and minimally edits rejected → avoids DPO length-shortcut (EXP-053)</text>
+
+  <!-- ============================================================== -->
+  <!-- ============ SECTION 1: DATA GENERATION PIPELINE ============ -->
+  <!-- ============================================================== -->
+  <rect x="40" y="145" width="1420" height="555" rx="8" class="section"/>
+  <text x="750" y="170" class="center lblb" font-size="17">① Data Generation Pipeline</text>
+
+  <!-- Source JSONL : x=80-360, y=200-360, center y=280 -->
+  <rect x="80" y="200" width="280" height="160" rx="8" class="data"/>
+  <text x="220" y="225" class="center lblb">Source JSONL</text>
+  <text x="220" y="245" class="center small">(from SFT dataset)</text>
+  <line x1="100" y1="258" x2="340" y2="258" stroke="#9673a6" stroke-width="1"/>
+  <text x="100" y="278" class="left mono">{</text>
+  <text x="115" y="298" class="left mono">"question": Q,</text>
+  <text x="115" y="316" class="left mono">"memory_graph": KG,</text>
+  <text x="115" y="334" class="left mono">"zh_response": gt</text>
+  <text x="115" y="345" class="left tiny" fill="#9673a6" font-style="italic">(NOT used as chosen)</text>
+  <text x="100" y="358" class="left mono">}</text>
+
+  <!-- SFT Model : x=480-760, y=200-360, center y=280 -->
+  <rect x="480" y="200" width="280" height="160" rx="8" class="frozen"/>
+  <text x="620" y="225" class="center lblb">SFT Model</text>
+  <text x="620" y="245" class="center small">frozen, used as generator</text>
+  <line x1="500" y1="258" x2="740" y2="258" stroke="#6c8ebf" stroke-width="1"/>
+  <text x="620" y="285" class="center small">forward(Q, KG)</text>
+  <text x="620" y="305" class="center small">→  generate response</text>
+  <text x="620" y="335" class="center small" fill="#b85450" font-style="italic">真實展示 SFT 的缺陷</text>
+  <text x="620" y="352" class="center small" fill="#b85450" font-style="italic">(語意偏移、KG 失準等)</text>
+
+  <!-- rejected : x=880-1120, y=235-325, center y=280 -->
+  <rect x="880" y="235" width="240" height="90" rx="8" class="reject"/>
+  <text x="1000" y="262" class="center lblb">rejected</text>
+  <text x="1000" y="282" class="center small">SFT raw output text</text>
+  <text x="1000" y="302" class="center small">(has flaws)</text>
+  <text x="1000" y="319" class="center tiny" fill="#7a3030" font-style="italic">DPO_STRIP_IM_REJECTED=1</text>
+
+  <!-- bundle : x=280-600, y=470-570, center y=520 -->
+  <rect x="280" y="470" width="320" height="100" rx="8" class="merge"/>
+  <text x="440" y="495" class="center lblb">bundle:  (Q, KG, rejected)</text>
+  <line x1="300" y1="508" x2="580" y2="508" stroke="#d6b656" stroke-width="1"/>
+  <text x="440" y="530" class="center small">→ feed to LLM Rewriter as prompt</text>
+  <text x="440" y="550" class="center tiny" fill="#7c5400" font-style="italic">prompt: "請依 KG 改寫此回答，使其符合 KG 事實"</text>
+
+  <!-- LLM Rewriter : x=720-1060, y=430-610, center y=520 -->
+  <rect x="720" y="430" width="340" height="180" rx="8" class="train"/>
+  <text x="890" y="455" class="center lblb">LLM Rewriter</text>
+  <text x="890" y="475" class="center small">Gemma-3:27b  /  DeepSeek API</text>
+  <line x1="740" y1="488" x2="1040" y2="488" stroke="#d79b00" stroke-width="1"/>
+  <text x="890" y="510" class="center small">Read KG → minimal edit on</text>
+  <text x="890" y="528" class="center small">SFT's rejected text</text>
+  <text x="890" y="558" class="center small" fill="#7c5400">‣ 保留語氣與長度</text>
+  <text x="890" y="576" class="center small" fill="#7c5400">‣ 修正 KG 不一致內容</text>
+  <text x="890" y="594" class="center small" fill="#7c5400">‣ 避開 length-shortcut bias</text>
+
+  <!-- chosen : x=1180-1420, y=470-570, center y=520 -->
+  <rect x="1180" y="470" width="240" height="100" rx="8" class="chosen"/>
+  <text x="1300" y="498" class="center lblb">chosen</text>
+  <text x="1300" y="518" class="center small">KG-faithful rewrite</text>
+  <text x="1300" y="538" class="center small">of SFT rejected</text>
+  <text x="1300" y="558" class="center tiny" fill="#3a5a2a" font-style="italic">minimal edit, same length</text>
+
+  <!-- DPO Pair Dataset : x=380-1120, y=645-685 -->
+  <rect x="380" y="645" width="740" height="40" rx="8" class="merge"/>
+  <text x="750" y="671" class="center lblb">DPO Pair Dataset  =  { ( question, KG, chosen, rejected ) }   ×  N pairs</text>
+
+  <!-- ===== Arrows (orthogonal routing, labels above lines with 15+px clearance) ===== -->
+  <!-- 1. Source → SFT Model : horizontal at y=280 -->
+  <line x1="360" y1="280" x2="478" y2="280" class="flow" marker-end="url(#arrow)"/>
+  <text x="419" y="266" class="center tiny">Q, KG</text>
+
+  <!-- 2. SFT Model → rejected : horizontal at y=280 -->
+  <line x1="760" y1="280" x2="878" y2="280" class="flowRed" marker-end="url(#arrow-red)"/>
+  <text x="819" y="266" class="center tiny" fill="#b85450">generate</text>
+
+  <!-- 3. Source → bundle (Q, KG branch) : vertical at x=220, horizontal at y=520 -->
+  <line x1="220" y1="360" x2="220" y2="520" class="flow"/>
+  <line x1="220" y1="520" x2="278" y2="520" class="flow" marker-end="url(#arrow)"/>
+  <text x="238" y="440" class="left tiny">Q, KG</text>
+
+  <!-- 4. rejected → bundle : down at x=1000, left at y=400, down at x=440 -->
+  <line x1="1000" y1="325" x2="1000" y2="400" class="flowRed"/>
+  <line x1="1000" y1="400" x2="440" y2="400" class="flowRed"/>
+  <line x1="440" y1="400" x2="440" y2="468" class="flowRed" marker-end="url(#arrow-red)"/>
+
+  <!-- 5. bundle → LLM Rewriter : horizontal at y=520 -->
+  <line x1="600" y1="520" x2="718" y2="520" class="flow" marker-end="url(#arrow)"/>
+
+  <!-- 6. LLM Rewriter → chosen : horizontal at y=520 -->
+  <line x1="1060" y1="520" x2="1178" y2="520" class="flowGreen" marker-end="url(#arrow-green)"/>
+  <text x="1119" y="506" class="center tiny" fill="#82b366">rewrite</text>
+
+  <!-- 7. chosen → DPO Pair Dataset : down at x=1300, left at y=615, down to top -->
+  <line x1="1300" y1="570" x2="1300" y2="615" class="flowGreen"/>
+  <line x1="1300" y1="615" x2="900" y2="615" class="flowGreen"/>
+  <line x1="900" y1="615" x2="900" y2="643" class="flowGreen" marker-end="url(#arrow-green)"/>
+
+  <!-- 8. rejected → DPO Pair Dataset : down at x=1120 (right edge of rejected), then left to DPO top -->
+  <line x1="1120" y1="325" x2="1120" y2="630" class="flowRed" stroke-dasharray="4,3"/>
+  <line x1="1120" y1="630" x2="600" y2="630" class="flowRed" stroke-dasharray="4,3"/>
+  <line x1="600" y1="630" x2="600" y2="643" class="flowRed" stroke-dasharray="4,3" marker-end="url(#arrow-red)"/>
+
+  <!-- ============================================================== -->
+  <!-- ============ SECTION 2: DPO / IPO TRAINING ============ -->
+  <!-- ============================================================== -->
+  <rect x="40" y="720" width="1420" height="540" rx="8" class="section"/>
+  <text x="750" y="745" class="center lblb" font-size="17">② DPO / IPO Training</text>
+
+  <!-- DPO pair box : x=560-940, y=770-820 -->
+  <rect x="560" y="770" width="380" height="50" rx="8" class="merge"/>
+  <text x="750" y="800" class="center lblb">DPO pair  ( Q, KG, chosen, rejected )</text>
+
+  <!-- Policy : x=120-540, y=870-1090, center x=330 center y=980 -->
+  <rect x="120" y="870" width="420" height="220" rx="8" class="train"/>
+  <text x="330" y="897" class="center lblb">Policy  π  (trainable)</text>
+  <text x="330" y="916" class="center small">SFT ckpt  +  LoRA UNFROZEN 🔥</text>
+  <line x1="140" y1="928" x2="520" y2="928" stroke="#d79b00" stroke-width="1"/>
+  <text x="330" y="950" class="center small">forward(Q, KG, chosen)  →  log P_π(c | Q, KG)</text>
+  <text x="330" y="972" class="center small">forward(Q, KG, rejected) →  log P_π(r | Q, KG)</text>
+  <text x="140" y="1005" class="left small" fill="#7c5400">‣ LoRA: unfrozen, lr = 5e-6</text>
+  <text x="140" y="1025" class="left small" fill="#7c5400">‣ KG adapter: frozen (DPO_FREEZE_KG=1)</text>
+  <text x="140" y="1045" class="left small" fill="#7c5400">‣ Soft Prompt: frozen</text>
+  <text x="140" y="1065" class="left small" fill="#7c5400">‣ Per-Layer Adapter: frozen</text>
+
+  <!-- Reference : x=960-1380, y=870-1090, center x=1170 center y=980 -->
+  <rect x="960" y="870" width="420" height="220" rx="8" class="frozen"/>
+  <text x="1170" y="897" class="center lblb">Reference  π_ref  (frozen)</text>
+  <text x="1170" y="916" class="center small">SFT ckpt  ❄️  (no LoRA training)</text>
+  <line x1="980" y1="928" x2="1360" y2="928" stroke="#6c8ebf" stroke-width="1"/>
+  <text x="1170" y="950" class="center small">forward(Q, KG, chosen)  →  log P_ref(c | Q, KG)</text>
+  <text x="1170" y="972" class="center small">forward(Q, KG, rejected) →  log P_ref(r | Q, KG)</text>
+  <text x="980" y="1005" class="left small" fill="#3a5570">‣ All weights frozen (snapshot of SFT)</text>
+  <text x="980" y="1025" class="left small" fill="#3a5570">‣ Provides baseline log-probs</text>
+  <text x="980" y="1045" class="left small" fill="#3a5570">‣ Anchors π so it doesn't drift away</text>
+  <text x="980" y="1065" class="left small" fill="#3a5570">‣ Loaded with same KG / PLA state</text>
+
+  <!-- Loss box : x=480-1020, y=1130-1240, center x=750 -->
+  <rect x="480" y="1130" width="540" height="110" rx="8" class="loss"/>
+  <text x="750" y="1156" class="center lblb">DPO / IPO Loss   +   SFT NLL co-training</text>
+  <line x1="500" y1="1166" x2="1000" y2="1166" stroke="#b85450" stroke-width="1"/>
+  <text x="750" y="1185" class="center mono small">L_IPO = ( log[π_c/π_ref_c]  −  log[π_r/π_ref_r]  −  1/(2β) )²</text>
+  <text x="750" y="1205" class="center mono small">L_total = L_IPO  +  0.2 × L_SFT(chosen)</text>
+  <text x="750" y="1225" class="center tiny" fill="#7a3030" font-style="italic">β=1.0,  label_smoothing=0.1,  loss_type=IPO  (防 reward hacking / 過優化)</text>
+
+  <!-- ===== Training section arrows (orthogonal, labels well-clear) ===== -->
+  <!-- A. Above → DPO pair box : vertical at x=750 -->
+  <line x1="750" y1="685" x2="750" y2="768" class="flow" marker-end="url(#arrow)"/>
+
+  <!-- B. DPO pair → Policy (T-split: down then left then down) -->
+  <line x1="750" y1="820" x2="750" y2="845" class="flow"/>
+  <line x1="750" y1="845" x2="330" y2="845" class="flow"/>
+  <line x1="330" y1="845" x2="330" y2="868" class="flow" marker-end="url(#arrow)"/>
+
+  <!-- C. DPO pair → Reference (T-split: down then right then down) -->
+  <line x1="750" y1="845" x2="1170" y2="845" class="flow"/>
+  <line x1="1170" y1="845" x2="1170" y2="868" class="flow" marker-end="url(#arrow)"/>
+
+  <!-- D. Policy → Loss (down then right then down) -->
+  <line x1="330" y1="1090" x2="330" y2="1112" class="flowGreen"/>
+  <line x1="330" y1="1112" x2="600" y2="1112" class="flowGreen"/>
+  <line x1="600" y1="1112" x2="600" y2="1128" class="flowGreen" marker-end="url(#arrow-green)"/>
+  <text x="365" y="1105" class="left tiny" fill="#3a5a2a">log P_π(c),  log P_π(r)</text>
+
+  <!-- E. Reference → Loss (down then left then down) -->
+  <line x1="1170" y1="1090" x2="1170" y2="1112" class="flow"/>
+  <line x1="1170" y1="1112" x2="900" y2="1112" class="flow"/>
+  <line x1="900" y1="1112" x2="900" y2="1128" class="flow" marker-end="url(#arrow)"/>
+  <text x="920" y="1105" class="left tiny" fill="#3a5570">log P_ref(c),  log P_ref(r)</text>
+
+  <!-- F. Loss → Policy (gradient feedback, dashed U-shape) -->
+  <line x1="480" y1="1185" x2="80" y2="1185" stroke="#82b366" stroke-width="2" stroke-dasharray="6,4" fill="none"/>
+  <line x1="80" y1="1185" x2="80" y2="980" stroke="#82b366" stroke-width="2" stroke-dasharray="6,4" fill="none"/>
+  <line x1="80" y1="980" x2="118" y2="980" stroke="#82b366" stroke-width="2" stroke-dasharray="6,4" fill="none" marker-end="url(#arrow-green)"/>
+  <text x="260" y="1207" class="left tiny" fill="#3a5a2a" font-style="italic">∇ updates LoRA only</text>
+  <g class="watermark">
+    <text x="1490" y="1270" text-anchor="end" font-size="18" fill="#888" opacity="0.42" font-weight="500" font-family="Helvetica, Arial, sans-serif">© Edward Chiu · Original Architecture Design</text>
+  </g>
+</svg>
