@@ -247,6 +247,50 @@ h3 {
   transition: transform 0.18s;
 }
 
+/* ───── Email pill (selectable address + copy button) ───── */
+.email-pill {
+  display: inline-flex;
+  align-items: stretch;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 13px;
+  transition: border-color 0.18s, background 0.18s;
+}
+.email-pill:hover { border-color: var(--accent); }
+.email-addr {
+  padding: 10px 14px;
+  color: var(--text);
+  text-decoration: none;
+  user-select: text;
+  transition: color 0.18s;
+}
+.email-addr:hover { color: var(--accent-soft); }
+.email-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  padding: 0 10px;
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.18s, background 0.18s;
+}
+.email-copy:hover {
+  color: var(--accent);
+  background: var(--bg-elev-2);
+}
+.email-copy .copy-done { display: none; color: var(--accent); }
+.email-copy.copied .copy-icon { display: none; }
+.email-copy.copied .copy-done { display: inline; }
+
 /* ───── Cards ───── */
 .card {
   background: linear-gradient(180deg, var(--bg-elev) 0%, #0c111a 100%);

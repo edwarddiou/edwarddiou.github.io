@@ -9,7 +9,7 @@
   <meta property="og:title" content="Edward Chiu — AI / NLP Engineer">
   <meta property="og:description" content="AI engineer in Taipei specializing in NLP, LLMs, GNNs, and reasoning-aware systems.">
   <meta property="og:type" content="website">
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
   <div class="bg-grid" aria-hidden="true"></div>
@@ -86,10 +86,13 @@
       </div>
 
       <nav class="links" aria-label="Contact links">
-        <a href="mailto:edwarddiou@gmail.com">
-          <span class="link-label">Email</span>
-          <span class="link-arrow">→</span>
-        </a>
+        <div class="email-pill">
+          <a class="email-addr" href="mailto:edwarddiou@gmail.com">edwarddiou@gmail.com</a>
+          <button class="email-copy" type="button" data-copy="edwarddiou@gmail.com" aria-label="Copy email address">
+            <span class="copy-icon" aria-hidden="true">⧉</span>
+            <span class="copy-done" aria-hidden="true">✓</span>
+          </button>
+        </div>
         <a href="https://linkedin.com/in/edward-chiu-a3315b177" target="_blank" rel="noopener">
           <span class="link-label">LinkedIn</span>
           <span class="link-arrow">↗</span>
@@ -118,5 +121,30 @@
     <span class="footer-sep">·</span>
     <span>Built with HTML &amp; CSS</span>
   </footer>
+
+  <script>
+    document.querySelectorAll('.email-copy').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const text = btn.dataset.copy;
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch {
+          const r = document.createRange();
+          const tmp = document.createElement('span');
+          tmp.textContent = text;
+          document.body.appendChild(tmp);
+          r.selectNodeContents(tmp);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(r);
+          document.execCommand('copy');
+          sel.removeAllRanges();
+          document.body.removeChild(tmp);
+        }
+        btn.classList.add('copied');
+        setTimeout(() => btn.classList.remove('copied'), 1500);
+      });
+    });
+  </script>
 </body>
 </html>
