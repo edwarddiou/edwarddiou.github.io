@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KG × LLM：領域知識內化 — 以保險顧問為例 — Edward Chiu</title>
-  <meta name="description" content="把領域知識（含結構性的知識圖譜）直接內化進模型權重，以保險顧問為案例。Qwen3-0.6B + 單張 3090，CLM / SFT / DPO / PPO 完整流程。">
+  <meta name="description" content="把領域知識（含結構性的知識圖譜）直接內化進模型權重，以保險顧問為案例。KG × LLM 聯合訓練，CLM / SFT / DPO / PPO 完整流程。">
   <meta name="author" content="Edward Chiu">
   <meta property="og:title" content="KG × LLM：領域知識內化 — 以保險顧問為例 — Edward Chiu">
-  <meta property="og:description" content="把領域知識內化進模型權重的研究，以保險顧問為案例。Qwen3-0.6B + 單張 3090，KG 跟 LLM 聯合訓練的完整 pipeline。">
+  <meta property="og:description" content="把領域知識內化進模型權重的研究，以保險顧問為案例。KG 跟 LLM 聯合訓練的完整 pipeline。">
   <meta property="og:type" content="article">
   <link rel="stylesheet" href="../../styles.css?v=3">
   <script data-goatcounter="https://edwarddiou.goatcounter.com/count"
@@ -99,9 +99,9 @@
       <p class="tagline">
         <span>以保險顧問為例</span>
         <span class="sep">/</span>
-        <span>Qwen3-0.6B</span>
+        <span>KG × LLM 聯合訓練</span>
         <span class="sep">/</span>
-        <span>單張 RTX 3090</span>
+        <span>CLM → SFT → DPO → PPO</span>
       </p>
       <p class="location">
         <span class="card-meta is-ongoing">2026.05 — 進行中</span>
@@ -111,10 +111,10 @@
       <div class="bio">
         <p>
           <strong>這個專案在做什麼。</strong>
-          把整套保險領域知識直接寫進一個 0.6B 小模型的權重 ——
+          把整套保險領域知識直接寫進 LLM 的權重 ——
           不靠 RAG、不靠外掛 pipeline，靠的是把<strong>知識圖譜（KG）跟 LLM 一起訓練</strong>。
-          全程在單張 RTX 3090 上跑完，以實支實付醫療險為案例，
-          驗證「小模型 + 領域結構知識 + 完整訓練流程」這條路徑是否走得通。
+          以實支實付醫療險為案例，
+          驗證「領域結構知識 + 完整訓練流程」這條路徑是否走得通。
         </p>
         <p>
           <strong>為什麼需要四個階段（CLM → SFT → DPO → PPO）。</strong>
@@ -431,7 +431,7 @@
 
       <article class="card">
         <p>
-          要讓 base model（Qwen3-0.6B）變成一個能用的保險顧問，
+          要讓 base model 變成一個能用的保險顧問，
           中間的訓練流程不能跳階段。每一階段做的事情不同，
           少了任何一步，後面的階段都會出問題。
         </p>
@@ -838,7 +838,7 @@
             <strong>Takeaway：</strong>SFT 的輸出像是「把規格條列出來」（限額 100%、費率計算需…），
             PPO 後變成「對話式顧問」（這問題挺關心的…方便先問一下…）——
             是<strong>輸出風格的整體轉變</strong>，不是單一 token 替換。
-            「實支實 pay」這種中英混雜是 base Qwen3-0.6B 的 token distribution 殘留，
+            「實支實 pay」這種中英混雜是 base 模型自身 token distribution 的殘留，
             非 RL 層面能解的問題，要換 base model 才會徹底消失。
           </div>
         </div>
@@ -851,14 +851,10 @@
       <article class="card">
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">LLM</span>
-            <strong>Qwen3-0.6B</strong> — 透過 <strong>QLoRA</strong> 做 parameter-efficient 微調，
+            <span class="bullet-tag">訓練方法</span>
+            透過 <strong>QLoRA</strong> 做 parameter-efficient 微調 ——
             base model 全程凍結，只訓練低秩更新層。
-          </li>
-          <li>
-            <span class="bullet-tag">訓練環境</span>
-            單張 <strong>NVIDIA RTX 3090</strong>，24 GB VRAM ——
-            所有訓練（CLM / SFT / DPO / PPO）都在這張卡上跑完，沒有用到雲端或多卡。
+            目前在小型 base LLM 上做可行性驗證，後續會在更大模型上重跑同一條訓練線。
           </li>
           <li>
             <span class="bullet-tag">技術棧</span>
