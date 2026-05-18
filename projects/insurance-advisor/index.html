@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>特定領域知識內化 — 以保險顧問為例 — Edward Chiu</title>
+  <title>KG × LLM：領域知識內化 — 以保險顧問為例 — Edward Chiu</title>
   <meta name="description" content="把領域知識（含結構性的知識圖譜）直接內化進模型權重，以保險顧問為案例。Qwen3-0.6B + 單張 3090，CLM / SFT / DPO / PPO 完整流程。">
   <meta name="author" content="Edward Chiu">
-  <meta property="og:title" content="特定領域知識內化 — 以保險顧問為例 — Edward Chiu">
+  <meta property="og:title" content="KG × LLM：領域知識內化 — 以保險顧問為例 — Edward Chiu">
   <meta property="og:description" content="把領域知識內化進模型權重的研究，以保險顧問為案例。Qwen3-0.6B + 單張 3090，KG 跟 LLM 聯合訓練的完整 pipeline。">
   <meta property="og:type" content="article">
   <link rel="stylesheet" href="../../styles.css?v=3">
@@ -95,35 +95,38 @@
         <span class="tag tag-research">Research</span>
         <span class="tag tag-dev">In Development</span>
       </div>
-      <h1>特定領域知識內化</h1>
+      <h1>KG × LLM：領域知識內化</h1>
       <p class="tagline">
         <span>以保險顧問為例</span>
         <span class="sep">/</span>
-        <span>知識圖譜 × LLM 聯合訓練</span>
-        <span class="sep">/</span>
         <span>Qwen3-0.6B</span>
+        <span class="sep">/</span>
+        <span>單張 RTX 3090</span>
       </p>
       <p class="location">
         <span class="card-meta is-ongoing">2026.05 — 進行中</span>
-        <span class="location-detail">單張 RTX 3090</span>
+        <span class="location-detail">實支實付醫療險為案例</span>
       </p>
 
       <div class="bio">
         <p>
-          通用 LLM 在進入特定領域時，主流做法是用 RAG 從外部撈知識。
-          但對結構性強的領域（保險條款、法規、醫療指引），
-          RAG 容易產生「字面相關但結構錯位」的回答 ——
-          模型沒有真正<strong>鎖定問題</strong>的能力。
+          <strong>這個專案在做什麼。</strong>
+          把整套保險領域知識直接寫進一個 0.6B 小模型的權重 ——
+          不靠 RAG、不靠外掛 pipeline，靠的是把<strong>知識圖譜（KG）跟 LLM 一起訓練</strong>。
+          全程在單張 RTX 3090 上跑完，以實支實付醫療險為案例，
+          驗證「小模型 + 領域結構知識 + 完整訓練流程」這條路徑是否走得通。
         </p>
         <p>
-          這個問題有兩種解法：在外部包一層結構化 prompt 跟多步驟 pipeline，
-          或把領域知識直接內化進模型權重。
-          本專案選擇後者，以<strong>實支實付醫療險</strong>為案例，
-          探索把保險商品的知識圖譜跟 LLM 一起訓練的可行性。
-        </p>
-        <p>
-          全程在 Qwen3-0.6B 上完成，硬體限制為單張 RTX 3090。
-          目標是驗證一條「小模型 + 領域結構知識 + 完整訓練流程」的可行路線。
+          <strong>為什麼需要四個階段（CLM → SFT → DPO → PPO）。</strong>
+          每一階段解的不是同一個問題 ——
+          CLM 把保險的<strong>詞彙跟句型</strong>壓進 token 分布、
+          SFT 用（問題 → 條款回答）pair 教模型<strong>該怎麼答</strong>、
+          DPO 用偏好 pair 推<strong>該用什麼語氣答</strong>、
+          PPO 用 segment-level reward 修<strong>每一段該長什麼樣</strong>。
+          跳階段不是省事 ——
+          直接做 RL 會 reward hack（一個還不會講保險的模型，會找捷徑騙高分）；
+          跳過 DPO 直接做 PPO 會在錯誤的整體策略下細修，越修越偏。
+          先粗後細、先教會再優化，是這條訓練線的設計重點。
         </p>
       </div>
     </section>
