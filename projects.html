@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Projects — Edward Chiu</title>
+  <title data-en="Projects — Edward Chiu" data-zh="專案 — Edward Chiu">Projects — Edward Chiu</title>
   <meta name="description" content="Edward Chiu's projects — LLM training, knowledge graph integration, multi-agent systems, and RAG research.">
   <meta name="author" content="Edward Chiu">
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
+  <script src="lang.js?v=1"></script>
   <script data-goatcounter="https://edwarddiou.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -33,50 +34,82 @@
           <span class="nav-en">Projects</span>
           <span class="nav-zh">專案</span>
         </a>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-switch-btn" data-lang-set="en" aria-label="Switch to English">EN</button>
+          <button type="button" class="lang-switch-btn" data-lang-set="zh" aria-label="切換為中文">中</button>
+        </div>
       </nav>
     </div>
   </header>
 
   <main>
     <section id="projects">
-      <h2><span class="h2-marker"></span>Projects</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Projects</span>
+        <span class="l-zh">專案</span>
+      </h2>
 
       <article class="card project">
         <header class="card-head">
-          <div class="card-meta is-ongoing">2026.05 — Present</div>
-          <div class="tags">
-            <span class="tag tag-research">Research</span>
-            <span class="tag tag-dev">In Development</span>
+          <div class="card-meta is-ongoing">
+            <span class="l-en">2026.05 — Present</span>
+            <span class="l-zh">2026.05 — 進行中</span>
           </div>
-          <h3>Domain Knowledge Internalization — Insurance Advisor as a Case Study</h3>
+          <div class="tags">
+            <span class="tag tag-research l-en">Research</span>
+            <span class="tag tag-research l-zh">研究</span>
+            <span class="tag tag-dev l-en">In Development</span>
+            <span class="tag tag-dev l-zh">開發中</span>
+          </div>
+          <h3 class="l-en">Domain Knowledge Internalization — Insurance Advisor as a Case Study</h3>
+          <h3 class="l-zh">領域知識內化 —— 以保險顧問為案例</h3>
         </header>
-        <p>
+        <p class="l-en">
           A research exploration of an alternative to RAG for structured domains: instead
           of retrieving knowledge at inference time, jointly train a knowledge graph with
           a small LLM (Qwen3-0.6B) so that structured product knowledge lives inside the
           model weights. The assistant answers without any retrieval step at inference.
         </p>
-        <p>
+        <p class="l-en">
           Insurance is the case study — a domain where retrieval-based answers tend to
           be "literally relevant but structurally misaligned". The full training pipeline
           (CLM → SFT → DPO → PPO) runs on a single RTX 3090, with depth on a single
           product (Taiwan reimbursement-based medical insurance) rather than breadth.
         </p>
+        <p class="l-zh">
+          一個針對強結構領域的 RAG 替代方案研究：不在 inference 時做檢索，
+          而是把知識圖譜跟小型 LLM（Qwen3-0.6B）聯合訓練，
+          讓結構化的商品知識直接住在模型權重裡 ——
+          推論時不再有 retrieval 環節。
+        </p>
+        <p class="l-zh">
+          以保險為案例 —— 這是一個 retrieval-based 答案常常「字面相關但結構錯位」的領域。
+          完整訓練線（CLM → SFT → DPO → PPO）在一張 RTX 3090 上跑，
+          針對單一商品（台灣實支實付醫療險）做深度，而不是橫向覆蓋。
+        </p>
         <a class="read-more" href="projects/insurance-advisor/index.html">
-          閱讀完整介紹（中文）<span class="link-arrow">→</span>
+          <span class="l-en">Read full write-up<span class="link-arrow">→</span></span>
+          <span class="l-zh">閱讀完整介紹<span class="link-arrow">→</span></span>
         </a>
       </article>
 
       <article class="card project">
         <header class="card-head">
-          <div class="card-meta is-ongoing">2025.10 — 2026.05</div>
-          <div class="tags">
-            <span class="tag tag-product">Product</span>
-            <span class="tag tag-dev">In Development</span>
+          <div class="card-meta is-ongoing">
+            <span class="l-en">2025.10 — 2026.05</span>
+            <span class="l-zh">2025.10 — 2026.05</span>
           </div>
-          <h3>AI Customer Simulator — Multi-step Reasoning for Sales Training</h3>
+          <div class="tags">
+            <span class="tag tag-product l-en">Product</span>
+            <span class="tag tag-product l-zh">產品</span>
+            <span class="tag tag-dev l-en">In Development</span>
+            <span class="tag tag-dev l-zh">開發中</span>
+          </div>
+          <h3 class="l-en">AI Customer Simulator — Multi-step Reasoning for Sales Training</h3>
+          <h3 class="l-zh">AI 顧客模擬器 —— 業務訓練的多步推理</h3>
         </header>
-        <p>
+        <p class="l-en">
           A realistic simulation environment where an AI plays the role of a customer
           interacting with sales or service staff — complete with dialogue scoring and
           actionable feedback. The core design uses <strong>multi-step reasoning</strong>
@@ -84,11 +117,21 @@
           motivation, conversation flow) so the simulated customer behaves like a specific
           person rather than an averaged-out polite assistant.
         </p>
-        <p class="callout">
+        <p class="callout l-en">
           Major players in the financial industry have expressed strong interest in adopting the system.
         </p>
+        <p class="l-zh">
+          一個擬真的模擬環境 —— AI 扮演顧客跟業務或客服互動，
+          搭配對話評分跟可行動的回饋。核心設計用<strong>多步推理</strong>
+          把顧客的回應拆成不同維度（persona、情緒、動機、對話流程），
+          讓模擬出來的顧客像「某個具體的人」，而不是一個被平均化的禮貌助理。
+        </p>
+        <p class="callout l-zh">
+          金融產業多個主要業者已對採用本系統表達高度興趣。
+        </p>
         <a class="read-more" href="projects/ai_customer_simulator/index.html">
-          閱讀完整介紹（中文）<span class="link-arrow">→</span>
+          <span class="l-en">Read full write-up<span class="link-arrow">→</span></span>
+          <span class="l-zh">閱讀完整介紹<span class="link-arrow">→</span></span>
         </a>
       </article>
 
@@ -96,25 +139,39 @@
         <header class="card-head">
           <div class="card-meta">2024.09 — 2025.06</div>
           <div class="tags">
-            <span class="tag tag-product">Product</span>
+            <span class="tag tag-product l-en">Product</span>
+            <span class="tag tag-product l-zh">產品</span>
           </div>
-          <h3>Tenfold AI — Legal Advisor Chatbot &amp; Multi-step Architecture</h3>
+          <h3 class="l-en">Tenfold AI — Legal Advisor Chatbot &amp; Multi-step Architecture</h3>
+          <h3 class="l-zh">Tenfold AI —— 法律顧問 Chatbot 與多步驟架構</h3>
         </header>
-        <p>
+        <p class="l-en">
           The founding product I built at Tenfold AI: a legal advisor chatbot for a
           domain where answers must cite the right statute and address the actual
           question. A general-purpose RAG pipeline isn't enough — the retrieval layer
           needs to be tuned for legal context, and the answer needs to come with
           evidence the user can trust.
         </p>
-        <p>
+        <p class="l-en">
           I designed a <strong>multi-step architecture</strong> with rerank, regulation
           check, and other verification tools, capped by a <strong>verified confidence
           score</strong> attached to each response — so users not only get an answer,
           but understand <em>how grounded</em> that answer is in the underlying law.
         </p>
+        <p class="l-zh">
+          我在 Tenfold AI 打造的最一開始產品：一款法律顧問 Chatbot ——
+          法律是一個答案必須引到正確條文、必須對應到使用者實際問題的領域。
+          通用 RAG pipeline 在這場景不夠用 ——
+          retrieval 要為法律情境調過，回答還要附上使用者信得過的依據。
+        </p>
+        <p class="l-zh">
+          我設計了一條<strong>多步驟架構</strong>，搭配 rerank、法規檢查等驗證工具，
+          每個回答還會附上<strong>經過驗證的信心程度</strong> ——
+          讓使用者拿到的不只是答案，還包含<em>這個答案在底層法條上站得有多穩</em>。
+        </p>
         <a class="read-more" href="projects/tenfold/index.html">
-          閱讀完整介紹（中文）<span class="link-arrow">→</span>
+          <span class="l-en">Read full write-up<span class="link-arrow">→</span></span>
+          <span class="l-zh">閱讀完整介紹<span class="link-arrow">→</span></span>
         </a>
       </article>
 
@@ -122,21 +179,33 @@
         <header class="card-head">
           <div class="card-meta">2023.07 — 2025.02</div>
           <div class="tags">
-            <span class="tag tag-research">Master's Thesis</span>
+            <span class="tag tag-research l-en">Master's Thesis</span>
+            <span class="tag tag-research l-zh">碩士論文</span>
           </div>
-          <h3>G3-RAG — Multi-step Reasoning RAG over Knowledge Graphs</h3>
+          <h3 class="l-en">G3-RAG — Multi-step Reasoning RAG over Knowledge Graphs</h3>
+          <h3 class="l-zh">G3-RAG —— 基於知識圖譜的多步推理 RAG</h3>
         </header>
-        <p>
+        <p class="l-en">
           A graph-guided Retrieval-Augmented Generation framework that addresses
           information loss in long-context LLMs by constructing a structured knowledge
           graph via relation extraction and combining it with graph-based retrieval —
           improving multi-hop reasoning, multi-source integration, and answer accuracy.
         </p>
-        <p class="callout">
+        <p class="callout l-en">
           Received faculty approval and proceeded to journal submission.
         </p>
+        <p class="l-zh">
+          一個以知識圖譜為導向的 Retrieval-Augmented Generation 框架，
+          針對長文本下 LLM 的資訊遺失問題 ——
+          透過關係抽取建構結構化知識圖譜，
+          結合圖檢索方法，提升多跳推理、多源知識整合與回答準確度。
+        </p>
+        <p class="callout l-zh">
+          通過口試，期刊投稿中。
+        </p>
         <a class="read-more" href="projects/G3_rag/index.html">
-          閱讀完整介紹（中／英）<span class="link-arrow">→</span>
+          <span class="l-en">Read full write-up<span class="link-arrow">→</span></span>
+          <span class="l-zh">閱讀完整介紹<span class="link-arrow">→</span></span>
         </a>
       </article>
     </section>
@@ -145,7 +214,8 @@
   <footer>
     <span>© 2026 Edward Chiu</span>
     <span class="footer-sep">·</span>
-    <span>Built with HTML &amp; CSS</span>
+    <span class="l-en">Built with HTML &amp; CSS</span>
+    <span class="l-zh">純 HTML &amp; CSS 打造</span>
   </footer>
 </body>
 </html>

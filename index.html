@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edward Chiu — AI / NLP Engineer</title>
+  <title data-en="Edward Chiu — AI / NLP Engineer" data-zh="Edward Chiu — AI／NLP 工程師">Edward Chiu — AI / NLP Engineer</title>
   <meta name="description" content="Edward Chiu is an AI engineer in Taipei specializing in NLP, LLMs, GNNs, and reasoning-aware systems.">
   <meta name="author" content="Edward Chiu">
   <meta property="og:title" content="Edward Chiu — AI / NLP Engineer">
   <meta property="og:description" content="AI engineer in Taipei specializing in NLP, LLMs, GNNs, and reasoning-aware systems.">
   <meta property="og:type" content="website">
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
+  <script src="lang.js?v=1"></script>
   <script data-goatcounter="https://edwarddiou.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -36,6 +37,10 @@
           <span class="nav-en">Projects</span>
           <span class="nav-zh">專案</span>
         </a>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-switch-btn" data-lang-set="en" aria-label="Switch to English">EN</button>
+          <button type="button" class="lang-switch-btn" data-lang-set="zh" aria-label="切換為中文">中</button>
+        </div>
       </nav>
     </div>
   </header>
@@ -46,44 +51,67 @@
       <div class="status-list">
         <div class="status">
           <span class="dot"></span>
-          <span>Available for research collaboration</span>
+          <span class="l-en">Available for research collaboration</span>
+          <span class="l-zh">開放研究合作</span>
         </div>
         <div class="status">
           <span class="dot"></span>
-          <span>Happy to chat &amp; discuss ideas</span>
+          <span class="l-en">Happy to chat &amp; discuss ideas</span>
+          <span class="l-zh">歡迎交流與討論想法</span>
         </div>
         <div class="status">
           <span class="dot"></span>
-          <span>Open to new opportunities</span>
+          <span class="l-en">Open to new opportunities</span>
+          <span class="l-zh">尋求新機會中</span>
         </div>
       </div>
 
       <h1>Edward Chiu</h1>
       <p class="tagline">
-        <span>AI Engineer</span>
+        <span class="l-en">AI Engineer</span>
+        <span class="l-zh">AI 工程師</span>
         <span class="sep">/</span>
         <span>NLP</span>
         <span class="sep">/</span>
-        <span>LLMs &amp; Reasoning Systems</span>
+        <span class="l-en">LLMs &amp; Reasoning Systems</span>
+        <span class="l-zh">LLM 與推理系統</span>
       </p>
-      <p class="location">Taipei, Taiwan</p>
+      <p class="location">
+        <span class="l-en">Taipei, Taiwan</span>
+        <span class="l-zh">台灣 · 台北</span>
+      </p>
 
       <div class="bio">
-        <p>
+        <p class="l-en">
           I am an AI engineer specializing in Large Language Model (LLM) post-training and fine-tuning, with hands-on
-          experience across SFT, DPO/SimPO, RLHF/PPO, and parameter- efficient methods such as LoRA and QLoRA.
+          experience across SFT, DPO/SimPO, RLHF/PPO, and parameter-efficient methods such as LoRA and QLoRA.
           My work centers on adapting and aligning LLMs for downstream tasks and on building agent systems on top
           of fine-tuned models. I bring a broader background in NLP, Transformer architectures, Graph Neural Networks
           (GNNs), and traditional Machine Learning, which informs my approach to model design and reasoning.
-          
         </p>
-        <p>
+        <p class="l-en">
           I believe mature techniques such as classical ML and GNNs remain highly relevant in the LLM era, offering
           complementary strengths in structured knowledge modeling, interpretability, and controllability. I actively explore
           frontier directions in LLM training, with particular interest in the joint training of Knowledge Graphs and LLMs as
           a path toward stronger structured reasoning and factual grounding. By combining these approaches with modern
           post-training methods, I aim to build next-generation AI systems that are more controllable, reasoning-aware, and
           better aligned with real-world applications.
+        </p>
+
+        <p class="l-zh">
+          我是一名 AI 工程師，專注在大型語言模型（LLM）的 post-training 與微調，
+          實務經驗涵蓋 SFT、DPO/SimPO、RLHF/PPO，以及 LoRA、QLoRA 這類 parameter-efficient 方法。
+          工作重心放在把 LLM 對應到下游任務做適配與對齊，並在微調後的模型上構建 agent 系統。
+          NLP、Transformer 架構、Graph Neural Networks（GNNs）、以及傳統機器學習也是我的底子，
+          這些背景決定了我看待模型設計與推理問題的方式。
+        </p>
+        <p class="l-zh">
+          我認為傳統 ML 與 GNN 這類成熟技術在 LLM 時代仍然非常相關 ——
+          它們在結構化知識建模、可解釋性與可控性上提供 LLM 缺乏的互補能力。
+          我在 LLM 訓練的前沿方向上持續探索，特別關注<strong>知識圖譜與 LLM 聯合訓練</strong>
+          這條路徑，把它當成往更強的結構化推理與事實對齊邁進的方向。
+          目標是把這些方法跟現代 post-training 結合，
+          做出更可控、更具推理意識、更貼近真實應用的下一代 AI 系統。
         </p>
       </div>
 
@@ -108,9 +136,16 @@
 
     <!-- ───── CONTACT ───── -->
     <section id="contact" class="contact">
-      <h2><span class="h2-marker"></span>Contact</h2>
-      <p class="contact-line">
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Contact</span>
+        <span class="l-zh">聯絡</span>
+      </h2>
+      <p class="contact-line l-en">
         Always happy to talk about <span class="nobr">LLMs</span>, <span class="nobr">Agentic-Agent</span>, <span class="nobr">graph-based memory</span>, <span class="nobr">RLHF/RLAIF</span> or collaboration on novel architectures.
+      </p>
+      <p class="contact-line l-zh">
+        歡迎聊聊 <span class="nobr">LLMs</span>、<span class="nobr">Agentic-Agent</span>、<span class="nobr">graph-based memory</span>、<span class="nobr">RLHF/RLAIF</span>，或在新型架構上的合作。
       </p>
       <a class="contact-cta" href="mailto:edwarddiou@gmail.com">
         edwarddiou@gmail.com<span class="link-arrow">→</span>
@@ -121,7 +156,8 @@
   <footer>
     <span>© 2026 Edward Chiu</span>
     <span class="footer-sep">·</span>
-    <span>Built with HTML &amp; CSS</span>
+    <span class="l-en">Built with HTML &amp; CSS</span>
+    <span class="l-zh">純 HTML &amp; CSS 打造</span>
   </footer>
 
   <script>

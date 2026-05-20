@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Domain Knowledge Internalization — Insurance Advisor as a Case Study — Edward Chiu</title>
-  <meta name="description" content="把領域知識（含結構性的知識圖譜）直接內化進模型權重 —— 不靠 RAG、不靠外掛 pipeline，以保險顧問為案例。KG × LLM 聯合訓練，CLM / SFT / DPO / PPO 完整流程。">
+  <title data-en="Domain Knowledge Internalization — Insurance Advisor as a Case Study — Edward Chiu" data-zh="領域知識內化 — 以保險顧問為案例 — Edward Chiu">Domain Knowledge Internalization — Insurance Advisor as a Case Study — Edward Chiu</title>
+  <meta name="description" content="Writing domain knowledge (including the structural KG) directly into the model weights — no RAG, no bolt-on pipeline. Insurance advisor as the case study. KG × LLM joint training across the full CLM / SFT / DPO / PPO pipeline.">
   <meta name="author" content="Edward Chiu">
   <meta property="og:title" content="Domain Knowledge Internalization — Insurance Advisor as a Case Study — Edward Chiu">
-  <meta property="og:description" content="把領域知識內化進模型權重的研究，以保險顧問為案例。KG × LLM 聯合訓練的完整 pipeline。">
+  <meta property="og:description" content="Research on internalizing domain knowledge into the model weights, using insurance advisory as the case study. The full KG × LLM joint-training pipeline.">
   <meta property="og:type" content="article">
-  <link rel="stylesheet" href="../../styles.css?v=3">
+  <link rel="stylesheet" href="../../styles.css?v=4">
+  <script src="../../lang.js?v=1"></script>
   <script data-goatcounter="https://edwarddiou.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -36,6 +37,10 @@
           <span class="nav-en">Projects</span>
           <span class="nav-zh">專案</span>
         </a>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-switch-btn" data-lang-set="en" aria-label="Switch to English">EN</button>
+          <button type="button" class="lang-switch-btn" data-lang-set="zh" aria-label="切換為中文">中</button>
+        </div>
       </nav>
     </div>
     <div class="scroll-progress"><div class="scroll-progress-fill"></div></div>
@@ -44,57 +49,63 @@
   <main>
     <a class="back-link" href="../../projects.html">
       <span class="link-arrow">←</span>
-      <span>回到 Projects</span>
+      <span class="l-en">Back to Projects</span>
+      <span class="l-zh">回到 Projects</span>
     </a>
 
-    <aside class="toc" aria-label="目錄">
-      <div class="toc-label">目錄 · TOC</div>
+    <aside class="toc" aria-label="Table of contents">
+      <div class="toc-label">
+        <span class="l-en">TOC</span>
+        <span class="l-zh">目錄 · TOC</span>
+      </div>
       <ol class="toc-list">
-        <li><a href="#overview">訓練流程大綱</a></li>
-        <li><a href="#problem">問題</a></li>
-        <li><a href="#paths">三條解法路徑</a></li>
+        <li><a href="#overview"><span class="l-en">Training pipeline overview</span><span class="l-zh">訓練流程大綱</span></a></li>
+        <li><a href="#problem"><span class="l-en">The problem</span><span class="l-zh">問題</span></a></li>
+        <li><a href="#paths"><span class="l-en">Three solution paths</span><span class="l-zh">三條解法路徑</span></a></li>
         <li class="has-sub">
           <a href="#clm-goal">① CLM</a>
           <ol class="toc-sub">
-            <li><a href="#clm-goal">目標</a></li>
-            <li><a href="#clm-arch">架構</a></li>
-            <li><a href="#clm-output">輸出範例</a></li>
+            <li><a href="#clm-goal"><span class="l-en">Goal</span><span class="l-zh">目標</span></a></li>
+            <li><a href="#clm-arch"><span class="l-en">Architecture</span><span class="l-zh">架構</span></a></li>
+            <li><a href="#clm-output"><span class="l-en">Output example</span><span class="l-zh">輸出範例</span></a></li>
           </ol>
         </li>
         <li class="has-sub">
           <a href="#sft-goal">② SFT</a>
           <ol class="toc-sub">
-            <li><a href="#sft-goal">目標</a></li>
-            <li><a href="#sft-arch">架構</a></li>
-            <li><a href="#sft-output">輸出範例</a></li>
+            <li><a href="#sft-goal"><span class="l-en">Goal</span><span class="l-zh">目標</span></a></li>
+            <li><a href="#sft-arch"><span class="l-en">Architecture</span><span class="l-zh">架構</span></a></li>
+            <li><a href="#sft-output"><span class="l-en">Output example</span><span class="l-zh">輸出範例</span></a></li>
           </ol>
         </li>
         <li class="has-sub">
           <a href="#dpo-goal">③ DPO</a>
           <ol class="toc-sub">
-            <li><a href="#dpo-goal">目標</a></li>
-            <li><a href="#dpo-arch">架構</a></li>
-            <li><a href="#dpo-output">輸出範例</a></li>
+            <li><a href="#dpo-goal"><span class="l-en">Goal</span><span class="l-zh">目標</span></a></li>
+            <li><a href="#dpo-arch"><span class="l-en">Architecture</span><span class="l-zh">架構</span></a></li>
+            <li><a href="#dpo-output"><span class="l-en">Output example</span><span class="l-zh">輸出範例</span></a></li>
           </ol>
         </li>
         <li class="has-sub">
           <a href="#ppo-goal">④ PPO</a>
           <ol class="toc-sub">
-            <li><a href="#ppo-goal">目標</a></li>
-            <li><a href="#ppo-arch">架構</a></li>
-            <li><a href="#ppo-output">輸出範例</a></li>
+            <li><a href="#ppo-goal"><span class="l-en">Goal</span><span class="l-zh">目標</span></a></li>
+            <li><a href="#ppo-arch"><span class="l-en">Architecture</span><span class="l-zh">架構</span></a></li>
+            <li><a href="#ppo-output"><span class="l-en">Output example</span><span class="l-zh">輸出範例</span></a></li>
           </ol>
         </li>
         <li><a href="#demo">Demo UI</a></li>
-        <li><a href="#status">規格</a></li>
+        <li><a href="#status"><span class="l-en">Spec</span><span class="l-zh">規格</span></a></li>
       </ol>
     </aside>
 
     <!-- ───── HERO ───── -->
     <section class="hero project-hero">
       <div class="tags">
-        <span class="tag tag-research">Research</span>
-        <span class="tag tag-dev">In Development</span>
+        <span class="tag tag-research l-en">Research</span>
+        <span class="tag tag-research l-zh">研究</span>
+        <span class="tag tag-dev l-en">In Development</span>
+        <span class="tag tag-dev l-zh">開發中</span>
       </div>
       <h1>Domain Knowledge Internalization</h1>
       <p class="tagline">
@@ -105,19 +116,46 @@
         <span>CLM → SFT → DPO → PPO</span>
       </p>
       <p class="location">
-        <span class="card-meta is-ongoing">2026.05 — 進行中</span>
-        <span class="location-detail">實支實付醫療險為案例</span>
+        <span class="card-meta is-ongoing l-en">2026.05 — In progress</span>
+        <span class="card-meta is-ongoing l-zh">2026.05 — 進行中</span>
+        <span class="location-detail l-en">Reimbursement-based medical insurance as case study</span>
+        <span class="location-detail l-zh">實支實付醫療險為案例</span>
       </p>
 
       <div class="bio">
-        <p>
+        <p class="l-en">
+          <strong>What this project is.</strong>
+          Write the full insurance-domain knowledge directly into the LLM's weights —
+          no RAG, no external pipeline. The mechanism is
+          <strong>jointly training a knowledge graph (KG) with the LLM</strong>.
+          Using reimbursement-based medical insurance as the case study, this project
+          tests whether the path of "domain structural knowledge + a full training
+          pipeline" actually works.
+        </p>
+        <p class="l-en">
+          <strong>Why four stages (CLM → SFT → DPO → PPO).</strong>
+          Each stage solves a different problem —
+          CLM presses insurance <strong>vocabulary and sentence patterns</strong>
+          into the token distribution; SFT uses (question → clause-grounded answer)
+          pairs to teach the model <strong>how to answer</strong>; DPO uses
+          preference pairs to nudge <strong>what tone to use</strong>; PPO uses
+          segment-level reward to fix <strong>what each segment should look like</strong>.
+          Skipping stages isn't a shortcut — going straight to RL produces reward
+          hacking (a model that can't yet speak insurance will find loopholes to
+          game the score); skipping DPO into PPO means making fine-grained edits
+          under the wrong overall policy, drifting further off with each fix.
+          Coarse before fine, teach before optimize — that's the design priority
+          of this training line.
+        </p>
+
+        <p class="l-zh">
           <strong>這個專案在做什麼。</strong>
           把整套保險領域知識直接寫進 LLM 的權重 ——
           不靠 RAG、不靠外掛 pipeline，靠的是把<strong>知識圖譜（KG）跟 LLM 一起訓練</strong>。
           以實支實付醫療險為案例，
           驗證「領域結構知識 + 完整訓練流程」這條路徑是否走得通。
         </p>
-        <p>
+        <p class="l-zh">
           <strong>為什麼需要四個階段（CLM → SFT → DPO → PPO）。</strong>
           每一階段解的不是同一個問題 ——
           CLM 把保險的<strong>詞彙跟句型</strong>壓進 token 分布、
@@ -132,12 +170,28 @@
       </div>
     </section>
 
-    <!-- ───── 訓練流程大綱 ───── -->
+    <!-- ───── Pipeline overview ───── -->
     <section id="overview">
-      <h2><span class="h2-marker"></span>訓練流程大綱：CLM → SFT → DPO → PPO</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Training pipeline overview: CLM → SFT → DPO → PPO</span>
+        <span class="l-zh">訓練流程大綱：CLM → SFT → DPO → PPO</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          The training line is a <strong>four-stage chain</strong>; each stage uses
+          the properties of the technique itself to push one "distributional shift" —
+          CLM brings insurance text into the <strong>next-token prediction</strong>
+          distribution; SFT uses (question → clause-grounded answer) pairs to do
+          <strong>clause-level alignment</strong>; DPO uses (chosen / rejected) pairs
+          to push <strong>style preference</strong>; PPO uses
+          <strong>segment-level reward</strong> for per-segment alignment. Every
+          stage trains LoRA only, with the base model frozen throughout, and every
+          stage <em>does not claim</em> "the model can really reason" — it only
+          discusses what the technique can shift.
+        </p>
+        <p class="l-zh">
           整個專案的訓練線是<strong>四階段串接</strong>，
           每一階段都用該技術本身的特性去推一段「分布上的偏移」 ——
           CLM 把<strong>下一個字預測</strong>納入保險語料、
@@ -150,53 +204,98 @@
         </p>
 
         <figure class="arch-figure arch-figure-lg">
-          <div class="arch-credit">原創架構設計 · Edward Chiu</div>
-          <img src="assets/pipeline_overview_show.svg" alt="四階段訓練流程總覽：CLM → SFT → DPO → PPO" loading="lazy">
-          <figcaption>訓練流程總覽 · 每一階段的目標與產出 · 點圖可放大</figcaption>
+          <div class="arch-credit">
+            <span class="l-en">Original architecture · Edward Chiu</span>
+            <span class="l-zh">原創架構設計 · Edward Chiu</span>
+          </div>
+          <img src="assets/pipeline_overview_show.svg" alt="Four-stage training pipeline overview: CLM → SFT → DPO → PPO" loading="lazy">
+          <figcaption>
+            <span class="l-en">Training pipeline overview · goal and output of each stage · click to enlarge</span>
+            <span class="l-zh">訓練流程總覽 · 每一階段的目標與產出 · 點圖可放大</span>
+          </figcaption>
         </figure>
 
         <ul class="bullets">
           <li>
             <span class="bullet-tag">① CLM</span>
-            在保險領域文本上繼續做 next-token prediction，
+            <span class="l-en">Continue next-token prediction on insurance-domain text,
+            so the model's "predict the next token" capability absorbs
+            <strong>insurance vocabulary and clause sentence patterns</strong> into
+            the token distribution. Doesn't teach "how to answer" or "structure" —
+            just brings the domain corpus's perplexity down to a reasonable range,
+            providing a vocabulary foundation for SFT.
+            <br><em class="kg-note"><strong>KG injection:</strong> KG injection runs through the entire training line as a clause-structure signal — at CLM the goal is to lay the domain-vocabulary base that the KG structural signal can connect into.</em></span>
+            <span class="l-zh">在保險領域文本上繼續做 next-token prediction，
             讓模型「預測下一個字」的能力把<strong>保險的詞彙與條款句型</strong>
             納入 token 分布。不教「怎麼回答」、也不教「結構」——
             只是讓領域語料的 perplexity 下降到合理區間，
             為 SFT 提供詞彙基底。
-            <br><em class="kg-note"><strong>KG 注入：</strong>整條訓練線都有 KG 注入作為條款結構訊號 —— CLM 階段先打好讓 KG 結構訊號能對接的領域詞彙底座。</em>
+            <br><em class="kg-note"><strong>KG 注入：</strong>整條訓練線都有 KG 注入作為條款結構訊號 —— CLM 階段先打好讓 KG 結構訊號能對接的領域詞彙底座。</em></span>
           </li>
           <li>
             <span class="bullet-tag">② SFT</span>
-            用（問題 → 條款相關回答）的 pair 做監督微調，
+            <span class="l-en">Supervised fine-tuning on (question → clause-grounded
+            answer) pairs; the CE loss <strong>aligns the output direction with the
+            clauses</strong>, fitting the model to the distribution of
+            "answering based on clause content". The key point: this is
+            <strong>fitting the training distribution</strong>, not making the model
+            "actually reason over insurance" — that boundary has to be stated clearly,
+            otherwise DPO / PPO downstream have no concrete problem to solve.
+            <br><em class="kg-note"><strong>KG injection:</strong> KG injection runs through the entire training line — at SFT, the clause topology signal goes into the weights together with the answer pairs.</em></span>
+            <span class="l-zh">用（問題 → 條款相關回答）的 pair 做監督微調，
             透過 CE Loss 把輸出方向<strong>針對條款做對齊</strong>，
             讓模型擬合到「依條款內容作答」的分布。
             重點在於：這是<strong>擬合訓練分布</strong>，
             不是讓模型「真的會推理保險」——
             這個邊界要說清楚，後面 DPO / PPO 才有要解的問題。
-            <br><em class="kg-note"><strong>KG 注入：</strong>整條訓練線都有 KG 注入作為條款結構訊號 —— SFT 把條款的拓撲結構訊號跟回答 pair 一起進權重。</em>
+            <br><em class="kg-note"><strong>KG 注入：</strong>整條訓練線都有 KG 注入作為條款結構訊號 —— SFT 把條款的拓撲結構訊號跟回答 pair 一起進權重。</em></span>
           </li>
           <li>
             <span class="bullet-tag">③ DPO</span>
-            在 SFT 權重上做偏好優化 ——
+            <span class="l-en">Preference optimization on top of SFT weights —
+            <strong>chosen is produced by an LLM rapidly rewriting based on the
+            original content</strong>, rejected is the SFT model's own output, and
+            DPO / IPO loss pushes the output toward chosen's
+            <strong>style / expression direction</strong>. The behaviors SFT's CE
+            loss can't steer — tone, when to ask back, "textbook voice" —
+            are filled in by this preference signal. Signal granularity is per full
+            response, not per segment.
+            <br><em class="kg-note"><strong>KG injection:</strong> KG injection runs through the entire training line — DPO performs style / expression preference optimization on top of weights that already carry KG.</em></span>
+            <span class="l-zh">在 SFT 權重上做偏好優化 ——
             <strong>用 LLM 依原內容快速重寫產 chosen</strong>、
             SFT 自身輸出當 rejected，
             透過 DPO/IPO loss 把輸出往 chosen 的<strong>風格 / 表達方向</strong>推。
             SFT 沒辦法靠 CE loss 引導的「語氣 / 反問時機 / 教科書腔」，
             這一層用偏好訊號補。訊號粒度是整段，不是逐段。
-            <br><em class="kg-note"><strong>KG 注入：</strong>整條訓練線都有 KG 注入作為條款結構訊號 —— DPO 在已注入 KG 的權重基礎上做風格 / 表達層的偏好優化。</em>
+            <br><em class="kg-note"><strong>KG 注入：</strong>整條訓練線都有 KG 注入作為條款結構訊號 —— DPO 在已注入 KG 的權重基礎上做風格 / 表達層的偏好優化。</em></span>
           </li>
           <li>
             <span class="bullet-tag">④ PPO</span>
-            用 reward model 對輸出的<strong>不同 segment 給不同 reward</strong> ——
+            <span class="l-en">A reward model gives <strong>different rewards to
+            different segments</strong> of the output — the key property of PPO in
+            this project is <em>segment-level</em>, not sequence-level. DPO only
+            compares full responses and can't reach a granularity like
+            "this segment should rigorously cite a clause, that segment should be
+            plain language"; PPO fills that granularity with segment-level reward,
+            letting each segment converge to its own standard. Convergence depends
+            on the quality of the reward model.
+            <br><em class="kg-note"><strong>KG injection:</strong> KG injection runs through the entire training line — PPO uses <strong>RM span scores over each segment</strong> for more dynamic learning on top of weights that already carry KG.</em></span>
+            <span class="l-zh">用 reward model 對輸出的<strong>不同 segment 給不同 reward</strong> ——
             本專案 PPO 的關鍵特性是 <em>segment-level</em>，不是 sequence-level。
             DPO 給的是「整段比較」，做不到「這段該嚴謹引條款、那段該白話」這種粒度；
             PPO 用分段 reward 把這個粒度補上，
             讓不同段落各自收斂到對應的標準。收斂效果仰賴 reward model 的品質。
-            <br><em class="kg-note"><strong>KG 注入：</strong>整條訓練線都有 KG 注入作為條款結構訊號 —— PPO 在已注入 KG 的權重基礎上，靠 <strong>RM 對不同 segment 的 span 分數</strong>做更動態的學習。</em>
+            <br><em class="kg-note"><strong>KG 注入：</strong>整條訓練線都有 KG 注入作為條款結構訊號 —— PPO 在已注入 KG 的權重基礎上，靠 <strong>RM 對不同 segment 的 span 分數</strong>做更動態的學習。</em></span>
           </li>
         </ul>
 
-        <p>
+        <p class="l-en">
+          The tradeoffs behind this order unfold across the sections that follow —
+          why CLM / SFT can't be skipped to go straight to RL, why DPO has to
+          precede PPO — and the training architecture diagrams for each stage
+          (the three SFT / DPO / PPO diagrams) appear in the corresponding sections.
+        </p>
+        <p class="l-zh">
           這個順序背後的取捨在每一節後面會逐步展開 ——
           為什麼不能跳過 CLM / SFT 直接做 RL、為什麼 DPO 要在 PPO 之前、
           以及每一階段的訓練架構圖（SFT / DPO / PPO 三張）會分別在對應章節呈現。
@@ -204,12 +303,41 @@
       </article>
     </section>
 
-    <!-- ───── 問題 ───── -->
+    <!-- ───── Problem ───── -->
     <section id="problem">
-      <h2><span class="h2-marker"></span>問題：缺乏鎖定問題的能力</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Problem: lack of ability to lock the question</span>
+        <span class="l-zh">問題：缺乏鎖定問題的能力</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          Most enterprises today handle domain questions with a general-purpose LLM
+          plus RAG — when the user asks, retrieval pulls relevant passages from a
+          document store, and the LLM organizes those into an answer. This works
+          well in open-domain knowledge, but in a strongly structured domain like
+          insurance, the answer becomes <strong>over-diffused</strong>: the AI
+          seemingly answers the question completely — clauses, conditions, limits
+          all listed — but after reading it the user can't pick out the one point
+          they actually wanted. Too many words, the signal diluted by noise;
+          "looks like an answer" isn't the same as "locked onto the question".
+        </p>
+        <p class="l-en">
+          The root cause is that retrieval pulls back too much information, highly
+          fragmented. The fragmentation isn't a wrong technical choice — it's an
+          engineering reality: to maximize answer quality, enterprises pick the
+          strongest LLM (e.g. Claude Opus), but the token cost is high so the
+          entire clause text can't be stuffed into context. As a result a stack of
+          preprocessing has to be piled in between: tuning retrieval precision,
+          adding rerankers, hand-tuning TopK, building custom chunking rules for
+          different question types.
+        </p>
+        <p class="l-en">
+          All of this is "deeply un-AI", and it can't use the same parameters for
+          every case — every case needs custom tuning.
+        </p>
+        <p class="l-zh">
           目前大部分企業的做法是讓通用 LLM 搭配 RAG 處理領域問題 ——
           用戶提問時，retrieval 從文件庫撈出相關段落，再交給 LLM 整理成回答。
           這在開放域知識上 work 得不錯，但放到保險這種強結構領域，
@@ -218,7 +346,7 @@
           但使用者讀完反而抓不到自己真正要的那個重點 ——
           字太多、訊號被噪音稀釋，「看起來有答」不等於「鎖住了問題」。
         </p>
-        <p>
+        <p class="l-zh">
           根本原因是 retrieval 撈出來的資訊量過大、而且高度碎片化。
           這個碎片化不是技術選型的失誤，而是工程現實 ——
           企業為了回答品質會選用最強的 LLM（例如 Claude Opus），
@@ -226,7 +354,7 @@
           於是中間必須堆疊一連串前處理：提升檢索精準度、加上 reranker、
           人工調 TopK、為不同問題類型客製 chunking 規則。
         </p>
-        <p>
+        <p class="l-zh">
           這些過程除了"非常不AI"，也不可能每個case都用相同的參數，都需要客製化調整。
         </p>
       </article>
@@ -235,12 +363,27 @@
     
 
 
-    <!-- ───── 三條解法路徑 ───── -->
+    <!-- ───── Three solution paths ───── -->
     <section id="paths">
-      <h2><span class="h2-marker"></span>三條解法路徑</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Three solution paths</span>
+        <span class="l-zh">三條解法路徑</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          The constraints above can be handled along three directions: either
+          <strong>wrap more engineering around the outside</strong> (sharper prompts,
+          multi-step pipelines, smarter retrievers) to prop RAG up; or
+          <strong>skip retrieval</strong> and internalize the domain knowledge
+          directly into the model weights; or take a <strong>third hybrid
+          path</strong> — preserve the LLM's original general reasoning while
+          layering a structured reasoning-and-answering capability inside a specific
+          domain on top. All three target the same problem but take different
+          stances on its root cause. This project takes the third.
+        </p>
+        <p class="l-zh">
           上面的限制可以分三個方向處理：
           要嘛<strong>在外部包更多層工程</strong>（更精的 prompt、多步驟流程、更聰明的 retriever）
           把 RAG 撐起來；
@@ -254,37 +397,72 @@
       </article>
 
       <article class="card">
-        <header class="card-head"><h3>路徑一：結構化 prompt + 多步驟 pipeline</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">Path 1: structured prompts + multi-step pipeline</h3>
+          <h3 class="l-zh">路徑一：結構化 prompt + 多步驟 pipeline</h3>
+        </header>
+        <p class="l-en">
+          This path accepts that the LLM hasn't internalized insurance knowledge but
+          chooses to compensate via external engineering: pre-designed prompt
+          templates, question classification, multi-step retrieval, result reranking,
+          conditional filtering — then handing off to the LLM. The goal is to make
+          the final answer converge on the right clauses.
+        </p>
+        <p class="l-en">A few structural problems with this path:</p>
+        <p class="l-zh">
           這條路徑承認 LLM 沒內化保險知識，但選擇在外部用工程補強：
           預先設計好的 prompt template、問題分類、多步驟 retrieval、
           結果重排、條件過濾，再交給 LLM 整理。目標是讓最終回答收斂在正確的條款上。
         </p>
-        <p>但這條路有幾個結構性的問題：</p>
+        <p class="l-zh">但這條路有幾個結構性的問題：</p>
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">無法泛用</span>
-            這種客製化的回答 pipeline 沒辦法用一套參數通用到所有場景 ——
+            <span class="bullet-tag l-en">Doesn't generalize</span>
+            <span class="bullet-tag l-zh">無法泛用</span>
+            <span class="l-en">A custom answer pipeline like this can't use one set
+            of parameters across all scenarios — every product, every question
+            style, every business situation needs a targeted retune of prompt,
+            retrieval parameters, and flow. Engineering supports a single scenario,
+            but the model itself can't extrapolate to the next.</span>
+            <span class="l-zh">這種客製化的回答 pipeline 沒辦法用一套參數通用到所有場景 ——
             每個商品、每種問句風格、每個業務情境，
             都得針對性調過 prompt、retrieval 參數跟 flow。
-            靠工程把單一情境撐起來，但模型自己沒辦法外推到下一個場景。
+            靠工程把單一情境撐起來，但模型自己沒辦法外推到下一個場景。</span>
           </li>
           <li>
-            <span class="bullet-tag">沒解根因</span>
-            知識仍在外部，只是用更複雜的方式取得 ——
+            <span class="bullet-tag l-en">Doesn't address the root cause</span>
+            <span class="bullet-tag l-zh">沒解根因</span>
+            <span class="l-en">The knowledge still lives outside, just retrieved
+            with more complexity — engineering complexity masks the fact that the
+            model hasn't internalized it. The problem hasn't disappeared, it's just
+            been flattened into the pipeline.</span>
+            <span class="l-zh">知識仍在外部，只是用更複雜的方式取得 ——
             把「模型沒內化」這個事實用工程複雜度遮蔽掉，
-            問題沒消失，只是被攤平到 pipeline 裡。
+            問題沒消失，只是被攤平到 pipeline 裡。</span>
           </li>
           <li>
-            <span class="bullet-tag">耗時顯著增加</span>
-            多步驟 pipeline 的每一步都要 LLM 呼叫一次 ——
+            <span class="bullet-tag l-en">Latency increases substantially</span>
+            <span class="bullet-tag l-zh">耗時顯著增加</span>
+            <span class="l-en">Every step of a multi-step pipeline is an LLM call —
+            classify → retrieve → rewrite → rerank → generate. Running the full
+            chain pushes user wait time far beyond a single forward pass. Inference
+            cost (time + token) accumulates linearly with the number of steps, and
+            the real-time feel of conversation gets crushed by the engineering chain.</span>
+            <span class="l-zh">多步驟 pipeline 的每一步都要 LLM 呼叫一次 ——
             問題分類 → 檢索 → 改寫 → 重排 → 生成，
             整條 chain 跑下來，使用者等待時間遠長於單次 forward pass。
             推論成本（時間 + token）隨步驟數線性疊加，
-            對話的即時感整個被工程鏈拖垮。
+            對話的即時感整個被工程鏈拖垮。</span>
           </li>
         </ul>
-        <p>
+        <p class="l-en">
+          The industry exemplar of this path is <strong>Manus</strong> — using agent
+          orchestration and tool chains to scale a general-purpose LLM into a system
+          that handles complex tasks. Wide capability, but the underlying limits are
+          exactly those above: customization doesn't generalize, knowledge stays
+          external, every extra step adds wait time.
+        </p>
+        <p class="l-zh">
           這條路徑在業界的代表是 <strong>Manus</strong> ——
           靠 agent 編排跟工具鏈把通用 LLM 撐成處理複雜任務的系統。
           能力廣，但底層限制就是上面這幾點：
@@ -293,8 +471,30 @@
       </article>
 
       <article class="card">
-        <header class="card-head"><h3>路徑二：把領域知識內化進模型權重</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">Path 2: internalize the domain knowledge into the weights</h3>
+          <h3 class="l-zh">路徑二：把領域知識內化進模型權重</h3>
+        </header>
+        <p class="l-en">
+          Rather than "retrieving" knowledge at inference time, "pour" it in at
+          training time. In current research,
+          <strong>"internalization"</strong> means: through training, adjust the
+          parameters of the model's neural layers so that <strong>the domain
+          knowledge itself</strong> enters the weights — letting the model produce
+          domain-grounded answers directly from the weights without any external
+          retrieval. Concretely, this moves the model's weights from a
+          "general knowledge" state into a "I already have an outline of the
+          answer to this domain's questions" state.
+        </p>
+        <p class="l-en">
+          In practice, current research mostly avoids full fine-tuning (too
+          expensive) and uses parameter-efficient methods like <strong>LoRA</strong>
+          — training only about <strong>0.1%–1%</strong> of the base model's
+          parameters (depending on rank and which layers are covered), enough to
+          stack a "domain knowledge patch" on top of the original model.
+        </p>
+        <p class="l-en">On paper, this path's advantages:</p>
+        <p class="l-zh">
           與其在推論階段把知識「找回來」，不如在訓練階段把知識「灌進去」。
           在現有研究脈絡裡，<strong>「內化」</strong>的具體意思是：
           透過訓練調整模型內神經層的參數，
@@ -304,62 +504,124 @@
           講白一點，就是把模型權重從「通用知識」狀態，
           挪到「這個領域的問題我已經有答案輪廓」的狀態。
         </p>
-        <p>
+        <p class="l-zh">
           實作上，現有研究大多不採 full fine-tuning（成本太高），
           而是用 <strong>LoRA</strong> 這類 parameter-efficient 方法 ——
           只訓練約原模型 <strong>0.1%–1%</strong> 的額外參數量
           （依 rank 跟覆蓋的層而定），就能在原模型上疊一層「領域知識補丁」。
         </p>
-        <p>這條路徑帳面上的優勢：</p>
+        <p class="l-zh">這條路徑帳面上的優勢：</p>
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">推論單純</span>
-            沒有 retriever / reranker / 多步驟 pipeline，一次 forward pass 出答案。
+            <span class="bullet-tag l-en">Inference is simple</span>
+            <span class="bullet-tag l-zh">推論單純</span>
+            <span class="l-en">No retriever / reranker / multi-step pipeline; answer
+            comes out of a single forward pass.</span>
+            <span class="l-zh">沒有 retriever / reranker / 多步驟 pipeline，一次 forward pass 出答案。</span>
           </li>
           <li>
-            <span class="bullet-tag">無 retrieval miss</span>
-            回答從參數中回憶，不存在「沒撈到關鍵段落」的失誤。
+            <span class="bullet-tag l-en">No retrieval miss</span>
+            <span class="bullet-tag l-zh">無 retrieval miss</span>
+            <span class="l-en">The answer is recalled from parameters; there's no
+            "didn't fetch the key passage" failure mode.</span>
+            <span class="l-zh">回答從參數中回憶，不存在「沒撈到關鍵段落」的失誤。</span>
           </li>
           <li>
-            <span class="bullet-tag">可端到端對齊</span>
-            模型完全在訓練控制下，可以再接 RLHF / DPO / PPO
+            <span class="bullet-tag l-en">End-to-end alignable</span>
+            <span class="bullet-tag l-zh">可端到端對齊</span>
+            <span class="l-en">The model is fully under training control, so RLHF /
+            DPO / PPO can be stacked on to also bake fine-grained behaviors —
+            "rigorous citation here", "plain language there" — directly into the
+            weights. RAG systems can't really do this because retrieval is a
+            non-differentiable step that can't be jointly reward-optimized with the
+            LLM.</span>
+            <span class="l-zh">模型完全在訓練控制下，可以再接 RLHF / DPO / PPO
             把「該嚴謹引條款」「該白話解釋」這類細粒度行為一起收進權重 ——
-            RAG 系統難做到，因為 retrieval 是非可微環節，沒辦法跟 LLM 一起 reward 優化。
+            RAG 系統難做到，因為 retrieval 是非可微環節，沒辦法跟 LLM 一起 reward 優化。</span>
           </li>
         </ul>
-        <p>但這條路徑要誠實面對的<strong>風險</strong>，比帳面上看到的多得多：</p>
+        <p class="l-en">But the <strong>risks</strong> this path has to honestly face go well beyond what's visible on paper:</p>
+        <p class="l-zh">但這條路徑要誠實面對的<strong>風險</strong>，比帳面上看到的多得多：</p>
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">能力退化</span>
-            Fine-tuning 過程可能讓模型在學新東西的同時，
+            <span class="bullet-tag l-en">Capability regression</span>
+            <span class="bullet-tag l-zh">能力退化</span>
+            <span class="l-en">Fine-tuning can cause the model to drop its original
+            general capability while learning the new domain
+            (catastrophic forgetting) — "speaks insurance well" but "can't reason
+            about general questions" is a recurring outcome. For an LLM whose
+            answer quality is propped up by general reasoning in the first place,
+            this is a real cost.</span>
+            <span class="l-zh">Fine-tuning 過程可能讓模型在學新東西的同時，
             丟掉原本的通用能力（catastrophic forgetting）——
             模型「會講保險」但「不會推理一般問題」的情況時有所聞。
-            對一個本來就是靠通用推理能力撐起回答品質的 LLM 來說，這是真實的成本。
+            對一個本來就是靠通用推理能力撐起回答品質的 LLM 來說，這是真實的成本。</span>
           </li>
           <li>
-            <span class="bullet-tag">訓練不穩定</span>
-            參數調整本身就有風險：可能 over-fit、
+            <span class="bullet-tag l-en">Training instability</span>
+            <span class="bullet-tag l-zh">訓練不穩定</span>
+            <span class="l-en">Parameter tuning itself carries risk: over-fitting,
+            regression on certain tasks, loss converging while actual generation
+            gets worse. The whole training process needs evaluation metrics
+            verified repeatedly to confirm no regression — "ran an epoch" isn't
+            "trained successfully".</span>
+            <span class="l-zh">參數調整本身就有風險：可能 over-fit、
             可能在某些任務上反而變差、可能 loss 收斂但實際輸出退步。
             整個訓練過程要靠評估指標反覆驗證才能確定沒有退化，
-            「跑完一輪」不等於「訓練成功」。
+            「跑完一輪」不等於「訓練成功」。</span>
           </li>
           <li>
-            <span class="bullet-tag">資料品質成本</span>
-            壞資料會被直接寫進權重，後果比 RAG 撈到壞文件嚴重得多 ——
+            <span class="bullet-tag l-en">Data-quality cost</span>
+            <span class="bullet-tag l-zh">資料品質成本</span>
+            <span class="l-en">Bad data gets written straight into the weights — far
+            more serious than RAG retrieving a bad document. RAG can be fixed by
+            editing the source document; an error baked into the weights needs
+            another training run to correct. Data-cleaning standards have to be
+            very high, and producing quality SFT / preference data often costs more
+            than the training itself.</span>
+            <span class="l-zh">壞資料會被直接寫進權重，後果比 RAG 撈到壞文件嚴重得多 ——
             RAG 改文件就能改，內化進權重的錯誤要再做訓練才修得掉。
             data cleaning 的標準必須拉到很高，
-            高品質 SFT / preference 資料的整理成本，往往比訓練本身還高。
+            高品質 SFT / preference 資料的整理成本，往往比訓練本身還高。</span>
           </li>
           <li>
-            <span class="bullet-tag">更新需再訓練</span>
-            條款一變要再做訓練，不像 RAG 改文件就好。
+            <span class="bullet-tag l-en">Updates require retraining</span>
+            <span class="bullet-tag l-zh">更新需再訓練</span>
+            <span class="l-en">When a clause changes, you have to retrain — unlike
+            RAG, where you just edit the document.</span>
+            <span class="l-zh">條款一變要再做訓練，不像 RAG 改文件就好。</span>
           </li>
         </ul>
       </article>
 
       <article class="card">
-        <header class="card-head"><h3>路徑三：混合架構（本專案路徑）</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">Path 3: hybrid architecture (this project's path)</h3>
+          <h3 class="l-zh">路徑三：混合架構（本專案路徑）</h3>
+        </header>
+        <p class="l-en">
+          Path 1 uses external engineering to mask the fact that the model hasn't
+          internalized the domain, but the answers diffuse and responses are slow;
+          Path 2 internalizes knowledge into the weights but has to absorb real
+          costs in capability regression, training instability, and data quality.
+          Neither is enough — this project explores a <strong>third path</strong>:
+          neither pure fine-tuning nor pure RAG, but a hybrid architecture aiming
+          to <strong>preserve the LLM's original general reasoning</strong> while
+          giving it, inside a specific domain, both a <strong>structured reasoning
+          path</strong> and the <strong>ability to lock onto the question</strong>.
+        </p>
+        <p class="l-en">
+          The tradeoff behind it: pure fine-tuning easily produces "speaks
+          insurance, forgot how to reason"; pure RAG produces "reasons fine, never
+          nails the clause structure". The hybrid architecture is designed to keep
+          both — general reasoning stays on the rails of the original model
+          weights, and the domain's structural knowledge enters the model through
+          additional training signals (the KG, discussed below, being one key
+          component) in a controlled way: not overwriting the original capability,
+          while still producing convergent answers on domain questions.
+        </p>
+        <p class="l-en">Several key design choices on this path:</p>
+        <p class="l-zh">
           路徑一靠工程外掛遮蔽「沒內化」的事實，但答案發散、回應慢；
           路徑二把知識內化進權重，但要承擔能力退化、訓練不穩定、資料品質這幾個真實的代價。
           這兩條都不夠 ——
@@ -367,7 +629,7 @@
           而是一種混合架構，目標是<strong>在不破壞 LLM 原本通用推理能力的前提下</strong>，
           讓它在特定領域裡同時擁有<strong>結構化的推理路徑</strong>跟<strong>鎖得住問題的回答能力</strong>。
         </p>
-        <p>
+        <p class="l-zh">
           背後的取捨是：
           純微調容易讓模型「會講保險，但忘了怎麼推理」；
           純 RAG 又讓模型「會推理，但永遠抓不準條款結構」。
@@ -377,32 +639,66 @@
           以可控的方式進入模型，不蓋過原本能力，
           又能在領域問題上產生收斂的回答。
         </p>
-        <p>這條路徑在方法上有幾個關鍵設計：</p>
+        <p class="l-zh">這條路徑在方法上有幾個關鍵設計：</p>
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">凍結 LLM、只訓 LoRA</span>
-            LLM 內部的參數是高度耦合的（capability entanglement）——
+            <span class="bullet-tag l-en">Freeze the LLM, train only LoRA</span>
+            <span class="bullet-tag l-zh">凍結 LLM、只訓 LoRA</span>
+            <span class="l-en">An LLM's parameters are highly coupled (capability
+            entanglement) — touching the original weights casually risks degrading
+            general capability in places you can't see. So this project
+            <strong>freezes the original model weights</strong> and trains only
+            LoRA's low-rank updates, keeping "modifying the base parameters" off
+            the table from the start. If the signal design and training pipeline
+            are later validated as stable enough, gradually unfreezing some weights
+            for larger updates isn't ruled out — but that's a question for later.</span>
+            <span class="l-zh">LLM 內部的參數是高度耦合的（capability entanglement）——
             擅自調整原權重，容易在你沒看到的地方造成通用能力退化。
             所以本方案先<strong>凍結原模型權重</strong>，只訓練 LoRA 的低秩更新，
             把「動原參數」的風險先擋在門外。
             未來如果訊號設計跟訓練流程被驗證夠穩定，
             不排除逐步解凍部分權重做更大幅度的更新 ——
-            但那是後面才該問的問題。
+            但那是後面才該問的問題。</span>
           </li>
           <li>
-            <span class="bullet-tag">LoRA 當低風險試金石</span>
-            先做個技術澄清：LoRA <strong>不是</strong>原模型的「微縮版」——
+            <span class="bullet-tag l-en">LoRA as a low-risk probe</span>
+            <span class="bullet-tag l-zh">LoRA 當低風險試金石</span>
+            <span class="l-en">A technical clarification first: LoRA is
+            <strong>not</strong> a "scaled-down version" of the original model —
+            "low rank" refers to the <strong>update matrix</strong> being low rank
+            (ΔW = BA); the original weights stay frozen and unchanged. LoRA's real
+            role on this path is as a <strong>low-cost, low-risk probe</strong>:
+            with a relatively small amount of data, first verify whether the
+            "KG injection method + training pipeline" can improve the model on
+            domain questions without harming general capability. Only if LoRA works
+            does the question of "whether to unfreeze more of the LLM" become worth
+            asking; if LoRA itself doesn't work, unfreezing only amplifies the
+            problem.</span>
+            <span class="l-zh">先做個技術澄清：LoRA <strong>不是</strong>原模型的「微縮版」——
             它的低秩特性指的是<strong>更新矩陣</strong>是低秩的（ΔW = BA），
             原模型權重不變、被凍結。
             它在這條路徑的真正角色是<strong>低成本、低風險的試金石</strong>：
             用相對少的資料量先驗證「KG 注入方法 + 訓練流程」
             能不能讓模型在領域問題上進步、又不傷到通用能力。
             LoRA 跑得通，「要不要進一步解凍 LLM」這個問題才值得問；
-            連 LoRA 都跑不通的話，直接解凍只會把問題放大。
+            連 LoRA 都跑不通的話，直接解凍只會把問題放大。</span>
           </li>
           <li>
-            <span class="bullet-tag">用 KG 注入取代長 context</span>
-            本方案採用<strong>知識圖譜注入</strong>跟 LLM 做聯合訓練，
+            <span class="bullet-tag l-en">Use KG injection instead of long context</span>
+            <span class="bullet-tag l-zh">用 KG 注入取代長 context</span>
+            <span class="l-en">This approach uses <strong>knowledge-graph
+            injection</strong> jointly trained with the LLM, replacing the
+            conventional long-text approach of "stuffing the full clause text /
+            training material into context". The thinking borrows from RAG's core
+            advantage in retrieval — when the signal fed to the model at training
+            time is <strong>already structured and anchored to the correct
+            clauses</strong>, the impact on generation is far more direct than
+            feeding flat text. A KG also expresses topological relations like
+            "clause — condition — limit" more precisely than flat text. Two things
+            have to be done right: (a) the graph structure is built correctly,
+            (b) the model can read and use that graph structure — these two are
+            the core propositions this path has to validate.</span>
+            <span class="l-zh">本方案採用<strong>知識圖譜注入</strong>跟 LLM 做聯合訓練，
             取代「把整段條款／教材直接丟進 context」這種傳統長文本做法。
             背後的思路借鑒 RAG 在 retrieval 上的核心優勢 ——
             當訓練時餵給模型的訊號是<strong>已經結構化、定錨在正確條款上</strong>，
@@ -411,10 +707,17 @@
             前提是兩件事得做對：
             （a）圖結構建得正確、
             （b）模型能讀懂並利用這個圖結構 ——
-            這兩件事是這條路徑要驗證的核心命題。
+            這兩件事是這條路徑要驗證的核心命題。</span>
           </li>
         </ul>
-        <p>
+        <p class="l-en">
+          The concrete training pipeline and structural-signal design are the topic
+          of the next several sections: how the KG is jointly trained with the LLM,
+          why the order is CLM → SFT → DPO → PPO, what specific sub-problem each
+          stage solves, and how general capability is monitored throughout to
+          ensure it isn't eaten away.
+        </p>
+        <p class="l-zh">
           具體的訓練流程跟結構訊號設計是後面幾節的主題：
           KG 怎麼跟 LLM 聯合訓練、為什麼要 CLM → SFT → DPO → PPO 這個順序、
           每一階段在解什麼具體的子問題、
@@ -426,17 +729,36 @@
     <!-- ───── KG + LLM 聯合訓練 ───── -->
 
 
-    <!-- ───── 訓練流程 ───── -->
+    <!-- ───── Training pipeline ───── -->
     <section id="training">
-      <h2><span class="h2-marker"></span>訓練流程：為什麼從 CLM / SFT 開始</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Training pipeline: why start from CLM / SFT</span>
+        <span class="l-zh">訓練流程：為什麼從 CLM / SFT 開始</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          To turn the base model into a usable insurance advisor, the training
+          pipeline in the middle can't skip stages. Each stage does something
+          different; if any one is missing, the downstream stages run into trouble.
+        </p>
+        <p class="l-en">
+          The next three sections (SFT / DPO / PPO) each include a
+          <strong>training architecture diagram</strong> —
+          <strong>all three are original training architectures I designed for the
+          insurance-advisor scenario</strong>, and one of the core research outputs
+          of this project. Read each diagram together with its section; the figure
+          explains the data flow, where the loss is computed, and which parts LoRA
+          updates faster than the text. Every diagram <strong>can be clicked to
+          enlarge</strong> for detail.
+        </p>
+        <p class="l-zh">
           要讓 base model 變成一個能用的保險顧問，
           中間的訓練流程不能跳階段。每一階段做的事情不同，
           少了任何一步，後面的階段都會出問題。
         </p>
-        <p>
+        <p class="l-zh">
           以下三節（SFT / DPO / PPO）各自附上一張<strong>訓練架構圖</strong> ——
           <strong>這三張圖都是本人針對保險顧問場景原創設計的訓練架構</strong>，
           也是這個專案的核心研究產出之一。
@@ -447,8 +769,20 @@
       </article>
 
       <article class="card" id="clm-goal">
-        <header class="card-head"><h3>CLM · 目標</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">CLM · Goal</h3>
+          <h3 class="l-zh">CLM · 目標</h3>
+        </header>
+        <p class="l-en">
+          Do next-token prediction on domain text (raw clause text, typical phrasing
+          from the insurance industry) so the base model becomes familiar with the
+          domain's vocabulary, syntax, and clause structure. This stage
+          <strong>doesn't teach "how to answer", only "what insurance's language
+          looks like"</strong> — it's a warm-up, repairing the base model's fragile
+          internal representations for terms like "coverage cap" and "waiting period"
+          so the later stages have stable ground to stand on.
+        </p>
+        <p class="l-zh">
           用領域文本（條款原文、保險產業常見表述）做 next-token prediction，
           讓 base model 熟悉保險領域的詞彙、句法與條款結構。
           這個階段<strong>不教「該怎麼回答」，只教「保險的語言長什麼樣」</strong> ——
@@ -458,9 +792,20 @@
       </article>
 
       <article class="card placeholder" id="clm-arch">
-        <header class="card-head"><h3>CLM · 架構</h3></header>
-        <span class="placeholder-tag">整理中</span>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">CLM · Architecture</h3>
+          <h3 class="l-zh">CLM · 架構</h3>
+        </header>
+        <span class="placeholder-tag l-en">In progress</span>
+        <span class="placeholder-tag l-zh">整理中</span>
+        <p class="l-en">
+          The CLM stage doesn't involve KG injection — base LLM + LoRA performs
+          standard next-token prediction on the clause corpus. The architecture
+          shares the LoRA backbone with SFT; the only difference is the absence of
+          the graph encoder / adapter path — pure corpus, pure token loss. Full
+          training-architecture diagram in progress.
+        </p>
+        <p class="l-zh">
           CLM 階段不涉及 KG 注入，使用 base LLM + LoRA 在條款語料上做 standard next-token prediction。
           架構與 SFT 共用 LoRA 主幹，差別只在沒有 graph encoder / adapter 路徑 ——
           純語料、純 token loss。完整訓練架構圖整理中。
@@ -468,9 +813,19 @@
       </article>
 
       <article class="card placeholder" id="clm-output">
-        <header class="card-head"><h3>CLM · 輸出範例</h3></header>
-        <span class="placeholder-tag">整理中</span>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">CLM · Output example</h3>
+          <h3 class="l-zh">CLM · 輸出範例</h3>
+        </header>
+        <span class="placeholder-tag l-en">In progress</span>
+        <span class="placeholder-tag l-zh">整理中</span>
+        <p class="l-en">
+          CLM's "output" isn't an answer — it operates at the token-distribution
+          level. The planned diffs to show: insurance-corpus perplexity before vs.
+          after CLM, next-token prediction accuracy on domain terms, and generation
+          stability on typical clause sentence patterns. In progress.
+        </p>
+        <p class="l-zh">
           CLM 的「輸出」不是回答 —— 在 token 分布層面動。
           預計呈現的 diff：保險語料 perplexity 對比 (CLM 前 vs CLM 後)、
           術語 next-token 預測準確度對比、條款典型句型的生成穩定度。
@@ -479,72 +834,144 @@
       </article>
 
       <article class="card" id="sft-goal">
-        <header class="card-head"><h3>SFT · 目標</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">SFT · Goal</h3>
+          <h3 class="l-zh">SFT · 目標</h3>
+        </header>
+        <p class="l-en">
+          SFT is <strong>the core stage where new knowledge actually gets
+          internalized into the weights</strong> — if this layer isn't done right,
+          no amount of RL alignment downstream can save it.
+        </p>
+        <p class="l-en">Several things have to be done correctly at this stage:</p>
+        <p class="l-zh">
           SFT 是<strong>新知識真正內化進權重的核心階段</strong> ——
           這層做不好，後面再多 RL 對齊都救不回來。
         </p>
-        <p>有幾件事在這個階段必須做對：</p>
+        <p class="l-zh">有幾件事在這個階段必須做對：</p>
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">指令 SFT 是必做動作</span>
-            把資料整理成（指令 / 使用者問題 → 回答）的 pair，
+            <span class="bullet-tag l-en">Instruction SFT is mandatory</span>
+            <span class="bullet-tag l-zh">指令 SFT 是必做動作</span>
+            <span class="l-en">Organize the data into (instruction / user question
+            → answer) pairs, and train with cross-entropy loss (CE loss) to fit the
+            model to the target answer. At each token position, the model learns
+            "given the prior context, what should the next token be"; aggregated,
+            this presses the domain knowledge into the weights —
+            <strong>this is mainly where learning new knowledge happens</strong>.</span>
+            <span class="l-zh">把資料整理成（指令 / 使用者問題 → 回答）的 pair，
             用cross-entropy loss (CE Loss) 訓練模型擬合到目標回答。
             模型在每個 token 位置上學到「給定前面的 context，下一個 token 該是什麼」，
             累積起來就把領域知識壓進了權重 ——
-            <strong>學習新知識的工作主要就在這個階段發生</strong>。
+            <strong>學習新知識的工作主要就在這個階段發生</strong>。</span>
           </li>
           <li>
-            <span class="bullet-tag">資料品質直接寫進權重</span>
-            CE loss 沒有判斷力，你餵什麼它擬合什麼。
+            <span class="bullet-tag l-en">Data quality goes straight into the weights</span>
+            <span class="bullet-tag l-zh">資料品質直接寫進權重</span>
+            <span class="l-en">CE loss has no judgment — whatever you feed it, it
+            fits. Bad data, structurally misaligned answers, fuzzy clause citations
+            — all get learned into the weights verbatim. This is exactly why this
+            project <strong>uses KG injection</strong> rather than piling on raw
+            long text — the training signal itself has to be structurally correct;
+            we can't rely on the model to infer the clause topology from a heap of
+            flat text on its own.</span>
+            <span class="l-zh">CE loss 沒有判斷力，你餵什麼它擬合什麼。
             壞資料、結構錯位的回答、含糊的條款引用，都會被原封不動學進權重。
             這也是本專案<strong>用 KG 注入</strong>而不是直接堆原始長文本的原因 ——
             訓練訊號本身就要在結構上是正確的，
-            不能指望模型自己從一堆平面文本裡推斷出條款的拓撲關係。
+            不能指望模型自己從一堆平面文本裡推斷出條款的拓撲關係。</span>
           </li>
           <li>
-            <span class="bullet-tag">SFT 是「教會」、不是「修正」</span>
-            SFT 只能模仿訓練資料：資料裡好的它學，
+            <span class="bullet-tag l-en">SFT teaches, it doesn't correct</span>
+            <span class="bullet-tag l-zh">SFT 是「教會」、不是「修正」</span>
+            <span class="l-en">SFT can only imitate the training data: it picks up
+            the good parts, and it picks up the biases (over-assurance, giving an
+            answer when it should ask back, wrong clause-citation granularity)
+            wholesale. Preference issues at this layer are for downstream DPO and
+            PPO to handle — it isn't SFT's responsibility.</span>
+            <span class="l-zh">SFT 只能模仿訓練資料：資料裡好的它學，
             資料裡的偏誤（過度保證、該反問卻直接給答案、條款引述粒度錯誤）
             它也照單全收。
             這個層級的偏好問題交給後面的 DPO 跟 PPO 處理，
-            不是 SFT 該扛的責任。
+            不是 SFT 該扛的責任。</span>
           </li>
         </ul>
       </article>
 
       <article class="card" id="sft-arch">
-        <header class="card-head"><h3>SFT · 架構</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">SFT · Architecture</h3>
+          <h3 class="l-zh">SFT · 架構</h3>
+        </header>
+        <p class="l-en">
+          LoRA + KG injection: a GAT encoder turns the insurance-clause graph
+          structure into an embedding, which an adapter feeds onto the LLM's input
+          sequence, going through training together with the clause text. CE loss
+          is computed on the answer tokens; the base LLM is frozen — only LoRA +
+          graph encoder + adapter are trained.
+        </p>
+        <p class="l-zh">
           LoRA + KG 注入：GAT 編碼器把保險條款的圖結構轉成 embedding，
           透過 adapter 接到 LLM 的輸入序列上，跟條款文字一起進訓練。
           CE Loss 在 answer tokens 上計算，base LLM 凍結、只訓 LoRA + Graph Encoder + Adapter。
         </p>
         <figure class="arch-figure arch-figure-md">
-          <div class="arch-credit">原創架構設計 · Edward Chiu</div>
-          <img src="assets/sft_architecture_show.svg" alt="SFT 訓練架構 · 本人原創設計" loading="lazy">
-          <figcaption>SFT 訓練架構 · LoRA + KG 注入 · 點圖可放大</figcaption>
+          <div class="arch-credit">
+            <span class="l-en">Original architecture · Edward Chiu</span>
+            <span class="l-zh">原創架構設計 · Edward Chiu</span>
+          </div>
+          <img src="assets/sft_architecture_show.svg" alt="SFT training architecture · original design" loading="lazy">
+          <figcaption>
+            <span class="l-en">SFT training architecture · LoRA + KG injection · click to enlarge</span>
+            <span class="l-zh">SFT 訓練架構 · LoRA + KG 注入 · 點圖可放大</span>
+          </figcaption>
         </figure>
       </article>
 
       <aside class="tip-card">
         <span class="tip-label">Tips</span>
-        <h3>為什麼不能跳過 CLM / SFT 直接做 RL</h3>
-        <p>
+        <h3 class="l-en">Why CLM / SFT can't be skipped to go straight to RL</h3>
+        <h3 class="l-zh">為什麼不能跳過 CLM / SFT 直接做 RL</h3>
+        <p class="l-en">
+          RL (DPO / PPO) is "optimization", not "teaching". A model that doesn't
+          yet know what insurance language looks like will, if pushed straight into
+          RL, <em>reward hack</em> — it'll find a policy that scores high but is
+          actually nonsense.
+        </p>
+        <p class="l-en">
+          The order is: CLM gives "able to speak", SFT gives "knows how to speak",
+          RL finally has something to "optimize". This order matters especially for
+          small models — limited capacity, less margin for error; skipping a stage
+          amplifies the damage.
+        </p>
+        <p class="l-zh">
           RL（DPO / PPO）做的是「優化」，不是「教會」。
           一個還不知道保險語言長什麼樣的模型，
           直接做 RL 會 <em>reward hack</em>：
           找到一個能拿高 reward 但實質胡言亂語的策略。
         </p>
-        <p>
+        <p class="l-zh">
           順序是這樣的：CLM 給「能講」，SFT 給「會講」，RL 才有東西可以「優化」。
           這個順序在小模型上特別重要 —— 容量小、容錯空間小，跳階段的後果會放大。
         </p>
       </aside>
 
       <article class="card" id="sft-output">
-        <header class="card-head"><h3>SFT · 輸出範例（KG 注入的初步效果）</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">SFT · Output example (initial effect of KG injection)</h3>
+          <h3 class="l-zh">SFT · 輸出範例（KG 注入的初步效果）</h3>
+        </header>
+        <p class="l-en">
+          SFT alone is already enough to verify one key thing —
+          <strong>KG injection does change the model's output pattern</strong>.
+          Below are two outputs from <strong>the same SFT weights</strong> on
+          <strong>the same prompt</strong>; the only variable is "whether the
+          KG triples are injected through the PLA and SP paths". It's a clean
+          single-variable comparison that shows the qualitative difference KG brings.
+          <em>Note: dialogue samples are the model's actual Chinese-language output;
+          English translations are provided for readability.</em>
+        </p>
+        <p class="l-zh">
           SFT 階段已經能驗證一件關鍵的事 ——
           <strong>KG 注入確實改變了模型的輸出 pattern</strong>。
           下面是<strong>同一份 SFT 權重</strong>對<strong>同一個提問</strong>的兩份輸出，
@@ -553,16 +980,24 @@
         </p>
 
         <div class="diff-block">
-          <span class="diff-question">我看了這張HSV的保單，保障好像不錯，但月繳快六千，我月薪七萬五，這樣預算分配合理嗎？</span>
+          <span class="diff-question l-en">I looked at this HSV policy — coverage seems good, but the monthly premium is close to NT$6,000 and my monthly salary is NT$75,000. Is this budget allocation reasonable?</span>
+          <span class="diff-question l-zh">我看了這張HSV的保單，保障好像不錯，但月繳快六千，我月薪七萬五，這樣預算分配合理嗎？</span>
 
           <div class="diff-cols">
             <div class="diff-col">
-              <div class="diff-col-head is-bad">SFT · 無 KG 注入</div>
+              <div class="diff-col-head is-bad">
+                <span class="l-en">SFT · without KG injection</span>
+                <span class="l-zh">SFT · 無 KG 注入</span>
+              </div>
               <div class="diff-chips">
-                <span class="diff-chip bad">✗ 無顧問內心反思</span>
-                <span class="diff-chip bad">✗ 讀錯月薪數字</span>
-                <span class="diff-chip bad">✗ markdown 條列</span>
-                <span class="diff-chip bad">✗ 沒反問補資訊</span>
+                <span class="diff-chip bad l-en">✗ No advisor internal reflection</span>
+                <span class="diff-chip bad l-zh">✗ 無顧問內心反思</span>
+                <span class="diff-chip bad l-en">✗ Misread the salary figure</span>
+                <span class="diff-chip bad l-zh">✗ 讀錯月薪數字</span>
+                <span class="diff-chip bad l-en">✗ Markdown bullet style</span>
+                <span class="diff-chip bad l-zh">✗ markdown 條列</span>
+                <span class="diff-chip bad l-en">✗ Didn't ask back for missing info</span>
+                <span class="diff-chip bad l-zh">✗ 沒反問補資訊</span>
               </div>
 <pre class="diff-prose">你的問題很實際，可以分點來分析：
 ### 1. <span class="diff-mark bad">**月繳額度與月薪關係**</span>
@@ -572,12 +1007,19 @@
             </div>
 
             <div class="diff-col">
-              <div class="diff-col-head is-good">SFT · 有 KG 注入（L14 + L26 + SP）</div>
+              <div class="diff-col-head is-good">
+                <span class="l-en">SFT · with KG injection (L14 + L26 + SP)</span>
+                <span class="l-zh">SFT · 有 KG 注入（L14 + L26 + SP）</span>
+              </div>
               <div class="diff-chips">
-                <span class="diff-chip good">✓ &lt;im&gt; 顧問內心反思</span>
-                <span class="diff-chip good">✓ 識別資訊缺口</span>
-                <span class="diff-chip good">✓ 月薪 7.5 萬抓對</span>
-                <span class="diff-chip warn">⚠ close 未收（PPO 解）</span>
+                <span class="diff-chip good l-en">✓ &lt;im&gt; advisor inner reflection</span>
+                <span class="diff-chip good l-zh">✓ &lt;im&gt; 顧問內心反思</span>
+                <span class="diff-chip good l-en">✓ Recognizes information gaps</span>
+                <span class="diff-chip good l-zh">✓ 識別資訊缺口</span>
+                <span class="diff-chip good l-en">✓ Reads NT$75k salary correctly</span>
+                <span class="diff-chip good l-zh">✓ 月薪 7.5 萬抓對</span>
+                <span class="diff-chip warn l-en">⚠ close tag missing (PPO fixes)</span>
+                <span class="diff-chip warn l-zh">⚠ close 未收（PPO 解）</span>
               </div>
 <pre class="diff-prose"><span class="diff-mark good">&lt;im&gt;他提供月薪和保費佔比，但沒說<strong>年齡、性別及婚姻狀況</strong>，也沒有提到計劃類型或已投保其他險項。我需要先確認這些基本資訊才能評估適配性。</span>我該用問題法先徵求這些關鍵數據，避免誤導客戶到錯誤的建議。
 <span class="diff-mark warn">[後續 close 未收 + 訓練 pad 殘留會在 PPO 階段修掉]</span></pre>
@@ -585,8 +1027,22 @@
           </div>
 
           <details class="diff-kg">
-            <summary>注入到模型的 KG triples（3 組路徑）</summary>
-            <div class="diff-kg-body">
+            <summary class="l-en">KG triples injected into the model (3 path groups)</summary>
+            <summary class="l-zh">注入到模型的 KG triples（3 組路徑）</summary>
+            <div class="diff-kg-body l-en">
+              <strong>L14 surface (dialogue anchor → action style)</strong>
+              I → [cite] → male 56–60 Plan 3, monthly NT$5,860<br>
+              I → [disclose] → the fact that the ratio is too high
+              <strong>L26 deep (reasoning anchor → clause / rate alignment)</strong>
+              rate → [compare to] → male 56 Plan 3, monthly NT$5,860<br>
+              budget ratio → [exceeds] → 3–5% reasonable range<br>
+              recommendation → [downgrade] → Plan 2 or Plan 1 to lower premium ratio
+              <strong>SP persona (advisor identity soft prompt)</strong>
+              I → [principle] → honestly disclose limits, including terms unfavorable to the client<br>
+              I → [refuse to do] → don't exaggerate coverage to close, don't hide exclusions<br>
+              I → [specialist product] → Fubon Life HSV one-year hospital medical rider
+            </div>
+            <div class="diff-kg-body l-zh">
               <strong>L14 surface（對話 anchor → 動作風格）</strong>
               我 → [引用] → 56-60 歲男性計劃 3 月繳 5860 元<br>
               我 → [揭露] → 佔比過高的事實
@@ -601,7 +1057,16 @@
             </div>
           </details>
 
-          <div class="diff-takeaway">
+          <div class="diff-takeaway l-en">
+            <strong>Takeaway:</strong> with the same SFT weights, once the KG triples
+            enter the model through the PLA + SP paths, the output shifts from
+            "generic bullet-list answer" into "advisor inner reflection + recognizing
+            the client's information gaps". What KG changes is the
+            <strong>structural prior</strong> of the answer, not the knowledge
+            itself. The close-tag failure + pad residue are SFT's own bugs and get
+            fixed in the next section by PPO.
+          </div>
+          <div class="diff-takeaway l-zh">
             <strong>Takeaway：</strong>同一份 SFT 權重，KG triples 走 PLA + SP 路徑進到模型後，
             從「通用條列式回答」轉成「顧問腦內反思 + 識別客戶資訊缺口」的輸出。
             KG 改的是回答的<strong>結構先驗</strong>，不是知識本身。
@@ -613,10 +1078,23 @@
 
     <!-- ───── DPO + PPO ───── -->
     <section id="alignment">
-      <h2><span class="h2-marker"></span>對齊階段：DPO 跟 PPO 各自解什麼</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Alignment: what DPO and PPO each solve</span>
+        <span class="l-zh">對齊階段：DPO 跟 PPO 各自解什麼</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          The post-SFT model can talk, but two classes of problems remain:
+          <strong>preference misalignment</strong> (the advisor should proactively
+          ask back about the client's needs, but the model often just gives an
+          answer) and <strong>fine-grained errors</strong> (places that should
+          rigorously cite a clause become plain language; places that should be
+          plain language become clause-quoting). DPO and PPO handle these two
+          separately.
+        </p>
+        <p class="l-zh">
           SFT 後的模型雖然能講話，但有兩類問題沒解掉：
           <strong>偏好不對齊</strong>（顧問該主動反問需求，模型常常直接給答案）
           跟<strong>細粒度錯誤</strong>（該嚴謹引條款的地方變白話、該白話的地方變條文）。
@@ -625,55 +1103,120 @@
       </article>
 
       <article class="card" id="dpo-goal">
-        <header class="card-head"><h3>DPO · 目標</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">DPO · Goal</h3>
+          <h3 class="l-zh">DPO · 目標</h3>
+        </header>
+        <p class="l-en">
+          DPO is conceptually simple: prepare (chosen / rejected) pairwise data and
+          use a loss function to push the model directly toward chosen — no reward
+          model needed, training is stable, cost is low. On paper it looks like the
+          easiest method to pick up among offline RL approaches.
+        </p>
+        <p class="l-en">
+          But after running it on this project, the most counterintuitive lesson:
+          <strong>having chosen and rejected doesn't mean DPO trains well</strong>.
+          The <strong>gap between them can't be too large</strong>, and the
+          <strong>data distribution</strong> matters more than the mere existence of
+          pairs — staring at the <code>margin</code> on the training curve almost
+          guarantees being misled.
+        </p>
+        <p class="l-en">The conclusion this project landed on: DPO's training state has to be <strong>watched on three layers at once</strong>; missing any one will hurt.</p>
+        <p class="l-zh">
           DPO 在概念上很單純：準備（chosen / rejected）的成對資料，
           用 loss function 讓模型直接往 chosen 那邊靠 ——
           不需要訓練 reward model，訓練穩定、成本低，
           帳面上看起來是 offline RL 裡最好上手的方法。
         </p>
-        <p>
+        <p class="l-zh">
           但實際在這個專案跑過之後，最反直覺學到的一件事是：
           <strong>有 chosen 跟 rejected 不代表 DPO 能訓得好</strong>。
           兩者的<strong>差距不能太大</strong>，
           <strong>資料分布</strong>本身比成對的存在更關鍵 ——
           如果只盯著訓練曲線上的 <code>margin</code> 看，幾乎一定會被誤導。
         </p>
-        <p>本專案最後的結論是：DPO 的訓練狀況必須<strong>三層並看</strong>，缺一不可。</p>
+        <p class="l-zh">本專案最後的結論是：DPO 的訓練狀況必須<strong>三層並看</strong>，缺一不可。</p>
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">資料層</span>
-            看 chosen / rejected 的 <code>|Δlen|</code>（長度差）跟 <code>quality gap</code>（品質差）。
+            <span class="bullet-tag l-en">Data layer</span>
+            <span class="bullet-tag l-zh">資料層</span>
+            <span class="l-en">Watch the chosen / rejected <code>|Δlen|</code>
+            (length gap) and <code>quality gap</code>. Too large a length gap →
+            DPO learns the shortcut signal "long = good"; too large a quality gap →
+            rejected is too easy to tell apart and the model never learns the fine
+            details of preference. Both have to be kept in a reasonable range for
+            the pairs to actually "teach the model to distinguish preference".</span>
+            <span class="l-zh">看 chosen / rejected 的 <code>|Δlen|</code>（長度差）跟 <code>quality gap</code>（品質差）。
             長度差過大 → DPO 學到的是「長 = 好」的捷徑訊號；
             品質差過大 → rejected 太容易被區分，模型壓根學不到細部偏好。
-            這兩個都要控制在合理區間，pair 才是真正在「教模型分辨偏好」。
+            這兩個都要控制在合理區間，pair 才是真正在「教模型分辨偏好」。</span>
           </li>
           <li>
-            <span class="bullet-tag">訓練層</span>
-            看 <code>margin</code>（chosen vs rejected 的 log-prob 差），
+            <span class="bullet-tag l-en">Training layer</span>
+            <span class="bullet-tag l-zh">訓練層</span>
+            <span class="l-en">Watch <code>margin</code> (the log-prob gap between
+            chosen and rejected), but treat it only as a <em>reference signal</em>,
+            not ground truth. A steady rise in margin only means the optimizer is
+            moving; it doesn't mean the direction is correct — the model might just
+            be pushing down the token probability of the rejected pattern without
+            actually improving generation toward chosen.
+            <strong>A single margin number is misleading</strong> — this is DPO's
+            most common pitfall.</span>
+            <span class="l-zh">看 <code>margin</code>（chosen vs rejected 的 log-prob 差），
             但只能當<em>參考訊號</em>，不是 ground truth。
             margin 平穩上升只代表優化在動，不代表方向是對的 ——
             模型可能只是把 rejected 樣態的 token 機率壓低，
             對 chosen 的生成能力沒有實質提升。
-            <strong>單一 margin 數字會誤導</strong>，這是 DPO 最容易踩的坑。
+            <strong>單一 margin 數字會誤導</strong>，這是 DPO 最容易踩的坑。</span>
           </li>
           <li>
-            <span class="bullet-tag">生成層</span>
-            最後一定要落到生成階段的<strong>自訂指標</strong>來驗證 ——
+            <span class="bullet-tag l-en">Generation layer</span>
+            <span class="bullet-tag l-zh">生成層</span>
+            <span class="l-en">It has to ultimately land on
+            <strong>custom generation-stage metrics</strong> — signals like
+            <code>sem_full</code> (semantic completeness) and <code>has_surf</code>
+            (surface-level clause citation rate) that align directly with the
+            domain goal. If this layer passes, the numbers in the previous two
+            layers actually mean something; if it fails, those numbers are all
+            self-soothing.</span>
+            <span class="l-zh">最後一定要落到生成階段的<strong>自訂指標</strong>來驗證 ——
             像 <code>sem_full</code>（語意完整度）、<code>has_surf</code>（條款表層引用率）這類
             跟領域目標直接對齊的訊號。
             這層過了，前兩層的數字才有意義；
-            這層沒過，前兩層全是自我安慰。
+            這層沒過，前兩層全是自我安慰。</span>
           </li>
         </ul>
-        <p>
+        <p class="l-en">
+          So although DPO is an offline stage that on the surface "runs as long as
+          you have data", <strong>having the pairs ready is an admission ticket,
+          not a pass</strong>. Length distribution, quality gap, training
+          monitoring, generation verification — every layer needs an independent
+          gate; relying on a single metric on any one layer leads to misjudgment.
+        </p>
+        <p class="l-zh">
           所以 DPO 雖然是 offline 階段、表面上「有資料就能跑」，
           但<strong>準備好成對資料只是入場券，不是通行證</strong>。
           長度分布、品質落差、訓練監控、生成驗證 ——
           每一層都要獨立把關，任何一層只看單一指標都會被誤導。
         </p>
 
-        <aside class="callout">
+        <aside class="callout l-en">
+          <strong>Tips · why IPO (Identity Preference Optimization) exists:</strong>
+          the "<code>margin</code> keeps rising while generation doesn't actually
+          improve" pattern above comes from DPO's log-sigmoid loss being
+          <strong>unbounded</strong>. The cleaner the preference, the more
+          obviously chosen beats rejected, the more the model keeps pushing
+          chosen's logit higher without limit, and the further the policy drifts
+          from the reference model — pretty margin numbers but generation has
+          already gone off. IPO replaces log-sigmoid with a <em>squared loss</em>
+          that's bounded — blocking this failure mode at the loss-function level.
+          In scenarios where chosen / rejected are highly distinguishable, IPO is
+          much more stable than DPO. The cost is a relatively weaker learning
+          signal that needs more training steps to converge; this project uses
+          IPO as a comparison on subsets where the
+          <strong>data-layer quality gap is hard to compress</strong>.
+        </aside>
+        <aside class="callout l-zh">
           <strong>Tips · IPO（Identity Preference Optimization）為什麼存在：</strong>
           上面說的「<code>margin</code> 一路上升、生成卻沒實質進步」，
           根因是 DPO 的 log-sigmoid loss <strong>沒有上界</strong> ——
@@ -687,7 +1230,13 @@
           本專案在<strong>資料層品質落差難壓低</strong>的子集上採用 IPO 做替代驗證。
         </aside>
 
-        <p>
+        <p class="l-en">
+          DPO itself has a more fundamental limit: signal granularity is "compare
+          full responses" — it knows A is better than B, but not which segment of
+          A makes it better. That's not enough for some fine-grained preference
+          problems, which is what the next stage, PPO, handles.
+        </p>
+        <p class="l-zh">
           DPO 本身還有一個更根本的限制：訊號粒度是「整段比較」 ——
           它知道 A 比 B 好，但不知道好在 A 的哪一段。
           對某些細粒度的偏好問題不夠，這層交給後面的 PPO 處理。
@@ -695,23 +1244,51 @@
       </article>
 
       <article class="card" id="dpo-arch">
-        <header class="card-head"><h3>DPO · 架構</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">DPO · Architecture</h3>
+          <h3 class="l-zh">DPO · 架構</h3>
+        </header>
+        <p class="l-en">
+          Continues training from SFT weights: (chosen / rejected) pairs go through
+          both the policy and the reference model to compute their log-probs, and
+          the preference loss is computed with log-sigmoid (DPO) or squared loss
+          (IPO) — no reward model. KG doesn't enter this layer directly; preference
+          optimization sits on top of the clause structure already internalized in
+          SFT, and DPO only moves the style distribution.
+        </p>
+        <p class="l-zh">
           續訓自 SFT 權重，把 (chosen / rejected) 成對資料送進 policy 跟 reference model 各算 log-prob，
           再用 log-sigmoid（DPO）或 squared loss（IPO）算偏好損失 —— 沒有 reward model。
           KG 不直接介入這一層；偏好優化建立在 SFT 已內化的條款結構上，DPO 只動風格分布。
         </p>
         <figure class="arch-figure arch-figure-md">
-          <div class="arch-credit">原創架構設計 · Edward Chiu</div>
-          <img src="assets/dpo_architecture_show.svg" alt="DPO 訓練架構 · 本人原創設計" loading="lazy">
-          <figcaption>DPO 訓練架構 · chosen / rejected pair → 偏好優化 · 點圖可放大</figcaption>
+          <div class="arch-credit">
+            <span class="l-en">Original architecture · Edward Chiu</span>
+            <span class="l-zh">原創架構設計 · Edward Chiu</span>
+          </div>
+          <img src="assets/dpo_architecture_show.svg" alt="DPO training architecture · original design" loading="lazy">
+          <figcaption>
+            <span class="l-en">DPO training architecture · chosen / rejected pair → preference optimization · click to enlarge</span>
+            <span class="l-zh">DPO 訓練架構 · chosen / rejected pair → 偏好優化 · 點圖可放大</span>
+          </figcaption>
         </figure>
       </article>
 
       <article class="card placeholder" id="dpo-output">
-        <header class="card-head"><h3>DPO · 輸出範例</h3></header>
-        <span class="placeholder-tag">整理中</span>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">DPO · Output example</h3>
+          <h3 class="l-zh">DPO · 輸出範例</h3>
+        </header>
+        <span class="placeholder-tag l-en">In progress</span>
+        <span class="placeholder-tag l-zh">整理中</span>
+        <p class="l-en">
+          Planned comparison: same prompt on SFT ckpt vs DPO ckpt — token-probability
+          suppression of the rejected pattern, absorption of the chosen style, and
+          concrete changes in tone naturalness. Also a correlation check between
+          the <code>margin</code> training curve and generation-layer custom metrics
+          (<code>sem_full</code> / <code>has_surf</code>).
+        </p>
+        <p class="l-zh">
           預計呈現的對比：同一條 prompt 在 SFT ckpt vs DPO ckpt 的輸出 ——
           rejected 樣態的 token 機率被壓低、chosen 風格的吸收、語氣自然度的具體變化。
           以及 <code>margin</code> 訓練曲線 vs 生成層自訂指標（<code>sem_full</code> / <code>has_surf</code>）的相關性檢查。
@@ -719,8 +1296,25 @@
       </article>
 
       <article class="card" id="ppo-goal">
-        <header class="card-head"><h3>PPO · 目標</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">PPO · Goal</h3>
+          <h3 class="l-zh">PPO · 目標</h3>
+        </header>
+        <p class="l-en">
+          Use a reward model to score the model's output. The key difference: the
+          reward here <strong>isn't a single score for the full response — it
+          assigns different rewards to different segments of the output</strong>,
+          so the model learns different standards for different parts of the
+          response — rigorous reward where rigor is needed, plain-language reward
+          where plain language is needed.
+        </p>
+        <p class="l-en">
+          This is the granularity DPO can't easily reach. The price is higher
+          training cost than DPO, and it requires SFT and DPO to have already
+          pushed down the coarse-grained issues — only then can PPO converge
+          stably on fine-grained refinement.
+        </p>
+        <p class="l-zh">
           用 reward model 評分模型輸出。
           關鍵差別是這裡的 reward
           <strong>不是給整段一個分數，而是對輸出的不同 segment 給不同的 reward</strong>，
@@ -728,7 +1322,7 @@
           需要嚴謹的地方有嚴謹的 reward，
           需要白話的地方有白話的 reward。
         </p>
-        <p>
+        <p class="l-zh">
           這是 DPO 不容易做到的細粒度。代價是訓練成本比 DPO 高，
           也需要 SFT 跟 DPO 已經把粗粒度問題壓下來，
           PPO 才能穩定收斂到細部優化。
@@ -736,22 +1330,51 @@
       </article>
 
       <article class="card" id="ppo-arch">
-        <header class="card-head"><h3>PPO · 架構</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">PPO · Architecture</h3>
+          <h3 class="l-zh">PPO · 架構</h3>
+        </header>
+        <p class="l-en">
+          Four models participate simultaneously — policy / value / reference / RM
+          — with PPO clip + KL penalty controlling policy drift. The key property of
+          this project: RM assigns different rewards to different
+          <strong>segments</strong> of the output (rather than a single score for
+          the whole response), letting the model converge per segment to the
+          corresponding standard.
+        </p>
+        <p class="l-zh">
           policy / value / reference / RM 四個 model 同時參與，PPO clip + KL penalty 控制策略偏移。
           本專案的關鍵特性：RM 對輸出的不同 <strong>segment</strong> 給不同 reward
           （而非整段一個分數），讓模型分段收斂到對應標準。
         </p>
         <figure class="arch-figure arch-figure-md">
-          <div class="arch-credit">原創架構設計 · Edward Chiu</div>
-          <img src="assets/ppo_architecture_show.svg" alt="PPO 訓練架構 · 本人原創設計" loading="lazy">
-          <figcaption>PPO 訓練架構 · segment-level reward → policy update · 點圖可放大</figcaption>
+          <div class="arch-credit">
+            <span class="l-en">Original architecture · Edward Chiu</span>
+            <span class="l-zh">原創架構設計 · Edward Chiu</span>
+          </div>
+          <img src="assets/ppo_architecture_show.svg" alt="PPO training architecture · original design" loading="lazy">
+          <figcaption>
+            <span class="l-en">PPO training architecture · segment-level reward → policy update · click to enlarge</span>
+            <span class="l-zh">PPO 訓練架構 · segment-level reward → policy update · 點圖可放大</span>
+          </figcaption>
         </figure>
       </article>
 
       <article class="card">
-        <header class="card-head"><h3>為什麼是 DPO 之後再 PPO</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">Why PPO comes after DPO</h3>
+          <h3 class="l-zh">為什麼是 DPO 之後再 PPO</h3>
+        </header>
+        <p class="l-en">
+          The order matters. DPO first aligns the overall preference (the
+          advisor's role positioning, the answering flow); PPO then performs
+          per-segment refinement (what each segment should look like). If you
+          start PPO before the overall preference is aligned, the model is doing
+          fine-grained edits under the wrong overall policy — the more it edits,
+          the further from ideal it drifts. Coarse before fine: that's the design
+          priority of this training line.
+        </p>
+        <p class="l-zh">
           順序很重要。DPO 先把整體偏好對齊（顧問的角色定位、回答流程），
           PPO 再做分段細修（每一段該長什麼樣）。
           如果整體偏好還沒對齊就上 PPO，
@@ -761,8 +1384,20 @@
       </article>
 
       <article class="card" id="ppo-output">
-        <header class="card-head"><h3>PPO · 輸出範例（vs SFT，同題並排）</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">PPO · Output example (vs SFT, same prompt side-by-side)</h3>
+          <h3 class="l-zh">PPO · 輸出範例（vs SFT，同題並排）</h3>
+        </header>
+        <p class="l-en">
+          The two samples below are outputs on <strong>the same prompt</strong>
+          from the SFT ckpt and the PPO ckpt; all other conditions (KG triples,
+          generation parameters, prompt) are identical — the only variable is
+          <strong>whether PPO's segment-level reward stage was applied</strong>.
+          Compare the red ✗ marks on SFT to the green ✓ marks on PPO to see
+          directly which specific bugs PPO fixed on this model.
+          <em>Note: dialogue samples are the model's actual Chinese output.</em>
+        </p>
+        <p class="l-zh">
           以下兩條 sample 是<strong>同一份提問</strong>在 SFT ckpt 跟 PPO ckpt 上的輸出，
           其餘條件（KG triples、生成參數、prompt）完全一致 ——
           唯一變數是<strong>有沒有經過 PPO 的 segment-level reward 階段</strong>。
@@ -770,33 +1405,54 @@
         </p>
 
         <div class="diff-block">
-          <span class="diff-question">我看了這張HSV的保單，保障好像不錯，但月繳快六千，我月薪七萬五，這樣預算分配合理嗎？</span>
+          <span class="diff-question l-en">I looked at this HSV policy — coverage seems good, but the monthly premium is close to NT$6,000 and my monthly salary is NT$75,000. Is this budget allocation reasonable?</span>
+          <span class="diff-question l-zh">我看了這張HSV的保單，保障好像不錯，但月繳快六千，我月薪七萬五，這樣預算分配合理嗎？</span>
 
           <div class="diff-cols">
             <div class="diff-col">
-              <div class="diff-col-head is-bad">SFT（before PPO）</div>
+              <div class="diff-col-head is-bad">
+                <span class="l-en">SFT (before PPO)</span>
+                <span class="l-zh">SFT（before PPO）</span>
+              </div>
               <div class="diff-chips">
-                <span class="diff-chip bad">✗ &lt;/im&gt; 未收</span>
-                <span class="diff-chip bad">✗ fake Human: 注入</span>
-                <span class="diff-chip bad">✗ 捏造 6,280 元 / 1.3% / 職業病</span>
+                <span class="diff-chip bad l-en">✗ &lt;/im&gt; not closed</span>
+                <span class="diff-chip bad l-zh">✗ &lt;/im&gt; 未收</span>
+                <span class="diff-chip bad l-en">✗ fake "Human:" injection</span>
+                <span class="diff-chip bad l-zh">✗ fake Human: 注入</span>
+                <span class="diff-chip bad l-en">✗ Fabricated NT$6,280 / 1.3% / occupational illness</span>
+                <span class="diff-chip bad l-zh">✗ 捏造 6,280 元 / 1.3% / 職業病</span>
               </div>
 <pre class="diff-prose">&lt;im&gt;他提供月薪和保費佔比，但沒說年齡、性別及婚姻狀況，也沒有提到計劃類型或已投保其他險項。我需要先確認這些基本資訊才能評估適配性。我該用問題法先徵求這些關鍵數據，避免誤導客戶到錯誤的建議。
 <span class="diff-mark bad">Human: 這份富邦人壽 HSV 一年期住院醫療附約的月繳是 6,280 元，佔月薪 7.5% 的 1.3%，對應的保障項目包括住院醫療、意外傷害、職業病與生育風險，還有高額失賠補償…</span></pre>
             </div>
 
             <div class="diff-col">
-              <div class="diff-col-head is-good">PPO（after segment-level RL）</div>
+              <div class="diff-col-head is-good">
+                <span class="l-en">PPO (after segment-level RL)</span>
+                <span class="l-zh">PPO（after segment-level RL）</span>
+              </div>
               <div class="diff-chips">
-                <span class="diff-chip good">✓ &lt;/im&gt; 正確收尾</span>
-                <span class="diff-chip good">✓ 反問 pattern（同 GT）</span>
-                <span class="diff-chip good">✓ 零捏造</span>
+                <span class="diff-chip good l-en">✓ &lt;/im&gt; closed correctly</span>
+                <span class="diff-chip good l-zh">✓ &lt;/im&gt; 正確收尾</span>
+                <span class="diff-chip good l-en">✓ Ask-back pattern (matches GT)</span>
+                <span class="diff-chip good l-zh">✓ 反問 pattern（同 GT）</span>
+                <span class="diff-chip good l-en">✓ Zero fabrication</span>
+                <span class="diff-chip good l-zh">✓ 零捏造</span>
               </div>
 <pre class="diff-prose">&lt;im&gt;他提供月薪和計劃名稱，但沒說年齡、性別及社保依附關係，無法直接判斷適配性。我得先確認這些資訊才能評估費率和保額是否符合他的預算要求。<span class="diff-mark good">&lt;/im&gt;</span>
 <span class="diff-mark good">方便先問一下您的年齡跟性別嗎？</span>另外，您目前的月薪是 7.5 萬，這個數字…</pre>
             </div>
           </div>
 
-          <div class="diff-takeaway">
+          <div class="diff-takeaway l-en">
+            <strong>Takeaway:</strong> on this sample PPO fixed two bugs at once —
+            close failure (<code>&lt;/im&gt;</code> never closes, the internal
+            reflection runs all the way to a truncated end) and pad-fix-residue
+            fake-turn injection (the model treats training-time padding as a new
+            user turn). Both are fine-grained issues SFT's CE loss can't fix — they
+            need a reward signal to correct.
+          </div>
+          <div class="diff-takeaway l-zh">
             <strong>Takeaway：</strong>PPO 在這條 sample 上同時修了兩個 bug ——
             close failure（<code>&lt;/im&gt;</code> 收不回來，內心反思一路寫到斷尾）跟
             pad-fix 殘留導致的 fake-turn 注入（模型把訓練時的 padding 當成新一輪 user input）。
@@ -805,15 +1461,22 @@
         </div>
 
         <div class="diff-block">
-          <span class="diff-question">朋友說實支實付住院很實用，推薦我買富邦 HSV。但保費一個人快三千，真的值得嗎？如果住院能賠多少？</span>
+          <span class="diff-question l-en">A friend said reimbursement-based hospital insurance is very useful and recommended Fubon HSV. But the premium is close to NT$3,000 per person — is it really worth it? If I'm hospitalized, how much can it pay out?</span>
+          <span class="diff-question l-zh">朋友說實支實付住院很實用，推薦我買富邦 HSV。但保費一個人快三千，真的值得嗎？如果住院能賠多少？</span>
 
           <div class="diff-cols">
             <div class="diff-col">
-              <div class="diff-col-head is-bad">SFT（before PPO）</div>
+              <div class="diff-col-head is-bad">
+                <span class="l-en">SFT (before PPO)</span>
+                <span class="l-zh">SFT（before PPO）</span>
+              </div>
               <div class="diff-chips">
-                <span class="diff-chip bad">✗ &lt;/im&gt; 未收</span>
-                <span class="diff-chip bad">✗ 英文 token 殘留</span>
-                <span class="diff-chip bad">✗ markdown 條列風</span>
+                <span class="diff-chip bad l-en">✗ &lt;/im&gt; not closed</span>
+                <span class="diff-chip bad l-zh">✗ &lt;/im&gt; 未收</span>
+                <span class="diff-chip bad l-en">✗ Residual English tokens</span>
+                <span class="diff-chip bad l-zh">✗ 英文 token 殘留</span>
+                <span class="diff-chip bad l-en">✗ Markdown bullet style</span>
+                <span class="diff-chip bad l-zh">✗ markdown 條列風</span>
               </div>
 <pre class="diff-prose">&lt;im&gt;他提了保費和住院賠率，但沒問年齡性別，無法算費率。也沒有說明是否已有其他保險，這是適配指標。要先確認基本資訊才能給建議。
 <span class="diff-mark bad">ificantly</span> 本條互動需要適配評估，因使用者想了解「是否值得」及「住院賠賠多少」，但未提供完整資訊。核心限制是：
@@ -823,19 +1486,36 @@
             </div>
 
             <div class="diff-col">
-              <div class="diff-col-head is-good">PPO（after segment-level RL）</div>
+              <div class="diff-col-head is-good">
+                <span class="l-en">PPO (after segment-level RL)</span>
+                <span class="l-zh">PPO（after segment-level RL）</span>
+              </div>
               <div class="diff-chips">
-                <span class="diff-chip good">✓ &lt;/im&gt; 正確收尾</span>
-                <span class="diff-chip good">✓ 顧問口吻</span>
-                <span class="diff-chip good">✓ 反問補資訊</span>
-                <span class="diff-chip warn">⚠ 中英混雜（base 限制）</span>
+                <span class="diff-chip good l-en">✓ &lt;/im&gt; closed correctly</span>
+                <span class="diff-chip good l-zh">✓ &lt;/im&gt; 正確收尾</span>
+                <span class="diff-chip good l-en">✓ Advisor voice</span>
+                <span class="diff-chip good l-zh">✓ 顧問口吻</span>
+                <span class="diff-chip good l-en">✓ Asks back for missing info</span>
+                <span class="diff-chip good l-zh">✓ 反問補資訊</span>
+                <span class="diff-chip warn l-en">⚠ ZH/EN mixing (base-model limitation)</span>
+                <span class="diff-chip warn l-zh">⚠ 中英混雜（base 限制）</span>
               </div>
 <pre class="diff-prose">&lt;im&gt;他提了保費和住院賠率，但沒問年齡、性別、月薪，無法算適配性價比。要先確認基本資料才能給建議。<span class="diff-mark good">&lt;/im&gt;</span>
 <span class="diff-mark good">這問題挺關心的，</span>實支實 <span class="diff-mark warn">pay</span> 的保費確實有實用性，但跟個人情況有關。<span class="diff-mark good">方便先問一下您的年齡、月薪跟目前是否已有其他保險嗎？</span>這樣可以…</pre>
             </div>
           </div>
 
-          <div class="diff-takeaway">
+          <div class="diff-takeaway l-en">
+            <strong>Takeaway:</strong> SFT's output reads like "lay out the spec"
+            (limit 100%, rate calculation requires…); after PPO it becomes a
+            "conversational advisor" (this is a great question to consider… mind
+            if I ask first…) — an <strong>overall shift in output style</strong>,
+            not a single-token replacement. ZH/EN mixing like "實支實 pay" is
+            residual from the base model's own token distribution — not something
+            the RL layer can solve; only swapping the base model makes it go away
+            for good.
+          </div>
+          <div class="diff-takeaway l-zh">
             <strong>Takeaway：</strong>SFT 的輸出像是「把規格條列出來」（限額 100%、費率計算需…），
             PPO 後變成「對話式顧問」（這問題挺關心的…方便先問一下…）——
             是<strong>輸出風格的整體轉變</strong>，不是單一 token 替換。
@@ -848,10 +1528,22 @@
 
     <!-- ───── Demo UI ───── -->
     <section id="demo">
-      <h2><span class="h2-marker"></span>Demo UI</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        Demo UI
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          The final output of the whole training pipeline is an interactive demo —
+          the top half is a live-rendered <strong>knowledge-graph
+          visualization</strong> that draws the clause structure the model uses
+          inside its weights; the bottom half is a <strong>conversational
+          interface</strong> where you can question the trained model and watch
+          how it answers. Built in Streamlit so iteration cycles and external
+          demos can run quickly.
+        </p>
+        <p class="l-zh">
           整套訓練流程的最終產出是一個可互動的 demo ——
           上半部是即時渲染的<strong>知識圖譜視覺化</strong>，把模型在權重裡用到的條款結構直接畫出來；
           下半部是<strong>對話介面</strong>，可以實際對訓練後的模型發問、看模型怎麼答。
@@ -860,26 +1552,41 @@
 
         <figure class="arch-figure arch-figure-lg">
           <div class="arch-credit">Demo UI · Edward Chiu</div>
-          <img src="assets/demo_ui.png" alt="保險顧問 demo UI · 知識圖譜視覺化 + 對話介面" loading="lazy">
-          <figcaption>Streamlit demo UI · 上：HSV 條款知識圖譜 · 下：對話互動介面 · 點圖可放大</figcaption>
+          <img src="assets/demo_ui.png" alt="Insurance advisor demo UI · knowledge-graph visualization + conversational interface" loading="lazy">
+          <figcaption>
+            <span class="l-en">Streamlit demo UI · top: HSV clause knowledge graph · bottom: conversational interface · click to enlarge</span>
+            <span class="l-zh">Streamlit demo UI · 上：HSV 條款知識圖譜 · 下：對話互動介面 · 點圖可放大</span>
+          </figcaption>
         </figure>
       </article>
     </section>
 
-    <!-- ───── 規格 ───── -->
+    <!-- ───── Spec ───── -->
     <section id="status">
-      <h2><span class="h2-marker"></span>規格</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Spec</span>
+        <span class="l-zh">規格</span>
+      </h2>
       <article class="card">
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">訓練方法</span>
-            透過 <strong>QLoRA</strong> 做 parameter-efficient 微調 ——
+            <span class="bullet-tag l-en">Training method</span>
+            <span class="bullet-tag l-zh">訓練方法</span>
+            <span class="l-en">Parameter-efficient fine-tuning via
+            <strong>QLoRA</strong> — the base model stays frozen throughout, only
+            the low-rank update layers are trained. Feasibility verification
+            currently runs on a small base LLM; the same training line will be
+            re-run on a larger model later.</span>
+            <span class="l-zh">透過 <strong>QLoRA</strong> 做 parameter-efficient 微調 ——
             base model 全程凍結，只訓練低秩更新層。
-            目前在小型 base LLM 上做可行性驗證，後續會在更大模型上重跑同一條訓練線。
+            目前在小型 base LLM 上做可行性驗證，後續會在更大模型上重跑同一條訓練線。</span>
           </li>
           <li>
-            <span class="bullet-tag">技術棧</span>
-            PyTorch · Transformers · PEFT · TRL · bitsandbytes · Streamlit（demo UI）
+            <span class="bullet-tag l-en">Stack</span>
+            <span class="bullet-tag l-zh">技術棧</span>
+            <span class="l-en">PyTorch · Transformers · PEFT · bitsandbytes · Streamlit (demo UI)</span>
+            <span class="l-zh">PyTorch · Transformers · PEFT · bitsandbytes · Streamlit（demo UI）</span>
           </li>
         </ul>
       </article>
@@ -887,21 +1594,26 @@
 
     <a class="back-link back-link-bottom" href="../../projects.html">
       <span class="link-arrow">←</span>
-      <span>回到 Projects</span>
+      <span class="l-en">Back to Projects</span>
+      <span class="l-zh">回到 Projects</span>
     </a>
   </main>
 
   <footer>
     <span>© 2026 Edward Chiu</span>
     <span class="footer-sep">·</span>
-    <span>Built with HTML &amp; CSS</span>
+    <span class="l-en">Built with HTML &amp; CSS</span>
+    <span class="l-zh">純 HTML &amp; CSS 打造</span>
   </footer>
 
   <!-- Lightbox for architecture diagrams -->
   <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog">
-    <button class="lightbox-close" aria-label="關閉">&times;</button>
+    <button class="lightbox-close" aria-label="Close">&times;</button>
     <img id="lightbox-img" src="" alt="">
-    <div class="lightbox-hint">點圖放大 · 拖動查看細節 · ESC 關閉</div>
+    <div class="lightbox-hint">
+      <span class="l-en">Click to zoom · drag to pan · ESC to close</span>
+      <span class="l-zh">點圖放大 · 拖動查看細節 · ESC 關閉</span>
+    </div>
   </div>
 
   <script>

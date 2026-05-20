@@ -653,14 +653,44 @@ footer {
   background: rgba(34, 211, 238, 0.08);
   border-color: rgba(34, 211, 238, 0.3);
 }
-.nav-en { font-weight: 500; }
-.nav-zh {
-  font-size: 11.5px;
-  color: var(--text-faint);
-  letter-spacing: 0.02em;
+.nav-en, .nav-zh { font-weight: 500; }
+
+/* ──────────────────────────────────────────────
+   Language toggle: show/hide based on html[data-lang]
+   ────────────────────────────────────────────── */
+html[data-lang="en"] .l-zh,
+html[data-lang="en"] .nav-zh { display: none; }
+html[data-lang="zh"] .l-en,
+html[data-lang="zh"] .nav-en { display: none; }
+
+/* Switcher pill group in topnav */
+.lang-switch {
+  display: inline-flex;
+  margin-left: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: rgba(14, 18, 25, 0.5);
 }
-.nav-item:hover .nav-zh { color: var(--text-dim); }
-.nav-item[aria-current="page"] .nav-zh { color: var(--accent); opacity: 0.75; }
+.lang-switch-btn {
+  background: transparent;
+  color: var(--text-faint);
+  border: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: color 0.18s, background 0.18s;
+  line-height: 1.2;
+}
+.lang-switch-btn:hover { color: var(--text); }
+.lang-switch-btn + .lang-switch-btn { border-left: 1px solid var(--border); }
+html[data-lang="en"] .lang-switch-btn[data-lang-set="en"],
+html[data-lang="zh"] .lang-switch-btn[data-lang-set="zh"] {
+  color: var(--accent-soft);
+  background: rgba(34, 211, 238, 0.10);
+}
 
 /* ──────────────────────────────────────────────
    Scroll progress bar (long article pages)
@@ -796,7 +826,7 @@ section[id], article[id], figure[id] { scroll-margin-top: 90px; }
   }
   .topnav-brand { font-size: 12px; padding: 5px 8px; }
   .nav-item { padding: 6px 8px; font-size: 12.5px; gap: 4px; }
-  .nav-zh { display: none; }
+  .lang-switch-btn { padding: 5px 8px; font-size: 11.5px; }
 
   footer {
     flex-direction: column;

@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tenfold AI — Legal Advisor Chatbot — Edward Chiu</title>
-  <meta name="description" content="Edward Chiu 在 Tenfold AI 打造的最一開始法律顧問 AI Chatbot：針對法律領域設計的特殊 Retrieval、多步驟架構（Rerank、法規檢查），並附上驗證後的信心程度。">
+  <title data-en="Tenfold AI — Legal Advisor Chatbot — Edward Chiu" data-zh="Tenfold AI — 法律顧問 Chatbot — Edward Chiu">Tenfold AI — Legal Advisor Chatbot — Edward Chiu</title>
+  <meta name="description" content="The founding legal-advisor AI chatbot Edward Chiu built at Tenfold AI: legal-tuned retrieval, a multi-step architecture (rerank, regulation check), and a verified confidence score on every answer.">
   <meta name="author" content="Edward Chiu">
   <meta property="og:title" content="Tenfold AI — Legal Advisor Chatbot — Edward Chiu">
-  <meta property="og:description" content="法律顧問 AI Chatbot：法律領域特化的 Retrieval、多步驟架構（Rerank、法規檢查）、驗證後的信心程度。">
+  <meta property="og:description" content="Legal advisor AI chatbot: legal-tuned retrieval, a multi-step architecture (rerank, regulation check), and a verified confidence score on every answer.">
   <meta property="og:type" content="article">
-  <link rel="stylesheet" href="../../styles.css?v=3">
+  <link rel="stylesheet" href="../../styles.css?v=4">
+  <script src="../../lang.js?v=1"></script>
   <script data-goatcounter="https://edwarddiou.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -36,6 +37,10 @@
           <span class="nav-en">Projects</span>
           <span class="nav-zh">專案</span>
         </a>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-switch-btn" data-lang-set="en" aria-label="Switch to English">EN</button>
+          <button type="button" class="lang-switch-btn" data-lang-set="zh" aria-label="切換為中文">中</button>
+        </div>
       </nav>
     </div>
     <div class="scroll-progress"><div class="scroll-progress-fill"></div></div>
@@ -44,30 +49,37 @@
   <main>
     <a class="back-link" href="../../projects.html">
       <span class="link-arrow">←</span>
-      <span>回到 Projects</span>
+      <span class="l-en">Back to Projects</span>
+      <span class="l-zh">回到 Projects</span>
     </a>
 
-    <aside class="toc" aria-label="目錄">
-      <div class="toc-label">目錄 · TOC</div>
+    <aside class="toc" aria-label="Table of contents">
+      <div class="toc-label">
+        <span class="l-en">TOC</span>
+        <span class="l-zh">目錄 · TOC</span>
+      </div>
       <ol class="toc-list">
-        <li><a href="#background">背景：法律領域的回答要求</a></li>
-        <li><a href="#architecture">多步驟架構</a></li>
-        <li><a href="#confidence">驗證後的信心程度</a></li>
+        <li><a href="#background"><span class="l-en">Background: what legal answers demand</span><span class="l-zh">背景：法律領域的回答要求</span></a></li>
+        <li><a href="#architecture"><span class="l-en">Multi-step architecture</span><span class="l-zh">多步驟架構</span></a></li>
+        <li><a href="#confidence"><span class="l-en">Verified confidence score</span><span class="l-zh">驗證後的信心程度</span></a></li>
       </ol>
     </aside>
 
     <!-- ───── HERO ───── -->
     <section class="hero project-hero">
       <div class="tags">
-        <span class="tag tag-product">Product</span>
+        <span class="tag tag-product l-en">Product</span>
+        <span class="tag tag-product l-zh">產品</span>
       </div>
       <h1>Tenfold AI · Legal Advisor Chatbot</h1>
       <p class="tagline">
-        <span>法律領域 RAG</span>
+        <span class="l-en">Legal-domain RAG</span>
+        <span class="l-zh">法律領域 RAG</span>
         <span class="sep">/</span>
         <span>Multi-Step Architecture</span>
         <span class="sep">/</span>
-        <span>驗證後的信心程度</span>
+        <span class="l-en">Verified Confidence</span>
+        <span class="l-zh">驗證後的信心程度</span>
       </p>
       <p class="location">
         <span class="card-meta">2024.09 — 2025.06</span>
@@ -75,13 +87,30 @@
       </p>
 
       <div class="bio">
-        <p>
+        <p class="l-en">
+          This was the <strong>founding product</strong> I built after joining the
+          startup <strong>Tenfold AI</strong> — a <strong>legal advisor AI chatbot</strong>.
+          Law is a domain where the bar for "answer quality" is exceptionally high:
+          the answer has to <strong>cite the correct statute</strong> and
+          <strong>precisely address the user's actual question</strong>. If any step
+          along the way goes wrong, the output may look like a legal opinion but isn't
+          something anyone can trust.
+        </p>
+        <p class="l-en">
+          A generic RAG pipeline doesn't cut it here, so at the context layer I designed
+          a <strong>legal-tuned retrieval mechanism</strong>, and on top of the answer
+          flow I stacked a <strong>multi-step architecture</strong> — with rerank, a
+          regulation-check tool, and other verifiers — capped by a
+          <strong>verified confidence score</strong> attached to every response.
+          Users don't just see an answer; they see how strong the evidence behind it is.
+        </p>
+        <p class="l-zh">
           這是我加入新創公司 <strong>Tenfold AI</strong> 後打造的<strong>最一開始</strong>的產品 ——
           一款<strong>法律顧問 AI Chatbot</strong>。法律是一個對「回答品質」要求極高的領域：
           答案要<strong>引用正確的法條</strong>、要<strong>精確對應使用者實際的問題</strong>，
           中間任何一步走偏，輸出的內容看起來像法律意見，但實際上沒辦法被信任。
         </p>
-        <p>
+        <p class="l-zh">
           一般 RAG 的做法在這個場景不夠用，因此我在 context 層設計了一套
           <strong>法律領域特化的 Retrieval 機制</strong>，
           並在整個回答流程上疊出一條<strong>多步驟架構</strong> ——
@@ -91,50 +120,94 @@
       </div>
     </section>
 
-    <!-- ───── 背景 ───── -->
+    <!-- ───── Background ───── -->
     <section id="background">
-      <h2><span class="h2-marker"></span>背景：法律領域的回答要求</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Background: what legal answers demand</span>
+        <span class="l-zh">背景：法律領域的回答要求</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          The difference between a legal question and a general customer-service
+          question isn't just "more specialized vocabulary" — it's that
+          <strong>the bar for right vs. wrong is different</strong>. A
+          "roughly correct" answer is acceptable in customer service; in a legal
+          setting it's wrong — one wrong digit in the article number, one missing
+          prerequisite in the applicable scenario, and the whole conclusion tilts off.
+        </p>
+        <p class="l-en">
+          That puts two concrete demands on a RAG system:
+        </p>
+        <p class="l-zh">
           法律問題跟一般客服問題的差別，不只是「需要更專業的詞彙」——
           而是<strong>對錯的標準不一樣</strong>。
           一句「大致上正確」的回答在客服可以接受，
           在法律場景就是錯的 —— 條號錯一個字、適用情境少一個前提，
           整個結論就會跟著歪掉。
         </p>
-        <p>
+        <p class="l-zh">
           這對 RAG 系統提出兩個具體要求：
         </p>
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">引用要正確</span>
-            撈回來的法條必須是真的存在、條號正確、版本對得上的條文 ——
+            <span class="bullet-tag l-en">Citations must be correct</span>
+            <span class="bullet-tag l-zh">引用要正確</span>
+            <span class="l-en">The retrieved statute has to actually exist, with the
+            right article number and the right version — not just "semantically close".
+            A general-purpose vector retriever easily pulls articles that are
+            "literally adjacent but don't actually apply", which in legal context is a
+            straight factual error.</span>
+            <span class="l-zh">撈回來的法條必須是真的存在、條號正確、版本對得上的條文 ——
             不是「語意上接近」就好。
             一般通用的向量檢索很容易撈到「字面相關但實際不適用」的條文，
-            這在法律情境是直接的事實錯誤。
+            這在法律情境是直接的事實錯誤。</span>
           </li>
           <li>
-            <span class="bullet-tag">回答要精確</span>
-            就算撈到對的條文，回答也要<strong>對齊使用者問題的具體情境</strong> ——
+            <span class="bullet-tag l-en">Answers must be precise</span>
+            <span class="bullet-tag l-zh">回答要精確</span>
+            <span class="l-en">Even with the right article retrieved, the answer must
+            <strong>align with the user's specific scenario</strong> — the same
+            statute applies differently in different contexts, so the model can't just
+            paste the article verbatim and call it done. It has to pick out which part
+            of the statute actually applies based on the question's concrete
+            conditions.</span>
+            <span class="l-zh">就算撈到對的條文，回答也要<strong>對齊使用者問題的具體情境</strong> ——
             同一條法律在不同情境下適用方式不同，
             模型不能把條文照本宣科貼上來就交差。
-            必須能根據問題的具體條件，挑出條文中真正適用的部分。
+            必須能根據問題的具體條件，挑出條文中真正適用的部分。</span>
           </li>
         </ul>
-        <p>
+        <p class="l-en">
+          Neither of these is solved by bolting a general-purpose LLM onto an
+          off-the-shelf retriever. The whole context pipeline has to be redesigned
+          for the legal domain.
+        </p>
+        <p class="l-zh">
           這兩件事都不是把通用 LLM 接上一個普通 retriever 就能解決的。
           整條 context pipeline 必須針對法律領域重新設計。
         </p>
       </article>
     </section>
 
-    <!-- ───── 多步驟架構 ───── -->
+    <!-- ───── Multi-step architecture ───── -->
     <section id="architecture">
-      <h2><span class="h2-marker"></span>多步驟架構</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Multi-step architecture</span>
+        <span class="l-zh">多步驟架構</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          To meet both requirements at once, I designed a
+          <strong>multi-step answer flow</strong>: each step resolves a single,
+          well-defined sub-problem and hands the result off to the next. The
+          architecture refuses to cram everything into a single LLM call — every
+          step uses the <strong>most appropriate tool</strong> for what it's doing.
+        </p>
+        <p class="l-zh">
           為了把上面兩件事同時做對，我設計了一條<strong>多步驟（Multi-Step）的回答流程</strong>，
           每一步只解決一個明確的子問題，再把結果交給下一步繼續處理。
           這個架構不是把所有事情塞給單次 LLM 呼叫，
@@ -142,58 +215,103 @@
         </p>
 
         <figure class="arch-figure arch-figure-lg">
-          <div class="arch-credit">示意圖 · Edward Chiu · 法律場景 · 非實際內部架構</div>
-          <img src="assets/multistep_chatbot_illustration.svg" alt="多步驟 Chatbot 法律場景示意圖：使用者提問 → 法律特化檢索 → Rerank → 法規檢查 → 分析與整合 → 計算信心值 → 回答 + 信心程度" loading="lazy">
+          <div class="arch-credit">
+            <span class="l-en">Illustration · Edward Chiu · legal scenario · not Tenfold's actual architecture</span>
+            <span class="l-zh">示意圖 · Edward Chiu · 法律場景 · 非實際內部架構</span>
+          </div>
+          <img src="assets/multistep_chatbot_illustration.svg" alt="Multi-step chatbot illustration for the legal scenario: user question → legal-tuned retrieval → rerank → regulation check → analysis and integration → confidence scoring → answer + confidence" loading="lazy">
           <figcaption>
-            多步驟回答流程<strong>示意圖</strong> · 法律場景 · 從使用者提問到回答 + 信心程度的逐步流程 · 點圖可放大
-            <br><em>注意：此為示意圖，僅用於說明流程概念；並非 Tenfold 實際內部架構。</em>
+            <span class="l-en">Multi-step answer flow <strong>illustration</strong> · legal scenario · from user question through to answer + confidence · click to enlarge<br><em>Note: this is an illustration of the flow concept, not Tenfold's actual internal architecture.</em></span>
+            <span class="l-zh">多步驟回答流程<strong>示意圖</strong> · 法律場景 · 從使用者提問到回答 + 信心程度的逐步流程 · 點圖可放大<br><em>注意：此為示意圖，僅用於說明流程概念；並非 Tenfold 實際內部架構。</em></span>
           </figcaption>
         </figure>
 
         <ul class="bullets">
           <li>
             <span class="bullet-tag">Retrieval</span>
-            針對法律語料做特化的檢索 ——
+            <span class="l-en">Retrieval specialized for legal corpora — extending
+            general-purpose vector retrieval into a layer that handles article numbers,
+            statute versions, and scope of applicability correctly, providing the
+            downstream steps with clean, trustworthy material.</span>
+            <span class="l-zh">針對法律語料做特化的檢索 ——
             從一般通用向量檢索擴展到能正確處理條號、法規版本、適用範圍的檢索層，
-            為後面的步驟提供乾淨、可信的素材。
+            為後面的步驟提供乾淨、可信的素材。</span>
           </li>
           <li>
             <span class="bullet-tag">Rerank</span>
-            檢索回來的候選不是直接交給 LLM，而是經過 rerank 重新排序 ——
+            <span class="l-en">Retrieved candidates don't go straight to the LLM —
+            they go through a rerank step that pushes the articles that
+            <em>actually apply</em> to the top, so the LLM sees
+            <strong>pre-filtered</strong> material rather than a coarsely-ordered
+            list.</span>
+            <span class="l-zh">檢索回來的候選不是直接交給 LLM，而是經過 rerank 重新排序 ——
             把「真正適用使用者問題」的條文推到前面，
             讓 LLM 在生成時看到的是<strong>已經被篩選過</strong>的素材，
-            而不是一份排序粗糙的清單。
+            而不是一份排序粗糙的清單。</span>
           </li>
           <li>
-            <span class="bullet-tag">法規檢查（Tool）</span>
-            在生成階段加入<strong>法規檢查工具</strong>，
+            <span class="bullet-tag l-en">Regulation check (Tool)</span>
+            <span class="bullet-tag l-zh">法規檢查（Tool）</span>
+            <span class="l-en">A <strong>regulation-check tool</strong> is added at
+            generation time, actively verifying whether the articles the model cites
+            actually exist, are being misapplied, or fail to align with the question's
+            scenario. This step is one of the biggest differences between legal RAG
+            and generic RAG — turning "factual correctness" into a verifiable stage of
+            the pipeline rather than hoping the LLM doesn't hallucinate.</span>
+            <span class="l-zh">在生成階段加入<strong>法規檢查工具</strong>，
             主動驗證模型引用的條文是否真的存在、是否被誤用、
             是否跟問題的情境對得上。
             這一步是法律 RAG 跟一般 RAG 最大的差別之一 ——
             把「事實正確性」變成 pipeline 裡的可驗證環節，
-            而不是寄望 LLM 自己不要幻覺。
+            而不是寄望 LLM 自己不要幻覺。</span>
           </li>
           <li>
-            <span class="bullet-tag">回答整合</span>
-            把通過檢查的條文跟使用者問題整合成最終回答 ——
-            保留法律引用的精確性，同時用使用者讀得懂的方式表達。
+            <span class="bullet-tag l-en">Answer integration</span>
+            <span class="bullet-tag l-zh">回答整合</span>
+            <span class="l-en">Integrate the verified articles with the user's
+            question into the final answer — keeping the precision of the legal
+            citations while expressing them in language the user can actually
+            understand.</span>
+            <span class="l-zh">把通過檢查的條文跟使用者問題整合成最終回答 ——
+            保留法律引用的精確性，同時用使用者讀得懂的方式表達。</span>
           </li>
         </ul>
-        <p>
+        <p class="l-en">
+          Every step is an independently verifiable stage, so if anything in the
+          pipeline goes wrong it can be localized — for a product aimed at legal
+          professionals, that matters far more than "a black-box model that gives
+          a pretty answer".
+        </p>
+        <p class="l-zh">
           每一步都是獨立可驗證的環節，整條 pipeline 上任何一步出問題都能被定位 ——
           這對一個面向法律專業的產品來說，比「黑盒模型給一個漂亮答案」重要得多。
         </p>
 
         <figure class="arch-figure arch-figure-md">
-          <div class="arch-credit">實際架構（細節已模糊處理）· Edward Chiu</div>
-          <img src="assets/graph_resized_blurred.png" alt="多步驟回答流程的實際 LangGraph 架構（細節已模糊處理）" loading="lazy">
-          <figcaption>實際 LangGraph 架構 · 細節已模糊處理 · 點圖可放大</figcaption>
+          <div class="arch-credit">
+            <span class="l-en">Actual architecture (details blurred) · Edward Chiu</span>
+            <span class="l-zh">實際架構（細節已模糊處理）· Edward Chiu</span>
+          </div>
+          <img src="assets/graph_resized_blurred.png" alt="Actual LangGraph architecture of the multi-step answer flow (details blurred)" loading="lazy">
+          <figcaption>
+            <span class="l-en">Actual LangGraph architecture · details blurred · click to enlarge</span>
+            <span class="l-zh">實際 LangGraph 架構 · 細節已模糊處理 · 點圖可放大</span>
+          </figcaption>
         </figure>
       </article>
 
       <article class="card">
-        <header class="card-head"><h3>迭代過程：準確率、效能與成本</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">Iteration: accuracy, latency, cost</h3>
+          <h3 class="l-zh">迭代過程：準確率、效能與成本</h3>
+        </header>
+        <p class="l-en">
+          This pipeline didn't land right the first time — across my entire Tenfold
+          tenure it went through multiple rewrites, from a working-but-imprecise
+          prototype all the way to something deliverable to legal professionals. The
+          concrete progress across three key metrics:
+        </p>
+        <p class="l-zh">
           這條 pipeline 不是一次到位 —— 整個 Tenfold 期間經歷多次改版，
           從一個能跑但答得不夠準的雛形，
           一路迭代到能交付給法律專業使用者使用的產品。
@@ -201,28 +319,56 @@
         </p>
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">準確率</span>
-            回答客戶問題的正確率從<strong>約 50%</strong> 提升到 <strong>95%</strong> ——
+            <span class="bullet-tag l-en">Accuracy</span>
+            <span class="bullet-tag l-zh">準確率</span>
+            <span class="l-en">Answer accuracy on customer questions went from
+            <strong>~50%</strong> to <strong>95%</strong> — driven mostly by
+            decomposing the single LLM call into verifiable steps, and by the
+            regulation-check tool turning "is the citation right" from a model wish
+            into a verifiable stage.</span>
+            <span class="l-zh">回答客戶問題的正確率從<strong>約 50%</strong> 提升到 <strong>95%</strong> ——
             這個提升主要來自把單一 LLM 呼叫拆成可驗證的多步驟、
-            以及法規檢查工具把「引用對不對」這件事從寄望 LLM 變成可驗證環節。
+            以及法規檢查工具把「引用對不對」這件事從寄望 LLM 變成可驗證環節。</span>
           </li>
           <li>
-            <span class="bullet-tag">回應延遲</span>
-            改用 <strong>LangGraph</strong> 重新編排，
+            <span class="bullet-tag l-en">Response latency</span>
+            <span class="bullet-tag l-zh">回應延遲</span>
+            <span class="l-en">Re-orchestrated with <strong>LangGraph</strong>, pulling
+            out nodes that have no dependency on each other (e.g. different kinds of
+            retrieval and checks) and running them in <strong>parallel</strong> —
+            only the nodes that actually need a previous step's output stay sequential.
+            Final LLM response latency <strong>improved by 35%</strong> with no
+            regression in answer quality.</span>
+            <span class="l-zh">改用 <strong>LangGraph</strong> 重新編排，
             把彼此沒有依賴關係的節點（例如不同類型的檢索與檢查）
             抽出來做<strong>平行化執行</strong> ——
             只讓真正需要前一步結果的節點留在序列上。
             最終 LLM response latency <strong>提升 35%</strong>，
-            回答品質沒有退步。
+            回答品質沒有退步。</span>
           </li>
           <li>
-            <span class="bullet-tag">Token 成本</span>
-            搭配 prompt 精簡與 retrieval 結果的更嚴格篩選，
+            <span class="bullet-tag l-en">Token cost</span>
+            <span class="bullet-tag l-zh">Token 成本</span>
+            <span class="l-en">Combined with prompt slimming and stricter filtering on
+            retrieval results, overall token usage dropped by about
+            <strong>60%</strong> — feeding less redundant text to the LLM
+            simultaneously improved latency, cost, and the signal-to-noise ratio of
+            the answer.</span>
+            <span class="l-zh">搭配 prompt 精簡與 retrieval 結果的更嚴格篩選，
             整體 token 使用量減少約 <strong>60%</strong> ——
-            少餵冗餘文本給 LLM，等於同時改善了延遲、成本、跟回答的訊噪比。
+            少餵冗餘文本給 LLM，等於同時改善了延遲、成本、跟回答的訊噪比。</span>
           </li>
         </ul>
-        <p>
+        <p class="l-en">
+          The pipeline also supports two output modes based on user needs —
+          a <strong>short answer</strong> for "just confirm this quickly" scenarios,
+          and a <strong>detailed answer</strong> when the user needs the full statute
+          citations and reasoning chain. The same multi-step pipeline adjusts only the
+          final integration step between modes, rather than running two completely
+          separate flows, so the legal-fact substrate stays consistent across both
+          outputs.
+        </p>
+        <p class="l-zh">
           同時，pipeline 也根據使用者需求支援兩種輸出模式 ——
           <strong>簡答</strong>給只想快速確認的情境，
           <strong>詳答</strong>給需要看完整條文引用跟推論過程的情境。
@@ -233,33 +379,70 @@
       </article>
     </section>
 
-    <!-- ───── 信心程度 ───── -->
+    <!-- ───── Confidence ───── -->
     <section id="confidence">
-      <h2><span class="h2-marker"></span>驗證後的信心程度</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Verified confidence score</span>
+        <span class="l-zh">驗證後的信心程度</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          The multi-step architecture solves "how the answer is produced", but a more
+          fundamental question remains: <strong>how does the user know whether to
+          trust this answer?</strong> In a legal setting, users facing an AI answer
+          either fully trust it or fully don't — there's no signal in between that
+          tells them "<em>how strong is the evidence here?</em>"
+        </p>
+        <p class="l-en">
+          So every answer comes with a <strong>verified confidence score</strong>.
+          But the way this score is <em>produced</em> is what really sets the system
+          apart.
+        </p>
+        <p class="l-zh">
           多步驟架構解決了「回答怎麼生出來」的問題，
           但還有一個更根本的問題：
           <strong>使用者怎麼知道這個回答可不可信？</strong>
           法律場景下，使用者面對 AI 的回答，要嘛全信、要嘛全不信 ——
           中間缺少一個讓他「<em>判斷依據強不強</em>」的訊號。
         </p>
-        <p>
+        <p class="l-zh">
           因此每個回答都會附上一份<strong>驗證後的信心程度</strong>。
           但這個分數的<em>產生方式</em>，才是這套系統真正不同的地方。
         </p>
       </article>
 
       <article class="card">
-        <header class="card-head"><h3>為什麼單純讓 LLM 打分數不夠</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">Why letting the LLM self-score isn't enough</h3>
+          <h3 class="l-zh">為什麼單純讓 LLM 打分數不夠</h3>
+        </header>
+        <p class="l-en">
+          Most off-the-shelf tools produce a confidence value by simply
+          <strong>asking the LLM to self-rate against a rubric</strong> — feed it a
+          prompt describing the criteria and let it score its own answer 0–100. It
+          sounds reasonable but hits a structural problem in practice:
+          <strong>the scores have almost no discriminative power</strong>.
+        </p>
+        <p class="l-en">
+          LLM scoring has a strong <em>round-number bias</em>, clustering output around
+          anchor values like 70, 80, 90. No matter how detailed the rubric, the model
+          can't reliably distinguish "81" from "84". The result: an "85" answer and an
+          "88" answer look essentially identical to the user, and the score degrades
+          into a binary "passed / didn't pass" signal — losing the
+          <strong>fine-grained trustworthiness information</strong> it was supposed to
+          provide. This isn't a rubric-writing problem; it's what happens when you ask
+          a <em>token-level sampling model</em> to make a <em>continuous-valued
+          judgment</em>.
+        </p>
+        <p class="l-zh">
           坊間多數工具的信心值都是直接<strong>讓 LLM 依規則自評</strong> ——
           給一段 prompt 描述評分標準，再讓 LLM 對自己的回答打 0–100。
           這種做法看似合理，但在實際使用上會撞到一個結構性的問題：
           <strong>分數鑑別度極低</strong>。
         </p>
-        <p>
+        <p class="l-zh">
           LLM 評分有強烈的<em>整數偏好</em>，輸出大量集中在 70、80、90 這幾個錨點上 ——
           就算規則寫得再詳細，也很難讓模型穩定地分辨「81」跟「84」的差異。
           結果是：一份「85 分」的答案跟一份「88 分」的答案，
@@ -272,8 +455,22 @@
       </article>
 
       <article class="card">
-        <header class="card-head"><h3>本系統的做法：從反饋資料訓練專屬信心模型</h3></header>
-        <p>
+        <header class="card-head">
+          <h3 class="l-en">This system's approach: train a dedicated confidence model from feedback data</h3>
+          <h3 class="l-zh">本系統的做法：從反饋資料訓練專屬信心模型</h3>
+        </header>
+        <p class="l-en">
+          My design moves confidence scoring
+          <strong>from a prompt rubric to a trainable model</strong> — the system
+          continuously collects <strong>client feedback and edits during real
+          use</strong> (which answers got adopted, which got rewritten, which got
+          rejected) and uses those as labeled data to train a dedicated confidence
+          model. The resulting scores come from the <em>distribution of actual usage</em>
+          rather than the LLM's after-the-fact self-evaluation — and the discriminative
+          power is naturally far above the rule-based version.
+        </p>
+        <p class="l-en">This architecture brings two additional dimensions of extensibility:</p>
+        <p class="l-zh">
           我設計的做法是把信心評分這件事
           <strong>從 prompt 規則改成可訓練的模型</strong> ——
           系統會持續收集<strong>客戶在使用時的反饋與修正</strong>
@@ -283,35 +480,65 @@
           而不是 LLM 對自己作答的事後自評，
           鑑別度自然遠超過 rule-based 的版本。
         </p>
-        <p>這個架構帶來兩個額外的延伸性：</p>
+        <p class="l-zh">這個架構帶來兩個額外的延伸性：</p>
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">可遷移到不同領域</span>
-            「什麼算有信心」在不同領域的標準不同 ——
+            <span class="bullet-tag l-en">Transferable across domains</span>
+            <span class="bullet-tag l-zh">可遷移到不同領域</span>
+            <span class="l-en">"What counts as confident" varies across domains —
+            the level of certainty acceptable in legal advice has to step up another
+            notch in a <strong>medical</strong> setting. Because this architecture
+            depends on <em>that domain's labeled data</em> rather than a fixed prompt,
+            collecting feedback from a new domain is enough to train a confidence
+            model aligned with that domain's bar — instead of forcing one LLM rubric
+            onto every industry.</span>
+            <span class="l-zh">「什麼算有信心」在不同領域的標準不同 ——
             法律可以接受的把握度，到了<strong>醫療</strong>場景就要再嚴格一階。
             這套架構因為依賴<em>該領域的標註資料</em>而不是固定 prompt，
             只要收集到對應領域的反饋，
             就能訓練出符合該領域標準的信心模型，
-            而不是用同一套 LLM 規則硬套到所有產業上。
+            而不是用同一套 LLM 規則硬套到所有產業上。</span>
           </li>
           <li>
-            <span class="bullet-tag">可按公司客製化</span>
-            同一個領域裡，不同公司對「好答案」的內部定義也不一樣 ——
+            <span class="bullet-tag l-en">Customizable per company</span>
+            <span class="bullet-tag l-zh">可按公司客製化</span>
+            <span class="l-en">Within the same domain, different companies have
+            different internal definitions of a "good answer" — Company A may require
+            every answer to cite a specific article number; Company B may care more
+            about whether the tone is neutral. By collecting <strong>that company's
+            internal "good / not good" labels</strong> and retraining, the confidence
+            model can align with <em>that company's</em> evaluation standard rather
+            than applying one generic score to every client.</span>
+            <span class="l-zh">同一個領域裡，不同公司對「好答案」的內部定義也不一樣 ——
             公司 A 可能要求每個回答都引用條號，
             公司 B 更看重語氣是否中立。
             系統透過收集<strong>該公司內部的「好 / 不好」標註</strong>再訓練，
             就能讓信心模型對齊<em>該公司</em>的評判標準，
-            而不是一份通用分數套到所有客戶。
+            而不是一份通用分數套到所有客戶。</span>
           </li>
         </ul>
 
         <figure class="arch-figure arch-figure-lg">
-          <div class="arch-credit">產品截圖 · Tenfold AI</div>
-          <img src="assets/tenfold_confidence.webp" alt="法律顧問 Chatbot 的信心程度視覺化：每個回答附上分數，讓使用者理解依據" loading="lazy">
-          <figcaption>每個回答附上信心程度，使用者能直接看到依據強度 · 點圖可放大</figcaption>
+          <div class="arch-credit">
+            <span class="l-en">Product screenshot · Tenfold AI</span>
+            <span class="l-zh">產品截圖 · Tenfold AI</span>
+          </div>
+          <img src="assets/tenfold_confidence.webp" alt="Confidence-score visualization in the legal advisor chatbot: each answer is tagged with a score so users can read the evidence strength" loading="lazy">
+          <figcaption>
+            <span class="l-en">Each answer is tagged with a confidence score; users see the evidence strength directly · click to enlarge</span>
+            <span class="l-zh">每個回答附上信心程度，使用者能直接看到依據強度 · 點圖可放大</span>
+          </figcaption>
         </figure>
 
-        <p class="callout">
+        <p class="callout l-en">
+          <strong>On disclosure:</strong>
+          The training-data structure, feature engineering, and exact training pipeline
+          for this confidence model are subject to Tenfold AI's NDA and can't be
+          disclosed here. This section only describes the <em>design motivation</em>
+          and <em>architectural properties</em>. The entire confidence model was
+          designed and built by me.
+        </p>
+        <p class="callout l-zh">
           <strong>關於揭露程度：</strong>
           這套信心模型的訓練資料結構、特徵設計、與訓練流程的具體做法
           受 Tenfold AI 保密協議限制，無法在此公開細節。
@@ -321,7 +548,17 @@
       </article>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          The point of the confidence score goes deeper than "displaying one more
+          number" — it turns the AI from a "black box that hands down a conclusion"
+          into <strong>an assistant that can be inspected and evolves with how it's
+          used</strong>. The user receives not just an answer but the answer
+          <em>plus a discriminative measure of evidence strength</em>, and can decide
+          whether to verify further or accept it directly. For a legal setting where
+          the user has to be accountable for their own decision, that layer of
+          transparency is required, not a bonus.
+        </p>
+        <p class="l-zh">
           整個信心分數的設計意義，比「多顯示一個數字」深得多 ——
           它把 AI 從一個「給結論的黑盒」變成一個<strong>能被檢視、能跟著用法演進的助手</strong>。
           使用者拿到的不只是答案，而是答案<em>加上一份具鑑別度的依據強度</em>，
@@ -333,21 +570,26 @@
 
     <a class="back-link back-link-bottom" href="../../projects.html">
       <span class="link-arrow">←</span>
-      <span>回到 Projects</span>
+      <span class="l-en">Back to Projects</span>
+      <span class="l-zh">回到 Projects</span>
     </a>
   </main>
 
   <footer>
     <span>© 2026 Edward Chiu</span>
     <span class="footer-sep">·</span>
-    <span>Built with HTML &amp; CSS</span>
+    <span class="l-en">Built with HTML &amp; CSS</span>
+    <span class="l-zh">純 HTML &amp; CSS 打造</span>
   </footer>
 
   <!-- Lightbox for architecture diagrams -->
   <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog">
-    <button class="lightbox-close" aria-label="關閉">&times;</button>
+    <button class="lightbox-close" aria-label="Close">&times;</button>
     <img id="lightbox-img" src="" alt="">
-    <div class="lightbox-hint">點圖放大 · 拖動查看細節 · ESC 關閉</div>
+    <div class="lightbox-hint">
+      <span class="l-en">Click to zoom · drag to pan · ESC to close</span>
+      <span class="l-zh">點圖放大 · 拖動查看細節 · ESC 關閉</span>
+    </div>
   </div>
 
   <script>

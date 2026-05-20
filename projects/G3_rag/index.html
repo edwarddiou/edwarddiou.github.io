@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>G3-RAG — Multi-step Reasoning RAG over Knowledge Graphs — Edward Chiu</title>
-  <meta name="description" content="Edward Chiu 的碩士論文：G3-RAG 透過關係抽取建構結構化知識圖譜，結合圖檢索與多輪推理，解決大型語言模型處理長文本時的資訊遺失問題。">
+  <title data-en="G3-RAG — Multi-step Reasoning RAG over Knowledge Graphs — Edward Chiu" data-zh="G3-RAG — 知識圖譜上的多步推理 RAG — Edward Chiu">G3-RAG — Multi-step Reasoning RAG over Knowledge Graphs — Edward Chiu</title>
+  <meta name="description" content="Edward Chiu's M.S. thesis: G3-RAG builds a structured knowledge graph via relation extraction and combines it with graph retrieval and multi-round reasoning to address information loss in long-context LLMs.">
   <meta name="author" content="Edward Chiu">
   <meta property="og:title" content="G3-RAG — Multi-step Reasoning RAG over Knowledge Graphs — Edward Chiu">
-  <meta property="og:description" content="碩士論文：以知識圖譜為核心的 RAG，搭配多輪推理與記憶強化技術，在多跳推理任務中精準檢索與推論。">
+  <meta property="og:description" content="M.S. thesis: a KG-centric RAG with multi-round reasoning and memory enhancement for precise retrieval and inference on multi-hop tasks.">
   <meta property="og:type" content="article">
-  <link rel="stylesheet" href="../../styles.css?v=3">
+  <link rel="stylesheet" href="../../styles.css?v=4">
+  <script src="../../lang.js?v=1"></script>
   <script data-goatcounter="https://edwarddiou.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -36,6 +37,10 @@
           <span class="nav-en">Projects</span>
           <span class="nav-zh">專案</span>
         </a>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-switch-btn" data-lang-set="en" aria-label="Switch to English">EN</button>
+          <button type="button" class="lang-switch-btn" data-lang-set="zh" aria-label="切換為中文">中</button>
+        </div>
       </nav>
     </div>
     <div class="scroll-progress"><div class="scroll-progress-fill"></div></div>
@@ -44,23 +49,33 @@
   <main>
     <a class="back-link" href="../../projects.html">
       <span class="link-arrow">←</span>
-      <span>回到 Projects</span>
+      <span class="l-en">Back to Projects</span>
+      <span class="l-zh">回到 Projects</span>
     </a>
 
-    <aside class="toc" aria-label="目錄">
-      <div class="toc-label">目錄 · TOC</div>
+    <aside class="toc" aria-label="Table of contents">
+      <div class="toc-label">
+        <span class="l-en">TOC</span>
+        <span class="l-zh">目錄 · TOC</span>
+      </div>
       <ol class="toc-list">
-        <li><a href="#abstract-zh">摘要（中文）</a></li>
-        <li><a href="#abstract-en">Abstract (English)</a></li>
-        <li><a href="#motivation">為什麼需要這個架構</a></li>
-        <li><a href="#architecture">系統架構</a></li>
+        <li>
+          <a href="#abstract"><span class="l-en">Abstract</span><span class="l-zh">摘要</span></a>
+        </li>
+        <li>
+          <a href="#motivation"><span class="l-en">Why this architecture</span><span class="l-zh">為什麼需要這個架構</span></a>
+        </li>
+        <li>
+          <a href="#architecture"><span class="l-en">System architecture</span><span class="l-zh">系統架構</span></a>
+        </li>
       </ol>
     </aside>
 
     <!-- ───── HERO ───── -->
     <section class="hero project-hero">
       <div class="tags">
-        <span class="tag tag-research">Master's Thesis</span>
+        <span class="tag tag-research l-en">Master's Thesis</span>
+        <span class="tag tag-research l-zh">碩士論文</span>
       </div>
       <h1>G3-RAG</h1>
       <p class="tagline">
@@ -72,11 +87,22 @@
       </p>
       <p class="location">
         <span class="card-meta">2023.07 — 2025.02</span>
-        <span class="location-detail">碩士論文 · 已通過口試，期刊投稿中</span>
+        <span class="location-detail l-en">M.S. thesis · oral defense passed, journal submission in progress</span>
+        <span class="location-detail l-zh">碩士論文 · 已通過口試，期刊投稿中</span>
       </p>
 
       <div class="bio">
-        <p>
+        <p class="l-en">
+          G3-RAG is my M.S. thesis research, proposing a Retrieval-Augmented Generation (RAG)
+          architecture built around <strong>knowledge graphs</strong> to address the
+          <strong>information-loss</strong> problem that LLMs face on long inputs.
+          Through relation extraction it builds a structured graph, combines it with
+          graph retrieval and a <strong>multi-round reasoning</strong> mechanism,
+          and lets the model converge on the answer step-by-step on multi-hop tasks ——
+          rather than throwing everything into one long context where the critical
+          signal gets diluted.
+        </p>
+        <p class="l-zh">
           G3-RAG 是我的碩士論文研究，提出一個以<strong>知識圖譜</strong>為核心的
           檢索增強生成（RAG）架構，解決大型語言模型在處理長文本時
           常見的<strong>資訊遺失</strong>問題。透過關係抽取建立結構化圖譜、
@@ -87,35 +113,15 @@
       </div>
     </section>
 
-    <!-- ───── 摘要（中文） ───── -->
-    <section id="abstract-zh">
-      <h2><span class="h2-marker"></span>摘要（中文）</h2>
+    <!-- ───── Abstract ───── -->
+    <section id="abstract">
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Abstract</span>
+        <span class="l-zh">摘要</span>
+      </h2>
 
-      <article class="card">
-        <p>
-          本研究提出了一種檢索增強生成（RAG）模型 <strong>G3-RAG</strong>，
-          旨在解決大型語言模型（LLM）在處理長文本時常見的資訊遺失問題。
-          現有的 RAG 模型在處理長篇文檔時，往往會遺漏關鍵資訊，導致結果不準確。
-          G3-RAG 通過構建基於<strong>關係抽取技術</strong>的結構化知識圖譜，
-          並結合<strong>圖檢索方法</strong>，
-          提升對全面資訊的處理能力及多源知識的整合效果。
-        </p>
-        <p>
-          本研究還引入了一種特殊技術，能夠進行<strong>多輪推理</strong>，
-          逐步尋找答案，特別適用於<strong>多跳推理任務</strong>。
-          此外，G3-RAG 採用特殊技術來<strong>增強推理過程中的記憶能力</strong>。
-          實驗結果表明，G3-RAG 在處理複雜問題時，
-          能夠檢索到更精準的信息並做出更準確的推論，
-          顯著提升 LLM 的整體性能。
-        </p>
-      </article>
-    </section>
-
-    <!-- ───── Abstract (English) ───── -->
-    <section id="abstract-en">
-      <h2><span class="h2-marker"></span>Abstract (English)</h2>
-
-      <article class="card">
+      <article class="card l-en">
         <p>
           This research presents a retrieval-augmented generation model called
           <strong>G3-RAG</strong>, designed to address the issue of information loss
@@ -137,14 +143,43 @@
           complex problems, significantly improving the overall performance of LLMs.
         </p>
       </article>
+
+      <article class="card l-zh">
+        <p>
+          本研究提出了一種檢索增強生成（RAG）模型 <strong>G3-RAG</strong>，
+          旨在解決大型語言模型（LLM）在處理長文本時常見的資訊遺失問題。
+          現有的 RAG 模型在處理長篇文檔時，往往會遺漏關鍵資訊，導致結果不準確。
+          G3-RAG 通過構建基於<strong>關係抽取技術</strong>的結構化知識圖譜，
+          並結合<strong>圖檢索方法</strong>，
+          提升對全面資訊的處理能力及多源知識的整合效果。
+        </p>
+        <p>
+          本研究還引入了一種特殊技術，能夠進行<strong>多輪推理</strong>，
+          逐步尋找答案，特別適用於<strong>多跳推理任務</strong>。
+          此外，G3-RAG 採用特殊技術來<strong>增強推理過程中的記憶能力</strong>。
+          實驗結果表明，G3-RAG 在處理複雜問題時，
+          能夠檢索到更精準的信息並做出更準確的推論，
+          顯著提升 LLM 的整體性能。
+        </p>
+      </article>
     </section>
 
-    <!-- ───── 為什麼需要這個架構 ───── -->
+    <!-- ───── Motivation ───── -->
     <section id="motivation">
-      <h2><span class="h2-marker"></span>為什麼需要這個架構</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Why this architecture</span>
+        <span class="l-zh">為什麼需要這個架構</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          The problem isn't "the LLM didn't see the data" — it's "the LLM saw it, but
+          couldn't pick out what mattered". Long-context LLMs and vanilla RAG each have
+          structural weaknesses on multi-hop reasoning tasks — G3-RAG's design targets
+          those weaknesses one by one.
+        </p>
+        <p class="l-zh">
           問題不是「LLM 沒看到資料」，而是「LLM 看到了，但抓不到關鍵」。
           長 context LLM 跟 vanilla RAG 在多跳推理任務上各自有結構性的弱點 ——
           G3-RAG 的設計就是針對這幾個弱點各個對應。
@@ -152,36 +187,68 @@
 
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">長 context 資訊遺失</span>
-            把整份文件丟進 LLM 的長 context 不能解決問題 ——
+            <span class="bullet-tag l-en">Long-context info loss</span>
+            <span class="bullet-tag l-zh">長 context 資訊遺失</span>
+            <span class="l-en">Dumping a full document into a long-context LLM doesn't
+            solve the problem — attention to the middle of long sequences decays
+            (<em>lost in the middle</em>), and the critical signal gets diluted by
+            redundant text. "In the context" is not the same as "actually used".</span>
+            <span class="l-zh">把整份文件丟進 LLM 的長 context 不能解決問題 ——
             LLM 對長序列中段內容的 attention 會衰減（<em>lost in the middle</em>），
             關鍵訊號被冗餘文本稀釋。
-            資訊「在 context 裡」不等於「會被用到」。
+            資訊「在 context 裡」不等於「會被用到」。</span>
           </li>
           <li>
-            <span class="bullet-tag">Naive RAG 解不了多跳</span>
-            傳統 RAG 一次 retrieval 抓 top-k chunks，
+            <span class="bullet-tag l-en">Naive RAG can't handle multi-hop</span>
+            <span class="bullet-tag l-zh">Naive RAG 解不了多跳</span>
+            <span class="l-en">Traditional RAG retrieves top-k chunks in one shot —
+            fine when the answer lives in a single paragraph, but <strong>multi-hop
+            questions</strong> need cross-passage chaining (A → B → C). A single
+            retrieval call can't reach that cross-paragraph topology.</span>
+            <span class="l-zh">傳統 RAG 一次 retrieval 抓 top-k chunks，
             適合答案直接落在單一段落的問題；
             但<strong>多跳問題</strong>需要跨段資訊串接（A→B→C 的鏈式推理），
-            單次 retrieval 抓不到這種跨段拓撲。
+            單次 retrieval 抓不到這種跨段拓撲。</span>
           </li>
           <li>
-            <span class="bullet-tag">平面 chunk 缺結構</span>
-            chunk-based retrieval 把長文本切成平面段落，
+            <span class="bullet-tag l-en">Flat chunks lack structure</span>
+            <span class="bullet-tag l-zh">平面 chunk 缺結構</span>
+            <span class="l-en">Chunk-based retrieval slices long text into flat
+            paragraphs and severs the relations between entities (who connects to whom,
+            under what conditions). For multi-hop reasoning the retrieval signal itself
+            needs to be <strong>structured</strong>, so the LLM can advance along the
+            relation chain.</span>
+            <span class="l-zh">chunk-based retrieval 把長文本切成平面段落，
             實體之間的關係（誰跟誰相關、什麼條件下成立）被切斷。
             做多跳推理時，retrieval 訊號本身就要是<strong>結構化的</strong>，
-            才能讓 LLM 沿著關係鏈推進。
+            才能讓 LLM 沿著關係鏈推進。</span>
           </li>
           <li>
-            <span class="bullet-tag">多輪推理需要記憶</span>
-            單輪 retrieval → 單輪生成，模型只能基於一次的線索作答；
+            <span class="bullet-tag l-en">Multi-round needs memory</span>
+            <span class="bullet-tag l-zh">多輪推理需要記憶</span>
+            <span class="l-en">Single retrieval → single generation forces the model to
+            answer from one shot of clues. Multi-hop questions need a recursive pattern:
+            derive an intermediate conclusion, then use that conclusion to retrieve
+            again. Without cross-round memory, round two isn't any smarter than round
+            one — <strong>memory</strong> is what makes "multi-round" actually beat
+            "single-round".</span>
+            <span class="l-zh">單輪 retrieval → 單輪生成，模型只能基於一次的線索作答；
             但多跳問題需要「先得到中間結論、再用中間結論去 retrieval」這種遞迴模式。
             沒有跨輪記憶，第二輪 retrieval 不會比第一輪更聰明 ——
-            <strong>記憶機制</strong>是讓「多輪」真正比「單輪」強的關鍵。
+            <strong>記憶機制</strong>是讓「多輪」真正比「單輪」強的關鍵。</span>
           </li>
         </ul>
 
-        <p>
+        <p class="l-en">
+          G3-RAG maps these four weaknesses to concrete design choices:
+          <strong>relation extraction</strong> to build the knowledge graph fixes the
+          flat-structure problem; <strong>graph retrieval</strong> makes multi-hop
+          chains locatable; <strong>multi-round reasoning</strong> addresses long-context
+          dilution; <strong>memory enhancement</strong> lets multiple rounds accumulate
+          toward convergence. The architecture diagram in the next section is the
+          concrete implementation of these choices.
+        </p>
+        <p class="l-zh">
           G3-RAG 把這四個弱點對應到具體的設計選擇：
           <strong>關係抽取建構知識圖譜</strong>解決平面結構問題、
           <strong>圖檢索</strong>讓多跳鏈式推理可定位、
@@ -192,48 +259,75 @@
       </article>
     </section>
 
-    <!-- ───── 架構 ───── -->
+    <!-- ───── Architecture ───── -->
     <section id="architecture">
-      <h2><span class="h2-marker"></span>系統架構</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">System architecture</span>
+        <span class="l-zh">系統架構</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          The core flow: use relation extraction to turn long text into a structured
+          knowledge graph, use graph retrieval to find the question-relevant subgraph,
+          and let the LLM absorb the graph signal across multiple rounds of reasoning
+          to converge on the answer.
+        </p>
+        <p class="l-zh">
           G3-RAG 的核心流程：先用關係抽取把長文本轉成結構化知識圖譜，
           再透過圖檢索方法找出與問題相關的子圖，
           最後讓 LLM 在多輪推理中逐步吸收圖譜訊號並收斂到答案。
         </p>
 
         <figure class="arch-figure arch-figure-lg">
-          <div class="arch-credit">論文架構圖 · Edward Chiu</div>
-          <img src="assets/G3-RAG.png" alt="G3-RAG 整體架構：關係抽取 → 知識圖譜 → 圖檢索 → 多輪推理生成" loading="lazy">
-          <figcaption>G3-RAG 整體架構 · 圖譜建構 + 圖檢索 + 多輪推理 · 點圖可放大</figcaption>
+          <div class="arch-credit">
+            <span class="l-en">Thesis figure · Edward Chiu</span>
+            <span class="l-zh">論文架構圖 · Edward Chiu</span>
+          </div>
+          <img src="assets/G3-RAG.png" alt="G3-RAG overall architecture: relation extraction → knowledge graph → graph retrieval → multi-round reasoning" loading="lazy">
+          <figcaption>
+            <span class="l-en">G3-RAG overall architecture · graph construction + graph retrieval + multi-round reasoning · click to enlarge</span>
+            <span class="l-zh">G3-RAG 整體架構 · 圖譜建構 + 圖檢索 + 多輪推理 · 點圖可放大</span>
+          </figcaption>
         </figure>
 
         <figure class="arch-figure arch-figure-md">
-          <div class="arch-credit">論文架構圖 · Edward Chiu</div>
-          <img src="assets/G2Rel.png" alt="關係抽取模組：將長文本轉為結構化三元組" loading="lazy">
-          <figcaption>關係抽取模組 · 將長文本轉為結構化三元組 · 點圖可放大</figcaption>
+          <div class="arch-credit">
+            <span class="l-en">Thesis figure · Edward Chiu</span>
+            <span class="l-zh">論文架構圖 · Edward Chiu</span>
+          </div>
+          <img src="assets/G2Rel.png" alt="Relation extraction module: long text to structured triples" loading="lazy">
+          <figcaption>
+            <span class="l-en">Relation extraction module · long text to structured triples · click to enlarge</span>
+            <span class="l-zh">關係抽取模組 · 將長文本轉為結構化三元組 · 點圖可放大</span>
+          </figcaption>
         </figure>
       </article>
     </section>
 
     <a class="back-link back-link-bottom" href="../../projects.html">
       <span class="link-arrow">←</span>
-      <span>回到 Projects</span>
+      <span class="l-en">Back to Projects</span>
+      <span class="l-zh">回到 Projects</span>
     </a>
   </main>
 
   <footer>
     <span>© 2026 Edward Chiu</span>
     <span class="footer-sep">·</span>
-    <span>Built with HTML &amp; CSS</span>
+    <span class="l-en">Built with HTML &amp; CSS</span>
+    <span class="l-zh">純 HTML &amp; CSS 打造</span>
   </footer>
 
   <!-- Lightbox for architecture diagrams -->
   <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog">
-    <button class="lightbox-close" aria-label="關閉">&times;</button>
+    <button class="lightbox-close" aria-label="Close">&times;</button>
     <img id="lightbox-img" src="" alt="">
-    <div class="lightbox-hint">點圖放大 · 拖動查看細節 · ESC 關閉</div>
+    <div class="lightbox-hint">
+      <span class="l-en">Click to zoom · drag to pan · ESC to close</span>
+      <span class="l-zh">點圖放大 · 拖動查看細節 · ESC 關閉</span>
+    </div>
   </div>
 
   <script>

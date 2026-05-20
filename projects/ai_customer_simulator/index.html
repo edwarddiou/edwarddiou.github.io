@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Customer Simulator — Multi-step Reasoning — Edward Chiu</title>
-  <meta name="description" content="一個用於業務／客服訓練的 AI 顧客模擬器：用 multi-step reasoning 拆解「該怎麼回應業務」這件事，每一步只鎖一個維度，再疊出可信、可控的顧客回應。">
+  <title data-en="AI Customer Simulator — Multi-step Reasoning — Edward Chiu" data-zh="AI 顧客模擬器 — 多步推理 — Edward Chiu">AI Customer Simulator — Multi-step Reasoning — Edward Chiu</title>
+  <meta name="description" content="An AI customer simulator for sales / service training: multi-step reasoning decomposes 'how the customer responds' into separate dimensions per step, stacking up into believable, controllable customer behavior.">
   <meta name="author" content="Edward Chiu">
   <meta property="og:title" content="AI Customer Simulator — Multi-step Reasoning — Edward Chiu">
-  <meta property="og:description" content="用 multi-step reasoning 模擬真實顧客的回應：Persona / Mood / Reason / Flow 分步推理，搭配記憶模組與外部評分。">
+  <meta property="og:description" content="Multi-step reasoning to simulate real customers: Persona / Mood / Reason / Flow stepwise reasoning with a memory module and external scoring.">
   <meta property="og:type" content="article">
-  <link rel="stylesheet" href="../../styles.css?v=3">
+  <link rel="stylesheet" href="../../styles.css?v=4">
+  <script src="../../lang.js?v=1"></script>
   <script data-goatcounter="https://edwarddiou.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -36,6 +37,10 @@
           <span class="nav-en">Projects</span>
           <span class="nav-zh">專案</span>
         </a>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-switch-btn" data-lang-set="en" aria-label="Switch to English">EN</button>
+          <button type="button" class="lang-switch-btn" data-lang-set="zh" aria-label="切換為中文">中</button>
+        </div>
       </nav>
     </div>
     <div class="scroll-progress"><div class="scroll-progress-fill"></div></div>
@@ -44,44 +49,71 @@
   <main>
     <a class="back-link" href="../../projects.html">
       <span class="link-arrow">←</span>
-      <span>回到 Projects</span>
+      <span class="l-en">Back to Projects</span>
+      <span class="l-zh">回到 Projects</span>
     </a>
 
-    <aside class="toc" aria-label="目錄">
-      <div class="toc-label">目錄 · TOC</div>
+    <aside class="toc" aria-label="Table of contents">
+      <div class="toc-label">
+        <span class="l-en">TOC</span>
+        <span class="l-zh">目錄 · TOC</span>
+      </div>
       <ol class="toc-list">
-        <li><a href="#status">適用情境與現況</a></li>
-        <li><a href="#overview">系統概觀</a></li>
-        <li><a href="#problem">問題：單次 LLM 無法模擬一個真人</a></li>
-        <li><a href="#reasoning">Multi-step Reasoning：四個維度逐步鎖定</a></li>
-        <li><a href="#memory">記憶模組：跨輪一致性</a></li>
-        <li><a href="#scoring">外部評分：閉上訓練迴圈</a></li>
+        <li><a href="#status"><span class="l-en">Scope &amp; status</span><span class="l-zh">適用情境與現況</span></a></li>
+        <li><a href="#overview"><span class="l-en">System overview</span><span class="l-zh">系統概觀</span></a></li>
+        <li><a href="#problem"><span class="l-en">The problem: one LLM call can't simulate a real person</span><span class="l-zh">問題：單次 LLM 無法模擬一個真人</span></a></li>
+        <li><a href="#reasoning"><span class="l-en">Multi-step reasoning: four dimensions, locked one at a time</span><span class="l-zh">Multi-step Reasoning：四個維度逐步鎖定</span></a></li>
+        <li><a href="#memory"><span class="l-en">Memory module: cross-turn consistency</span><span class="l-zh">記憶模組：跨輪一致性</span></a></li>
+        <li><a href="#scoring"><span class="l-en">External scoring: closing the training loop</span><span class="l-zh">外部評分：閉上訓練迴圈</span></a></li>
       </ol>
     </aside>
 
     <!-- ───── HERO ───── -->
     <section class="hero project-hero">
       <div class="tags">
-        <span class="tag tag-product">Product</span>
-        <span class="tag tag-dev">In Development</span>
+        <span class="tag tag-product l-en">Product</span>
+        <span class="tag tag-product l-zh">產品</span>
+        <span class="tag tag-dev l-en">In Development</span>
+        <span class="tag tag-dev l-zh">開發中</span>
       </div>
       <h1>AI Customer Simulator</h1>
       <p class="tagline">
-        <span>業務／客服訓練模擬器</span>
+        <span class="l-en">Sales / service training simulator</span>
+        <span class="l-zh">業務／客服訓練模擬器</span>
         <span class="sep">/</span>
         <span>Multi-step Reasoning</span>
         <span class="sep">/</span>
         <span>Persona × Memory × Scoring</span>
       </p>
-      <p class="location">2025.10 — 進行中 · 企業內訓場景</p>
+      <p class="location">
+        <span class="l-en">2025.10 — In development · enterprise training</span>
+        <span class="l-zh">2025.10 — 進行中 · 企業內訓場景</span>
+      </p>
 
       <div class="bio">
-        <p>
+        <p class="l-en">
+          The problem this project solves is concrete: give <strong>new sales
+          reps</strong> a <strong>"simulated customer"</strong> they can talk to
+          repeatedly — one that has emotions, hesitates, says the wrong thing
+          sometimes, and can also be persuaded — so they can sharpen their dialogue
+          skills before facing a real client.
+        </p>
+        <p class="l-en">
+          The design decision: don't rely on a single LLM call to "play the customer"
+          as a whole. Decompose "how should the customer respond" into
+          <strong>multi-step reasoning</strong> — each step locks down one dimension
+          (who this person is, the current mood, why they're saying it, where the
+          conversation should go), the next step reasons under the previous step's
+          constraints, and only at the end does the customer's reply get generated.
+          This write-up focuses on <strong>why decomposition is necessary</strong>
+          and what the resulting system looks like.
+        </p>
+        <p class="l-zh">
           這個專案要解的問題很具體：讓<strong>業務新人</strong>有一個能反覆對話、
           會有情緒、會猶豫、會講錯話、也會被打動的<strong>「模擬顧客」</strong>，
           在進入真實客戶之前先把對話練到位。
         </p>
-        <p>
+        <p class="l-zh">
           做法上的取捨是：不靠單次 LLM 把整個顧客「演出來」，
           而是把「該怎麼回應業務」這件事拆成<strong>多步驟推理</strong> ——
           每一步只鎖一個維度（這個人是誰、現在的情緒、講話的動機、對話該往哪走），
@@ -92,9 +124,16 @@
       </div>
     </section>
 
-    <!-- ───── NDA 全頁告示 ───── -->
+    <!-- ───── NDA notice ───── -->
     <aside class="status-badge is-nda" role="note">
-      <p>
+      <p class="l-en">
+        This project is under an <strong>NDA</strong> with an enterprise client.
+        Every image on this page — system architecture diagrams, simulated dialogue
+        scenes, scoring visualizations — is <strong>illustrative</strong>, not an
+        actual product screenshot, real usage capture, or real measurement. They
+        exist only to convey the design concept and how the system operates.
+      </p>
+      <p class="l-zh">
         本專案因與企業客戶簽訂<strong>保密協議（NDA）</strong>，
         本頁所呈現之系統架構圖、模擬對話場景、評分視覺化等所有圖片，
         皆為<strong>示意性質繪製</strong>，並非實際產品畫面、實際使用截圖或真實量測值，
@@ -102,51 +141,89 @@
       </p>
     </aside>
 
-    <!-- ───── 適用情境 ───── -->
+    <!-- ───── Scope ───── -->
     <section id="status">
-      <h2><span class="h2-marker"></span>適用情境與現況</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Scope &amp; status</span>
+        <span class="l-zh">適用情境與現況</span>
+      </h2>
       <article class="card">
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">適用領域</span>
-            目前的設計可遷移到任何「對話過程比結果更重要」的訓練場景 ——
+            <span class="bullet-tag l-en">Applicable domains</span>
+            <span class="bullet-tag l-zh">適用領域</span>
+            <span class="l-en">The current design transfers to any training scenario
+            where "the conversation process matters more than the outcome" —
+            high-value product sales, client-relationship maintenance, complaint
+            handling, advisory services. The finance and insurance industries have
+            already expressed strong interest.</span>
+            <span class="l-zh">目前的設計可遷移到任何「對話過程比結果更重要」的訓練場景 ——
             高價商品銷售、客戶關係維護、客訴處理、諮詢類服務。
-            金融與保險產業已表達高度興趣。
+            金融與保險產業已表達高度興趣。</span>
           </li>
           <li>
-            <span class="bullet-tag">主要場景</span>
-            系統提供可組合的訓練素材 ——
+            <span class="bullet-tag l-en">Primary use</span>
+            <span class="bullet-tag l-zh">主要場景</span>
+            <span class="l-en">The system provides composable training material —
+            <strong>sales scenarios</strong>, <strong>different customer personality
+            types</strong>, <strong>dialogue scripts</strong>, and <strong>different
+            product domains</strong> can be combined on demand, acting as an internal
+            training library for enterprise employees. Training isn't tied to a single
+            case; it covers the variations actually encountered in practice.</span>
+            <span class="l-zh">系統提供可組合的訓練素材 ——
             <strong>業務情境</strong>、<strong>不同類型的客戶個性</strong>、
             <strong>對話腳本</strong>、<strong>不同產品的推銷領域</strong>
             都能依需求搭配，作為企業內部員工訓練的素材庫。
-            讓訓練不被綁在單一案例上，而是能涵蓋實務上會遇到的各種變化。
+            讓訓練不被綁在單一案例上，而是能涵蓋實務上會遇到的各種變化。</span>
           </li>
           <li>
-            <span class="bullet-tag">現況</span>
-            產品開發中。架構已確立並可運作，
+            <span class="bullet-tag l-en">Status</span>
+            <span class="bullet-tag l-zh">現況</span>
+            <span class="l-en">In development. The architecture is settled and
+            working; current effort focuses on iterating two dimensions —
+            <strong>customer realism</strong> and <strong>scoring stability</strong>.</span>
+            <span class="l-zh">產品開發中。架構已確立並可運作，
             當前的工作集中在<strong>顧客真實感</strong>與<strong>評分穩定度</strong>
-            這兩個維度的迭代上。
+            這兩個維度的迭代上。</span>
           </li>
         </ul>
 
         <figure class="arch-figure arch-figure-lg">
-          <div class="arch-credit">示意圖 · 對白為示範用途，非實際畫面</div>
+          <div class="arch-credit">
+            <span class="l-en">Illustration · dialogue is for demonstration, not an actual screen</span>
+            <span class="l-zh">示意圖 · 對白為示範用途，非實際畫面</span>
+          </div>
           <img src="assets/scenario_illustration.svg"
-               alt="模擬對話場景示意：業務與 AI 模擬顧客互動，旁側顯示四步推理痕跡與記憶模組狀態" loading="lazy">
+               alt="Illustrated simulated-dialogue scene: a sales rep interacts with the AI customer; sidebar shows the four-step reasoning trace and memory-module state" loading="lazy">
           <figcaption>
-            模擬對話場景 · 每一輪顧客回應由四步推理產出，並與記憶模組互動 ·
-            <em>對白與人物為示意，非實際使用畫面</em>
+            <span class="l-en">Simulated dialogue scene · each customer turn is produced by four-step reasoning, interacting with the memory module ·
+            <em>dialogue and persons are illustrative, not an actual screen</em></span>
+            <span class="l-zh">模擬對話場景 · 每一輪顧客回應由四步推理產出，並與記憶模組互動 ·
+            <em>對白與人物為示意，非實際使用畫面</em></span>
           </figcaption>
         </figure>
       </article>
     </section>
 
-    <!-- ───── 系統概觀 ───── -->
+    <!-- ───── System overview ───── -->
     <section id="overview">
-      <h2><span class="h2-marker"></span>系統概觀</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">System overview</span>
+        <span class="l-zh">系統概觀</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          The system revolves around three modules pulling on each other:
+          <strong>Reasoning Pipeline</strong> handles "how to respond this turn"
+          (multi-step reasoning); <strong>Memory Module</strong> handles "what
+          happened earlier" (cross-turn state); <strong>External Scoring</strong>
+          handles evaluating how the sales rep did this round. The three operate
+          around the same dialogue session — not as independent post-processing.
+        </p>
+        <p class="l-zh">
           整個系統圍繞三個模組互相牽動：
           <strong>Reasoning Pipeline</strong> 負責「這次該怎麼回」的多步推理、
           <strong>Memory Module</strong> 負責「先前發生過什麼」的跨輪狀態、
@@ -155,20 +232,41 @@
         </p>
 
         <figure class="arch-figure arch-figure-lg">
-          <div class="arch-credit">原創架構設計 · Edward Chiu · 細節已模糊處理</div>
-          <img src="assets/ai_customer_simulator_blurred.png" alt="AI Customer Simulator 系統架構（細節已模糊處理）" loading="lazy">
-          <figcaption>系統架構概觀 · 多步推理 + 記憶 + 評分 · 點圖可放大</figcaption>
+          <div class="arch-credit">
+            <span class="l-en">Original architecture · Edward Chiu · details blurred</span>
+            <span class="l-zh">原創架構設計 · Edward Chiu · 細節已模糊處理</span>
+          </div>
+          <img src="assets/ai_customer_simulator_blurred.png" alt="AI Customer Simulator system architecture (details blurred)" loading="lazy">
+          <figcaption>
+            <span class="l-en">System architecture overview · multi-step reasoning + memory + scoring · click to enlarge</span>
+            <span class="l-zh">系統架構概觀 · 多步推理 + 記憶 + 評分 · 點圖可放大</span>
+          </figcaption>
         </figure>
 
       </article>
     </section>
 
-    <!-- ───── 問題 ───── -->
+    <!-- ───── Problem ───── -->
     <section id="problem">
-      <h2><span class="h2-marker"></span>問題：單次 LLM 無法模擬一個真人</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">The problem: one LLM call can't simulate a real person</span>
+        <span class="l-zh">問題：單次 LLM 無法模擬一個真人</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          The dominant approach to LLM role-playing is uniform: bundle the persona,
+          the conversation history, and a strict behavioral rubric all into the
+          <strong>same prompt</strong>, and let the LLM generate responses inside
+          that fixed frame. Customer-service demos and casual chatbots can run on
+          this approach, but in <strong>sales training</strong> it breaks
+          immediately — because the customers a sales rep has to handle are
+          <em>never describable by a simple set of labels</em>; they're an interrelated
+          bundle of features that shifts with context. Cramming that kind of person
+          into a single step hits two structural problems.
+        </p>
+        <p class="l-zh">
           目前主流讓 LLM 做角色扮演的做法很一致：把人物 persona、對話紀錄、
           再加上一份嚴格的行為規範，全部綁進<strong>同一份 prompt</strong>，
           讓 LLM 在這個固定框架下生成回應。客服 demo、陪聊機器人這類場景靠這條路就能跑，
@@ -180,8 +278,20 @@
 
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">複合人設被壓成清單</span>
-            業務場景裡的顧客是「複合個性」——
+            <span class="bullet-tag l-en">Composite personas collapse into checklists</span>
+            <span class="bullet-tag l-zh">複合人設被壓成清單</span>
+            <span class="l-en">Customers in sales scenarios are "composite
+            personalities" — a 45-year-old with two kids, recently laid off, half-
+            sceptical about insurance, talks in circles but is actually careful about
+            money. Getting the LLM to play that person well means stuffing every one
+            of those features into a single persona description. In practice, once
+            the prompt grows to that weight, the model
+            <em>locks onto the most salient few labels and keeps re-emphasizing
+            them</em>; secondary traits get diluted, and the persona degrades into
+            a <strong>"feature list"</strong> rather than "a person" — the resulting
+            speech sounds like NPC lines, not the customer who'd actually be sitting
+            on a sofa across from you.</span>
+            <span class="l-zh">業務場景裡的顧客是「複合個性」——
             一個 45 歲、有兩個小孩、剛被資遣、對保險半信半疑、
             講話喜歡繞圈但其實精打細算的客戶。要讓 LLM 演好這個人，
             等於要把上面所有特徵都塞進同一段 persona 描述。
@@ -189,11 +299,23 @@
             模型會自動<em>抓最顯著的幾個標籤反覆強調</em>，
             次要特徵被稀釋掉，整段 persona 退化成一份<strong>「特徵清單」</strong>
             而不是「一個人」—— 講出來的話像 NPC 的台詞，
-            不像會出現在客廳沙發上的那個顧客。
+            不像會出現在客廳沙發上的那個顧客。</span>
           </li>
           <li>
-            <span class="bullet-tag">指令式 persona 沒變化性</span>
-            Persona prompt 在寫法上本質是一份指令：「你的性格是…」
+            <span class="bullet-tag l-en">Imperative personas don't vary</span>
+            <span class="bullet-tag l-zh">指令式 persona 沒變化性</span>
+            <span class="l-en">A persona prompt is, in form, a list of imperatives:
+            "your personality is…", "your catchphrase is…", "when you don't want to
+            be pitched you say…". The fundamental problem is
+            <strong>writing <em>state</em> as <em>rules</em></strong> — but real
+            people are not rule-executors. The same "I don't want to be pitched" at
+            turn 1, at turn 7, and after the rep has touched a pain point should
+            sound completely different. Imperative personas lack that
+            context-evolving flexibility; every turn looks roughly the same. The rep
+            in front of this customer is training to "crack a fixed template", not
+            "deal with a person who changes" — and for training purposes, that's
+            barely different from not training at all.</span>
+            <span class="l-zh">Persona prompt 在寫法上本質是一份指令：「你的性格是…」
             「你的口頭禪是…」「你不想被推銷時會說…」。
             這種寫法的根本問題是<strong>把<em>狀態</em>當<em>規則</em>寫</strong> ——
             但真實的人不是規則的執行者。同樣是「不想被推銷」，
@@ -201,11 +323,20 @@
             講出來的話應該完全不同。指令式 persona 缺乏這種隨情境演變的彈性，
             每一輪的反應幾乎都長得一樣。業務在這種顧客面前練到的是
             「破解一個固定模板」，不是「應對一個會變的人」——
-            訓練效果上，這跟沒練幾乎沒有差別。
+            訓練效果上，這跟沒練幾乎沒有差別。</span>
           </li>
         </ul>
 
-        <p>
+        <p class="l-en">
+          The shared root cause of both: cramming "simulating a person" into a
+          <strong>single step</strong> forces the LLM to handle "who they are",
+          "their current state", and "how this specific line should be said" in one
+          reasoning action. These things are related, but
+          <strong>shouldn't be decided simultaneously</strong> — forcing them
+          together produces exactly the two failure modes above. That structural
+          gap is the reason reasoning needs to be decomposed into multiple steps.
+        </p>
+        <p class="l-zh">
           這兩件事的共通根因是：把「模擬一個人」全部壓進<strong>單一步驟</strong>，
           等於要求 LLM 在同一個推理動作裡同時處理「他是誰」「他現在的狀態」
           「他這一句該怎麼講」。這幾件事彼此相關、但<strong>不該同時決策</strong> ——
@@ -217,10 +348,22 @@
 
     <!-- ───── Multi-step Reasoning ───── -->
     <section id="reasoning">
-      <h2><span class="h2-marker"></span>Multi-step Reasoning：四個維度逐步鎖定</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Multi-step reasoning: four dimensions, locked one at a time</span>
+        <span class="l-zh">Multi-step Reasoning：四個維度逐步鎖定</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          The core design slices the customer's response into <strong>four reasoning
+          steps</strong>; each step is responsible for converging exactly one
+          dimension, narrowing the answer space before handing off to the next.
+          The order goes <strong>from stable to dynamic</strong> — from the least
+          changeable (who this person is) down to the most immediate (where this
+          specific line should go).
+        </p>
+        <p class="l-zh">
           這個系統的核心設計是把顧客的回應切成<strong>四步推理</strong>，
           每一步只負責收斂一個維度，把答案空間縮窄之後傳給下一步。
           順序是<strong>由穩到動</strong> —— 從最不變的（這個人是誰）
@@ -230,37 +373,71 @@
         <ul class="bullets">
           <li>
             <span class="bullet-tag">① Persona</span>
-            鎖定「這個人是誰」 —— 年齡、職業、家庭狀況、消費習慣、性格傾向。
+            <span class="l-en">Locks "who this person is" — age, occupation, family
+            situation, spending habits, personality lean. This layer barely changes
+            with conversation content; it's the <strong>hard constraint shared by
+            the next three layers</strong>. Reason for placing it first: if the
+            persona shifts, every downstream emotion, motivation, and dialogue
+            strategy has to shift with it. Pin it down first so everything else has
+            a stable reference frame.</span>
+            <span class="l-zh">鎖定「這個人是誰」 —— 年齡、職業、家庭狀況、消費習慣、性格傾向。
             這一層幾乎不隨對話內容變動，是<strong>後面三層共用的硬約束</strong>。
             放在第一步的原因：人設一動，後面所有的情緒、動機、對話策略
-            都要跟著變；先把它釘死，後面才有穩定的參照系。
+            都要跟著變；先把它釘死，後面才有穩定的參照系。</span>
           </li>
           <li>
             <span class="bullet-tag">② Mood</span>
-            鎖定「現在的情緒」 —— 在 Persona 已經確定的前提下，
+            <span class="l-en">Locks "the current emotion" — under a fixed persona,
+            consider "what state would <em>this person</em> be in <em>this
+            situation</em>". An anxious 35-year-old and an anxious 60-year-old say
+            completely different sentences — Mood only makes sense built on top of
+            Persona, and that's the ordering tradeoff at this layer.</span>
+            <span class="l-zh">鎖定「現在的情緒」 —— 在 Persona 已經確定的前提下，
             考慮「<em>這個人</em>在<em>這個情境</em>下會處於什麼狀態」。
             一樣是焦慮的 35 歲客戶，跟焦慮的 60 歲客戶，講出來的句子完全不同 ——
-            Mood 必須建立在 Persona 上才有意義，這是順序在這層的取捨。
+            Mood 必須建立在 Persona 上才有意義，這是順序在這層的取捨。</span>
           </li>
           <li>
             <span class="bullet-tag">③ Reason</span>
-            鎖定「為什麼這樣回應」 —— 動機層。
+            <span class="l-en">Locks "why this response" — the motivation layer.
+            A hesitant response can be backed by "I genuinely have doubts", "I'm
+            testing the rep", "I want to hear more", or "I'm getting ready to refuse
+            but don't want to be rude" — these motivations can produce sentences
+            that look similar literally, but the <em>next line</em> goes completely
+            differently. Reason locks not the current sentence but
+            <strong>the direction the conversation is heading</strong>.</span>
+            <span class="l-zh">鎖定「為什麼這樣回應」 —— 動機層。
             一個猶豫的回應背後可能是「真的有疑慮」「在試探業務」「想多聽一下」
             「準備拒絕但不想撕破臉」——
             這幾個動機講出來的句子有時候字面很像，但<em>下一句</em>的走向完全不同。
-            Reason 鎖住的不是當下這句話，而是<strong>讓對話有方向</strong>。
+            Reason 鎖住的不是當下這句話，而是<strong>讓對話有方向</strong>。</span>
           </li>
           <li>
             <span class="bullet-tag">④ Flow</span>
-            鎖定「這一句該往哪走」 —— 對話策略層。
+            <span class="l-en">Locks "where should this line go" — the dialogue-
+            strategy layer. With Persona × Mood × Reason all fixed, this step handles
+            tactical choices like "stay on this topic, pivot, ask back, or wrap up".
+            This layer is the most dynamic and the most tied to "what the rep just
+            said", which is why it sits last — only at the end can it absorb all the
+            constraints from the previous three layers.</span>
+            <span class="l-zh">鎖定「這一句該往哪走」 —— 對話策略層。
             在 Persona × Mood × Reason 都已經給定的情況下，這一步處理的是
             「我要繼續這個話題、轉移、反問、還是收尾」這種戰術選擇。
             這層最動態、最跟「上一句業務說了什麼」綁定，
-            因此放在最後一步，才能吃到前三層的所有約束。
+            因此放在最後一步，才能吃到前三層的所有約束。</span>
           </li>
         </ul>
 
-        <p>
+        <p class="l-en">
+          Only after the four steps does <strong>Response Generation</strong>
+          start — this generation step doesn't receive a vague prompt; it receives
+          <strong>a possibility space that's already been narrowed down by four
+          dimensions</strong>. The model no longer has to "think about four things
+          at once"; it just <em>articulates</em> the constraint set. That's the
+          real value of multi-step reasoning here: not that the system does more,
+          but that <strong>each LLM call only does what it's good at</strong>.
+        </p>
+        <p class="l-zh">
           四步走完之後，才進入<strong>Response Generation</strong> ——
           這個生成步驟拿到的不是一個籠統的 prompt，
           而是一組<strong>已經被四個維度收窄到很小的可能性空間</strong>。
@@ -272,15 +449,31 @@
 
       <aside class="tip-card">
         <span class="tip-label">Tips</span>
-        <h3>為什麼是這個順序，不是別的順序</h3>
-        <p>
+        <h3 class="l-en">Why this order, not a different one</h3>
+        <h3 class="l-zh">為什麼是這個順序，不是別的順序</h3>
+        <p class="l-en">
+          The principle behind the order: <strong>each layer's soundness needs the
+          previous layer as a premise</strong>. Without Persona, Mood is emotion in
+          a vacuum; without Mood, Reason is a cold strategy; without Reason, Flow
+          is just patter. Reversing the order (decide to pivot first, then go find
+          a motivation, then patch in an emotion) gives you a "retroactively
+          rationalized" customer who <em>looks</em> reasonable but is hollow at the
+          persona level — the rep doesn't get to practise against real customer
+          reactions.
+        </p>
+        <p class="l-en">
+          So the four steps aren't parallel feature modules; they're a
+          <strong>reasoning chain with dependency direction</strong>. That's why
+          the design priority is "decomposed right", not "decomposed more".
+        </p>
+        <p class="l-zh">
           順序背後的判準是「<strong>後一層的合理性需要前一層作為前提</strong>」。
           沒有 Persona，Mood 就是憑空的情緒；沒有 Mood，Reason 就是冷冰冰的策略；
           沒有 Reason，Flow 就只是話術。倒過來做（先決定要轉移話題、再回去找動機、
           再補一個情緒）會得到一個「事後合理化」的顧客，<em>看起來</em>有道理，
           但人設層面是空的 —— 業務練不到真實顧客的反應。
         </p>
-        <p>
+        <p class="l-zh">
           所以這四步不是並列的功能模組，是<strong>有依存方向的推理鏈</strong>。
           這也是為什麼這個系統的設計重點是「拆得對」，不是「拆得多」。
         </p>
@@ -289,10 +482,23 @@
 
     <!-- ───── Memory Module ───── -->
     <section id="memory">
-      <h2><span class="h2-marker"></span>記憶模組：跨輪一致性</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Memory module: cross-turn consistency</span>
+        <span class="l-zh">記憶模組：跨輪一致性</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          Four-step reasoning solves "how to reply <em>this turn</em>", but sales
+          training involves long conversations — easily ten, twenty turns. That
+          surfaces another problem: the family situation the customer mentioned in
+          turn 3, the hesitation hinted at in turn 7, the loosening attitude at
+          turn 12 — if the system doesn't remember them, the customer
+          <strong>re-becomes a person from scratch every turn</strong>. The memory
+          module exists to handle that cross-turn consistency.
+        </p>
+        <p class="l-zh">
           四步推理解決的是「<em>這一輪</em>怎麼回」，但業務訓練是長對話 ——
           十幾輪、幾十輪都有可能。這時會冒出另一個問題：
           顧客在第 3 輪講過的家庭狀況、第 7 輪流露的猶豫、第 12 輪鬆動的態度，
@@ -302,28 +508,53 @@
 
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">人設記憶</span>
-            存放 Persona 層的硬設定，跨輪幾乎不更新 ——
+            <span class="bullet-tag l-en">Persona memory</span>
+            <span class="bullet-tag l-zh">人設記憶</span>
+            <span class="l-en">Holds the Persona-layer hard settings; almost never
+            updates across turns. Its job is to ensure the four-step reasoning starts
+            from the same "person" every turn, without being pulled around by local
+            conversation.</span>
+            <span class="l-zh">存放 Persona 層的硬設定，跨輪幾乎不更新 ——
             它的功能是讓四步推理在每一輪都從同一個「人」出發，
-            不會被局部對話拉著走。
+            不會被局部對話拉著走。</span>
           </li>
           <li>
-            <span class="bullet-tag">對話記憶</span>
-            記錄這個 session 裡顧客講過什麼、業務問過什麼、雙方達成什麼共識
+            <span class="bullet-tag l-en">Dialogue memory</span>
+            <span class="bullet-tag l-zh">對話記憶</span>
+            <span class="l-en">Records what the customer said in this session, what
+            the rep asked, what agreements or disagreements emerged. Reason and Flow
+            consult this layer during reasoning to avoid contradicting earlier
+            statements.</span>
+            <span class="l-zh">記錄這個 session 裡顧客講過什麼、業務問過什麼、雙方達成什麼共識
             或產生什麼分歧。Reason 跟 Flow 在推理時會回看這層，
-            避免講出跟先前矛盾的話。
+            避免講出跟先前矛盾的話。</span>
           </li>
           <li>
-            <span class="bullet-tag">長期狀態</span>
-            記錄這個顧客在這段關係裡的「進展」 ——
+            <span class="bullet-tag l-en">Long-term state</span>
+            <span class="bullet-tag l-zh">長期狀態</span>
+            <span class="l-en">Records the customer's "progression" across this
+            relationship — from initial guardedness, to mid-conversation watchful
+            waiting, to late-conversation softening or refusal. This layer is what
+            gives the conversation an <strong>arc</strong> instead of running
+            <em>in circles</em>: a real customer's attitude is shaped by
+            accumulation, and the memory module preserves the trajectory of "being
+            slowly persuaded" or "being slowly talked out of it".</span>
+            <span class="l-zh">記錄這個顧客在這段關係裡的「進展」 ——
             從一開始的防備、到中段的觀望、到後段可能的鬆動或拒絕。
             這層是讓對話有<strong>弧線</strong>而不是<em>原地打轉</em>的關鍵：
             真實顧客的態度是會被累積影響的，記憶模組要把這種「被慢慢說動」
-            或「被慢慢勸退」的軌跡保留下來。
+            或「被慢慢勸退」的軌跡保留下來。</span>
           </li>
         </ul>
 
-        <p>
+        <p class="l-en">
+          These three memory layers together support one property: what the customer
+          says at turn N isn't just a response to "what the rep just said", it's
+          <strong>a response to everything across the previous N−1 turns</strong>.
+          That's the scenario sales training actually needs — what's being
+          practised is long-range engagement, not single-turn quips.
+        </p>
+        <p class="l-zh">
           這三層記憶共同支撐了一件事：顧客在第 N 輪講出的話，
           不只是對「業務剛剛那句」的回應，而是<strong>對前面 N−1 輪所有互動的回應</strong>。
           這也是業務訓練真正需要的場景 —— 練的是長期應對，不是單句機智回覆。
@@ -333,18 +564,36 @@
 
     <!-- ───── Scoring ───── -->
     <section id="scoring">
-      <h2><span class="h2-marker"></span>外部評分：閉上訓練迴圈</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">External scoring: closing the training loop</span>
+        <span class="l-zh">外部評分：閉上訓練迴圈</span>
+      </h2>
 
       <article class="card">
-        <p>
+        <p class="l-en">
+          The simulated customer is only half of the training system. The other
+          half is: how did the rep do this round? What did they get right, and
+          what should be done differently? This system has a dedicated scoring
+          module that performs retrospective evaluation on the whole interaction
+          — at the conversation's end or at staged checkpoints — and turns
+          performance into a <strong>multi-dimensional, interpretable</strong>
+          score.
+        </p>
+        <p class="l-en">
+          Scoring isn't a vague overall grade like "excellent / good / fair";
+          it's per-dimension scoring on the rep's <strong>specific behavioral
+          dimensions</strong> in this conversation. The current
+          <strong>five primary dimensions</strong>:
+        </p>
+        <p class="l-zh">
           模擬顧客只完成了訓練系統的一半。另一半是：業務這次表現得好嗎？
           哪些地方做對了、哪些該換一種方式？
           這個系統設計了一個獨立的評分模組，
           在對話結束或階段性節點對整段互動做回顧式評估，
           把表現轉換成<strong>多面向、可解讀</strong>的分數。
         </p>
-
-        <p>
+        <p class="l-zh">
           評分不是給一個籠統的「優／良／可」總評，
           而是針對業務在這場對話裡的<strong>具體表現維度</strong>逐項打分。
           目前涵蓋的<strong>五個主要維度</strong>如下：
@@ -352,53 +601,102 @@
 
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">需求挖掘深度</span>
-            業務有沒有真正問出顧客的需求、預算、顧慮、現有狀況 ——
+            <span class="bullet-tag l-en">Depth of needs discovery</span>
+            <span class="bullet-tag l-zh">需求挖掘深度</span>
+            <span class="l-en">Did the rep actually surface the customer's needs,
+            budget, concerns, and current situation — or did they rush to product
+            pitching and skip the discovery phase? This evaluates whether
+            "<em>the starting point of the conversation</em>" was set up properly
+            — without a good starting point, no matter how polished the recommendation,
+            it's built on nothing.</span>
+            <span class="l-zh">業務有沒有真正問出顧客的需求、預算、顧慮、現有狀況 ——
             還是急著推產品而跳過了挖掘階段。這項評的是「<em>對話起點</em>有沒有打好」——
-            起點沒打好，後面的推薦再漂亮也只是憑空產生。
+            起點沒打好，後面的推薦再漂亮也只是憑空產生。</span>
           </li>
           <li>
-            <span class="bullet-tag">產品推薦合理性</span>
-            業務推給顧客的產品，是否真的對應到顧客的處境跟需求 ——
+            <span class="bullet-tag l-en">Product recommendation fit</span>
+            <span class="bullet-tag l-zh">產品推薦合理性</span>
+            <span class="l-en">Does the product the rep recommended actually match
+            the customer's situation and needs — or did they just lead with the
+            high-margin, easy-to-sell items? This evaluates "<em>recommending the
+            right thing</em>", not "<em>recommending a lot</em>".</span>
+            <span class="l-zh">業務推給顧客的產品，是否真的對應到顧客的處境跟需求 ——
             還是只是把好賣的、佣金高的產品先丟上來。
-            這一項評的是「有沒有<em>推對</em>東西」，不是「有沒有推得<em>多</em>」。
+            這一項評的是「有沒有<em>推對</em>東西」，不是「有沒有推得<em>多</em>」。</span>
           </li>
           <li>
-            <span class="bullet-tag">場景應對契合度</span>
-            顧客丟出來的問題、情緒、抗拒，業務有沒有讀懂並做出對應的反應 ——
+            <span class="bullet-tag l-en">Scenario fit</span>
+            <span class="bullet-tag l-zh">場景應對契合度</span>
+            <span class="l-en">Did the rep read the customer's questions, emotions,
+            and resistance correctly, and respond accordingly — pushing in when they
+            should push, soothing when they should soothe, wrapping up when it's
+            time? This evaluates "reading the <em>scene</em> right".</span>
+            <span class="l-zh">顧客丟出來的問題、情緒、抗拒，業務有沒有讀懂並做出對應的反應 ——
             該深入追問時有沒有追問、該安撫時有沒有安撫、
-            該收尾時有沒有收尾。這項評的是「有沒有讀對<em>場景</em>」。
+            該收尾時有沒有收尾。這項評的是「有沒有讀對<em>場景</em>」。</span>
           </li>
           <li>
-            <span class="bullet-tag">專業態度表現</span>
-            講話的節奏、用詞的得體、面對質疑時的穩定度、
+            <span class="bullet-tag l-en">Professional bearing</span>
+            <span class="bullet-tag l-zh">專業態度表現</span>
+            <span class="l-en">Speech cadence, word choice, composure under
+            questioning, fluency with product terms. Bearing matters as much as
+            content in a training setting — what reps lose on isn't usually
+            knowledge, it's cadence and sense of proportion.</span>
+            <span class="l-zh">講話的節奏、用詞的得體、面對質疑時的穩定度、
             對商品條款的熟悉度。態度層的東西在訓練場景下的重要性不會輸給話術內容 ——
-            業務常常輸的不是知識，是節奏跟分寸。
+            業務常常輸的不是知識，是節奏跟分寸。</span>
           </li>
           <li>
-            <span class="bullet-tag">顧客信任度變化</span>
-            對話過程中，顧客對業務的信任是<em>上升</em>、<em>持平</em>、還是<em>下降</em>。
+            <span class="bullet-tag l-en">Trust trajectory</span>
+            <span class="bullet-tag l-zh">顧客信任度變化</span>
+            <span class="l-en">Over the conversation, did the customer's trust in
+            the rep go <em>up</em>, stay <em>flat</em>, or go <em>down</em>? This
+            dimension is <strong>longitudinal</strong> (it tracks the trajectory,
+            not a single line) and is usually a closer leading indicator of real
+            conversions than the other dimensions — a conversation with decent
+            scores but a falling trust line is quietly planting the seeds of future
+            churn.</span>
+            <span class="l-zh">對話過程中，顧客對業務的信任是<em>上升</em>、<em>持平</em>、還是<em>下降</em>。
             這一項是<strong>縱向的</strong>（看軌跡，不是看單句），
             通常比其他維度更接近真實成交的領先指標 ——
             一場分數不錯但信任度下降的對話，
-            其實是在埋下未來流失的種子。
+            其實是在埋下未來流失的種子。</span>
           </li>
         </ul>
 
         <figure class="arch-figure arch-figure-md">
-          <div class="arch-credit">示意圖 · 非實際量測值</div>
-          <img src="assets/scoring_radar_illustration.svg" alt="業務表現評分五大維度雷達圖（示意）" loading="lazy">
-          <figcaption>評分維度雷達 · 五項分數共同描繪整場對話的表現輪廓 · 此處為示意圖，分數僅供示範</figcaption>
+          <div class="arch-credit">
+            <span class="l-en">Illustration · not actual measurements</span>
+            <span class="l-zh">示意圖 · 非實際量測值</span>
+          </div>
+          <img src="assets/scoring_radar_illustration.svg" alt="Radar chart of five sales-performance scoring dimensions (illustrative)" loading="lazy">
+          <figcaption>
+            <span class="l-en">Scoring-dimension radar · five scores together sketch the overall conversation profile · illustrative, scores are for demonstration only</span>
+            <span class="l-zh">評分維度雷達 · 五項分數共同描繪整場對話的表現輪廓 · 此處為示意圖，分數僅供示範</span>
+          </figcaption>
         </figure>
 
-        <p>
+        <p class="l-en">
+          Every score comes with <strong>its rationale</strong>: which lines drove
+          this dimension high or low, what criterion was applied, what could be
+          improved. The rep doesn't receive a cold number — they receive a
+          feedback report that can be traced back to the original dialogue.
+        </p>
+        <p class="l-en">
+          The whole process forms a loop: conversation → multi-dimensional scoring
+          → rep reviews feedback and adjusts → next conversation verifies it. This
+          is the essential difference between this system as a
+          <strong>training tool</strong> and a generic <em>chatbot</em> — a chatbot
+          only has to reply well; a training tool has to reply well, <em>and</em>
+          tell the user what was good, what wasn't, and why that judgment was made.
+        </p>
+        <p class="l-zh">
           每一項分數都附帶<strong>判分依據</strong>：
           是哪幾句對話讓這一項得高分或低分、依照什麼準則判定、
           可以怎麼改進。業務拿到的不是一個冷冰冰的數字，
           而是一份能對得回對話原文的回饋報告。
         </p>
-
-        <p>
+        <p class="l-zh">
           整個流程因此形成一個閉環：對話 → 多面向評分 → 業務看回饋並調整 → 下一次對話再驗證。
           這是這個系統作為<strong>訓練工具</strong>而不是<em>chatbot</em>
           的本質差別 —— chatbot 只需要回得好；
@@ -410,21 +708,26 @@
 
     <a class="back-link back-link-bottom" href="../../projects.html">
       <span class="link-arrow">←</span>
-      <span>回到 Projects</span>
+      <span class="l-en">Back to Projects</span>
+      <span class="l-zh">回到 Projects</span>
     </a>
   </main>
 
   <footer>
     <span>© 2026 Edward Chiu</span>
     <span class="footer-sep">·</span>
-    <span>Built with HTML &amp; CSS</span>
+    <span class="l-en">Built with HTML &amp; CSS</span>
+    <span class="l-zh">純 HTML &amp; CSS 打造</span>
   </footer>
 
   <!-- Lightbox for architecture diagrams -->
   <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog">
-    <button class="lightbox-close" aria-label="關閉">&times;</button>
+    <button class="lightbox-close" aria-label="Close">&times;</button>
     <img id="lightbox-img" src="" alt="">
-    <div class="lightbox-hint">點圖放大 · 拖動查看細節 · ESC 關閉</div>
+    <div class="lightbox-hint">
+      <span class="l-en">Click to zoom · drag to pan · ESC to close</span>
+      <span class="l-zh">點圖放大 · 拖動查看細節 · ESC 關閉</span>
+    </div>
   </div>
 
   <script>

@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Experience — Edward Chiu</title>
+  <title data-en="Experience — Edward Chiu" data-zh="工作經歷 — Edward Chiu">Experience — Edward Chiu</title>
   <meta name="description" content="Edward Chiu's professional experience — Algorithm Engineer at TPIsoftware, NLP Engineer at Tenfold AI.">
   <meta name="author" content="Edward Chiu">
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
+  <script src="lang.js?v=1"></script>
   <script data-goatcounter="https://edwarddiou.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -33,36 +34,56 @@
           <span class="nav-en">Projects</span>
           <span class="nav-zh">專案</span>
         </a>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-switch-btn" data-lang-set="en" aria-label="Switch to English">EN</button>
+          <button type="button" class="lang-switch-btn" data-lang-set="zh" aria-label="切換為中文">中</button>
+        </div>
       </nav>
     </div>
   </header>
 
   <main>
     <section id="experience">
-      <h2><span class="h2-marker"></span>Experience</h2>
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Experience</span>
+        <span class="l-zh">工作經歷</span>
+      </h2>
 
       <article class="card">
         <header class="card-head">
           <div class="card-meta is-ongoing">2025.10 — 2026.4</div>
-          <h3>Algorithm Engineer</h3>
-          <div class="card-company">TPIsoftware · Taipei</div>
+          <h3 class="l-en">Algorithm Engineer</h3>
+          <h3 class="l-zh">演算法工程師</h3>
+          <div class="card-company l-en">TPIsoftware · Taipei</div>
+          <div class="card-company l-zh">叡揚資訊 · 台北</div>
         </header>
-        <p>
+        <p class="l-en">
           Responsible for end-to-end AI solution development and the core conversational
           architecture of the <em>Coach</em> product. Designed and implemented a
           memory-aware, realistic, and reasoning-capable Multi-Agent chat system that goes
           beyond standalone LLMs, enabling deeper intelligence and decision-making. Led
           key architectural decisions from system design to production deployment.
         </p>
+        <p class="l-zh">
+          負責端到端的 AI 解決方案開發，以及 <em>Coach</em> 產品的核心對話架構。
+          設計並實作一個具備記憶能力、擬真度高、能進行推理的 Multi-Agent 對話系統 ——
+          跳脫單一 LLM 的能力上限，往更深層的智能與決策推進。
+          從系統設計到正式部署，主導關鍵的架構決策。
+        </p>
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">2 months</span>
-            Designed and shipped a memory- and reasoning-capable conversational system.
+            <span class="bullet-tag l-en">2 months</span>
+            <span class="bullet-tag l-zh">兩個月</span>
+            <span class="l-en">Designed and shipped a memory- and reasoning-capable conversational system.</span>
+            <span class="l-zh">設計並上線具備記憶與推理能力的對話系統。</span>
           </li>
           <li>
-            <span class="bullet-tag">Ongoing</span>
-            Continuously added experimental tooling — visualization, single-point testing
-            utilities, and other internal instrumentation.
+            <span class="bullet-tag l-en">Ongoing</span>
+            <span class="bullet-tag l-zh">持續進行</span>
+            <span class="l-en">Continuously added experimental tooling — visualization, single-point testing
+            utilities, and other internal instrumentation.</span>
+            <span class="l-zh">持續補上實驗用工具 —— 視覺化、單點測試工具、以及其他內部 instrumentation。</span>
           </li>
         </ul>
       </article>
@@ -70,31 +91,44 @@
       <article class="card">
         <header class="card-head">
           <div class="card-meta">2024.09 — 2025.06</div>
-          <h3>NLP Engineer</h3>
-          <div class="card-company">Tenfold AI · Taipei</div>
+          <h3 class="l-en">NLP Engineer</h3>
+          <h3 class="l-zh">NLP 工程師</h3>
+          <div class="card-company l-en">Tenfold AI · Taipei</div>
+          <div class="card-company l-zh">Tenfold AI · 台北</div>
         </header>
-        <p>
+        <p class="l-en">
           AI engineer at an early-stage startup, building end-to-end AI products from
           scratch and integrating them into customer systems. Worked across the full AI
           stack — agents, RAG, LLM integration, custom model training, NLP applications,
           and AWS deployment — focused on scalable, reliable, production-grade systems.
         </p>
+        <p class="l-zh">
+          早期新創的 AI 工程師，從零打造端到端 AI 產品並整合進客戶系統。
+          工作橫跨整個 AI 技術棧 —— Agent、RAG、LLM 整合、自訂模型訓練、NLP 應用、AWS 部署 ——
+          目標是可擴展、可靠、能正式上線的系統。
+        </p>
         <ul class="bullets">
           <li>
-            <span class="bullet-tag">1 month</span>
-            Built a LangGraph-based RAG chatbot and an accompanying evaluation method to
-            validate LLM response quality.
+            <span class="bullet-tag l-en">1 month</span>
+            <span class="bullet-tag l-zh">一個月</span>
+            <span class="l-en">Built a LangGraph-based RAG chatbot and an accompanying evaluation method to
+            validate LLM response quality.</span>
+            <span class="l-zh">用 LangGraph 打造 RAG chatbot，並設計配套的評估方法驗證 LLM 回答品質。</span>
           </li>
           <li>
-            <span class="bullet-tag">6+ months</span>
-            Iterated on token-usage tracking, response-quality optimization, and a
-            reranking module.
+            <span class="bullet-tag l-en">6+ months</span>
+            <span class="bullet-tag l-zh">六個月以上</span>
+            <span class="l-en">Iterated on token-usage tracking, response-quality optimization, and a
+            reranking module.</span>
+            <span class="l-zh">持續迭代 token 用量追蹤、回答品質優化，以及 reranking 模組。</span>
           </li>
           <li>
-            <span class="bullet-tag">4 months</span>
-            Designed a customizable confidence-scoring system, evolving from generic
+            <span class="bullet-tag l-en">4 months</span>
+            <span class="bullet-tag l-zh">四個月</span>
+            <span class="l-en">Designed a customizable confidence-scoring system, evolving from generic
             LLM-based scoring into a domain-adaptive architecture that trains
-            domain-specific confidence models per client.
+            domain-specific confidence models per client.</span>
+            <span class="l-zh">設計可客製化的信心程度評分系統，從通用 LLM 評分演進到能依客戶領域訓練專屬信心模型的架構。</span>
           </li>
         </ul>
       </article>
@@ -104,7 +138,8 @@
   <footer>
     <span>© 2026 Edward Chiu</span>
     <span class="footer-sep">·</span>
-    <span>Built with HTML &amp; CSS</span>
+    <span class="l-en">Built with HTML &amp; CSS</span>
+    <span class="l-zh">純 HTML &amp; CSS 打造</span>
   </footer>
 </body>
 </html>
