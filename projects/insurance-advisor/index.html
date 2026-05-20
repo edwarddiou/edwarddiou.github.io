@@ -100,6 +100,67 @@
       </ol>
     </aside>
 
+    <!-- ───── Why fine-tune ───── -->
+    <section id="why-finetune">
+      <h2>
+        <span class="h2-marker"></span>
+        <span class="l-en">Why bother fine-tuning when Claude and GPT are already this good?</span>
+        <span class="l-zh">Claude、GPT 都這麼強了，幹嘛還做 fine-tuning？</span>
+      </h2>
+
+      <article class="card">
+        <p class="l-en">
+          "Doesn't RAG already solve this? Just pull the data and hand it to
+          the LLM." That's the most common reaction — but it's actually
+          something current AI can't do.
+        </p>
+        <p class="l-en">
+          RAG works by letting the LLM combine its own reasoning with whatever
+          was retrieved. The catch is that it gets stuck from both directions:
+          <strong>even when retrieval returns exactly the right content, the
+          tone and style of the answer still won't be truly professional</strong>
+          — because "how to phrase it" isn't something that lives in the
+          retrieved data. So <strong>pull in more data</strong> to compensate?
+          The prompt gets long, and the answer averages out across everything
+          in it — the actual point gets diluted. RAG's ceiling is set by
+          retrieval, and you hit it no matter which way you tune.
+        </p>
+        <p class="l-en">
+          What matters more: in professional domains, the answer often has to
+          follow domain-specific phrasing — sometimes even a fixed order or
+          procedure. Law has the way it cites a statute; medicine has the way
+          it describes a diagnosis; insurance has the way it chains conditions
+          to payouts. No amount of prompt tuning gets a general model to do
+          this reliably. The only way to hit that level is to put those
+          behaviors into the training distribution itself — and that's exactly
+          what fine-tuning is for.
+        </p>
+
+        <p class="l-zh">
+          「那 RAG 不就解決了嗎？把資料撈回來給 LLM 就好啊。」
+          這是最常聽到的反應 —— 但這件事其實是現在的 AI 做不到的。
+        </p>
+        <p class="l-zh">
+          RAG 架構是讓 LLM 用自己的邏輯加上撈到的 data 來回答問題。
+          但問題是兩邊都會卡：<strong>就算 retrieval 撈到的內容是對的，
+          回答的語氣風格也很難做到真正的專業</strong> ——
+          因為「怎麼講」這件事本來就不在 retrieval 撈到的 data 裡。
+          那<strong>撈多一點</strong>呢？prompt 一變長，
+          回答就會被各種資料平均掉，重點反而被稀釋。
+          換句話說，RAG 的天花板是被 retrieval 綁住的，
+          不管你怎麼調都會撞到。
+        </p>
+        <p class="l-zh">
+          更關鍵的是，專業領域的回答常常需要更貼近 domain 的講法，
+          甚至要有一套固定的順序跟措辭 ——
+          法律該怎麼引條文、醫學該怎麼描述診斷、保險該怎麼把條件跟給付串起來。
+          這種東西不管 prompt 怎麼調，都很難讓通用模型穩定做到。
+          要把這個層次做出來，就只能讓模型在訓練分布裡學到這些行為 ——
+          而這正是 fine-tuning 該解的問題。
+        </p>
+      </article>
+    </section>
+
     <!-- ───── HERO ───── -->
     <section class="hero project-hero">
       <div class="tags">
@@ -169,67 +230,6 @@
           先粗後細、先教會再優化，是這條訓練線的設計重點。
         </p>
       </div>
-    </section>
-
-    <!-- ───── Why fine-tune ───── -->
-    <section id="why-finetune">
-      <h2>
-        <span class="h2-marker"></span>
-        <span class="l-en">Why bother fine-tuning when Claude and GPT are already this good?</span>
-        <span class="l-zh">Claude、GPT 都這麼強了，幹嘛還做 fine-tuning？</span>
-      </h2>
-
-      <article class="card">
-        <p class="l-en">
-          "Doesn't RAG already solve this? Just pull the data and hand it to
-          the LLM." That's the most common reaction — but it's actually
-          something current AI can't do.
-        </p>
-        <p class="l-en">
-          RAG works by letting the LLM combine its own reasoning with whatever
-          was retrieved. The catch is that it gets stuck from both directions:
-          <strong>even when retrieval returns exactly the right content, the
-          tone and style of the answer still won't be truly professional</strong>
-          — because "how to phrase it" isn't something that lives in the
-          retrieved data. So <strong>pull in more data</strong> to compensate?
-          The prompt gets long, and the answer averages out across everything
-          in it — the actual point gets diluted. RAG's ceiling is set by
-          retrieval, and you hit it no matter which way you tune.
-        </p>
-        <p class="l-en">
-          What matters more: in professional domains, the answer often has to
-          follow domain-specific phrasing — sometimes even a fixed order or
-          procedure. Law has the way it cites a statute; medicine has the way
-          it describes a diagnosis; insurance has the way it chains conditions
-          to payouts. No amount of prompt tuning gets a general model to do
-          this reliably. The only way to hit that level is to put those
-          behaviors into the training distribution itself — and that's exactly
-          what fine-tuning is for.
-        </p>
-
-        <p class="l-zh">
-          「那 RAG 不就解決了嗎？把資料撈回來給 LLM 就好啊。」
-          這是最常聽到的反應 —— 但這件事其實是現在的 AI 做不到的。
-        </p>
-        <p class="l-zh">
-          RAG 架構是讓 LLM 用自己的邏輯加上撈到的 data 來回答問題。
-          但問題是兩邊都會卡：<strong>就算 retrieval 撈到的內容是對的，
-          回答的語氣風格也很難做到真正的專業</strong> ——
-          因為「怎麼講」這件事本來就不在 retrieval 撈到的 data 裡。
-          那<strong>撈多一點</strong>呢？prompt 一變長，
-          回答就會被各種資料平均掉，重點反而被稀釋。
-          換句話說，RAG 的天花板是被 retrieval 綁住的，
-          不管你怎麼調都會撞到。
-        </p>
-        <p class="l-zh">
-          更關鍵的是，專業領域的回答常常需要更貼近 domain 的講法，
-          甚至要有一套固定的順序跟措辭 ——
-          法律該怎麼引條文、醫學該怎麼描述診斷、保險該怎麼把條件跟給付串起來。
-          這種東西不管 prompt 怎麼調，都很難讓通用模型穩定做到。
-          要把這個層次做出來，就只能讓模型在訓練分布裡學到這些行為 ——
-          而這正是 fine-tuning 該解的問題。
-        </p>
-      </article>
     </section>
 
     <!-- ───── Pipeline overview ───── -->
