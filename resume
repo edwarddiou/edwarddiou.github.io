@@ -177,9 +177,9 @@ modern post-training methods to build controllable, reasoning-aware AI systems.
 }
 
 \entry{2025.10—2026.4}{%
-  \textbf{[Product] AI Customer Simulator} \,---\, Enterprise Sales Training System \\
+  \textbf{[Product] Sales Conversation Trainer} \,---\, Enterprise Sales Training System \\
   {\small\textbf{\color{accent}白話說明:}\ \textit{A sales training system: the user plays the rep against an AI that acts like a real customer; after each session the system scores the rep's performance and returns actionable feedback.}}\\
-  {\small\textbf{\color{accent}專案連結:}\ \href{https://edwarddiou.github.io/projects/ai_customer_simulator/}{AI Customer Simulator}}\\
+  {\small\textbf{\color{accent}專案連結:}\ \href{https://edwarddiou.github.io/projects/ai_customer_simulator/}{Sales Conversation Trainer}}\\
   Sales training system where the user plays the rep against a multi-agent AI customer, with post-session multi-dimensional scoring; led end-to-end LLM-side architecture from 0 to 1.
   \begin{itemize}
     \item \textbf{Multi-step reasoning pipeline} (Persona $\to$ Mood $\to$ Reason $\to$ Flow) that breaks each customer response into separate dimensions --- so the simulated customer behaves like a specific person, not an averaged-out polite assistant.
