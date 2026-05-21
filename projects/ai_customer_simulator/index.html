@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-en="Sales Conversation Trainer — Edward Chiu" data-zh="Sales Conversation Trainer — Edward Chiu">Sales Conversation Trainer — Edward Chiu</title>
+  <title data-en="Sales Conversation Trainer — Edward Chiu" data-zh="業務AI陪練系統 — Edward Chiu">Sales Conversation Trainer — Edward Chiu</title>
   <meta name="description" content="A sales training system where the user plays the rep against an AI-simulated customer; the system scores the rep's performance after each session. Built on multi-step reasoning, cross-turn memory, and multi-dimensional scoring.">
   <meta name="author" content="Edward Chiu">
   <meta property="og:title" content="Sales Conversation Trainer — Edward Chiu">
@@ -69,10 +69,11 @@
       <div class="tags">
         <span class="tag tag-product l-en">Product</span>
         <span class="tag tag-product l-zh">產品</span>
-        <span class="tag tag-dev l-en">In Development</span>
-        <span class="tag tag-dev l-zh">開發中</span>
       </div>
-      <h1>Sales Conversation Trainer</h1>
+      <h1>
+        <span class="l-en">Sales Conversation Trainer</span>
+        <span class="l-zh">業務AI陪練系統</span>
+      </h1>
       <p class="tagline">
         <span class="l-en">Sales training system</span>
         <span class="l-zh">業務訓練系統</span>
@@ -331,6 +332,21 @@
             訓練效果上，這跟沒練幾乎沒有差別。</span>
           </li>
         </ul>
+
+        <figure class="arch-figure arch-figure-lg">
+          <div class="arch-credit">
+            <span class="l-en">Illustration · failure-mode demo, not an actual screen</span>
+            <span class="l-zh">示意圖 · 失敗模式示範，非實際畫面</span>
+          </div>
+          <img src="assets/stuck_loop_illustration.svg"
+               alt="Illustration of the stuck-loop failure mode: persona, history, and rules are crammed into a single prompt; the LLM keeps emitting the same few labels turn after turn" loading="lazy">
+          <figcaption>
+            <span class="l-en">Single-prompt failure mode · persona × history × rules all crammed in one prompt → the model latches onto a few salient labels and repeats them turn after turn (<em>stuck loop</em>) ·
+            <em>dialogue is illustrative</em></span>
+            <span class="l-zh">單一 prompt 的失敗模式 · 人設 × 對話紀錄 × 規則全塞同一份 prompt → 模型抓住幾個顯著標籤反覆吐出，每輪都<em>跳針</em>在同一組關鍵詞 ·
+            <em>對白為示意</em></span>
+          </figcaption>
+        </figure>
 
         <p class="l-en">
           The shared root cause of both: cramming "simulating a person" into a
