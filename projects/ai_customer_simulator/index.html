@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-en="AI Customer Simulator — Multi-step Reasoning — Edward Chiu" data-zh="AI 顧客模擬器 — 多步推理 — Edward Chiu">AI Customer Simulator — Multi-step Reasoning — Edward Chiu</title>
-  <meta name="description" content="An AI customer simulator for sales / service training: multi-step reasoning decomposes 'how the customer responds' into separate dimensions per step, stacking up into believable, controllable customer behavior.">
+  <title data-en="AI Customer Simulator — A Sales Training System — Edward Chiu" data-zh="AI Customer Simulator — 業務訓練系統 — Edward Chiu">AI Customer Simulator — A Sales Training System — Edward Chiu</title>
+  <meta name="description" content="A sales training system where the user plays the rep against an AI-simulated customer; the system scores the rep's performance after each session. Built on multi-step reasoning, cross-turn memory, and multi-dimensional scoring.">
   <meta name="author" content="Edward Chiu">
-  <meta property="og:title" content="AI Customer Simulator — Multi-step Reasoning — Edward Chiu">
-  <meta property="og:description" content="Multi-step reasoning to simulate real customers: Persona / Mood / Reason / Flow stepwise reasoning with a memory module and external scoring.">
+  <meta property="og:title" content="AI Customer Simulator — A Sales Training System — Edward Chiu">
+  <meta property="og:description" content="A sales training system: user plays the rep, AI plays the customer, system scores the rep at the end. Multi-step reasoning + memory + scoring.">
   <meta property="og:type" content="article">
   <link rel="stylesheet" href="../../styles.css?v=4">
   <script src="../../lang.js?v=1"></script>
@@ -78,8 +78,8 @@
       </div>
       <h1>AI Customer Simulator</h1>
       <p class="tagline">
-        <span class="l-en">Sales / service training simulator</span>
-        <span class="l-zh">業務／客服訓練模擬器</span>
+        <span class="l-en">Sales training system</span>
+        <span class="l-zh">業務訓練系統</span>
         <span class="sep">/</span>
         <span>Multi-step Reasoning</span>
         <span class="sep">/</span>
@@ -92,34 +92,43 @@
 
       <div class="bio">
         <p class="l-en">
-          The problem this project solves is concrete: give <strong>new sales
-          reps</strong> a <strong>"simulated customer"</strong> they can talk to
-          repeatedly — one that has emotions, hesitates, says the wrong thing
-          sometimes, and can also be persuaded — so they can sharpen their dialogue
+          <strong>This is a sales training system.</strong> The
+          <strong>user plays the sales rep</strong>, an AI plays the customer,
+          and after the session ends the system scores the rep's performance
+          across multiple dimensions and returns actionable feedback. Simulation
+          is the method — the goal is to let new reps sharpen real-conversation
           skills before facing a real client.
         </p>
         <p class="l-en">
-          The design decision: don't rely on a single LLM call to "play the customer"
-          as a whole. Decompose "how should the customer respond" into
-          <strong>multi-step reasoning</strong> — each step locks down one dimension
-          (who this person is, the current mood, why they're saying it, where the
-          conversation should go), the next step reasons under the previous step's
-          constraints, and only at the end does the customer's reply get generated.
-          This write-up focuses on <strong>why decomposition is necessary</strong>
-          and what the resulting system looks like.
+          For the AI customer to be worth practising against, it has to feel
+          like a specific person — one with emotions, that hesitates, says the
+          wrong thing sometimes, and can also be persuaded. The design decision:
+          don't rely on a single LLM call to "play the customer" as a whole.
+          Decompose "how should the customer respond" into
+          <strong>multi-step reasoning</strong> — each step locks down one
+          dimension (who this person is, the current mood, why they're saying
+          it, where the conversation should go), the next step reasons under
+          the previous step's constraints, and only at the end does the
+          customer's reply get generated. This write-up covers
+          <strong>why decomposition is necessary</strong>, what the resulting
+          system looks like, and how rep performance is scored at the end.
         </p>
         <p class="l-zh">
-          這個專案要解的問題很具體：讓<strong>業務新人</strong>有一個能反覆對話、
-          會有情緒、會猶豫、會講錯話、也會被打動的<strong>「模擬顧客」</strong>，
-          在進入真實客戶之前先把對話練到位。
+          <strong>這是一個業務訓練系統。</strong><strong>使用者扮演業務</strong>、
+          AI 扮演顧客，對話結束後系統會對業務的表現做多面向評分，
+          並回饋具體可以改進的方向。
+          模擬只是手段 —— 真正的目的是讓業務新人在面對真實客戶之前，
+          先把對話能力練到位。
         </p>
         <p class="l-zh">
+          要讓這個 AI 顧客練得起來，它必須像「某個具體的人」：
+          會有情緒、會猶豫、會講錯話、也會被打動。
           做法上的取捨是：不靠單次 LLM 把整個顧客「演出來」，
           而是把「該怎麼回應業務」這件事拆成<strong>多步驟推理</strong> ——
           每一步只鎖一個維度（這個人是誰、現在的情緒、講話的動機、對話該往哪走），
           下一步在上一步的約束下繼續推，最後才生成顧客的回覆。
-          這篇主要講<strong>為什麼必須拆成多步驟</strong>，
-          以及這樣拆出來的系統長什麼樣。
+          這篇主要講<strong>為什麼必須拆成多步驟</strong>、
+          這樣拆出來的系統長什麼樣、以及最後怎麼對業務表現打分數。
         </p>
       </div>
     </section>

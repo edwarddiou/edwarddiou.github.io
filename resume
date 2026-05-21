@@ -1,0 +1,207 @@
+% ============================================================
+%  Edward Chiu — Resume (LaTeX source)
+%  Compile with:  xelatex edward_resume.tex
+%  Recommended:   Overleaf  →  Menu  →  Compiler: XeLaTeX
+% ============================================================
+
+\documentclass[10.5pt,a4paper]{article}
+
+% ---------- Fonts (XeLaTeX + CJK) ----------
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setmainfont{TeX Gyre Heros}            % clean Helvetica-like sans
+\setCJKmainfont{Noto Sans CJK TC}       % Traditional Chinese
+\setCJKsansfont{Noto Sans CJK TC}
+
+% ---------- Geometry & spacing ----------
+\usepackage[a4paper, left=1.8cm, right=1.8cm, top=1.3cm, bottom=1.5cm]{geometry}
+\usepackage{parskip}
+\setlength{\parskip}{0.25em}
+\linespread{1.04}
+
+% ---------- Colors ----------
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{2E86C1}      % section / name / link color
+\definecolor{datecolor}{HTML}{555555}
+
+% ---------- Lists ----------
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.2em, topsep=2pt, itemsep=1pt, parsep=0pt}
+
+% ---------- Layout helpers ----------
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{colorlinks=true, urlcolor=accent}
+
+% Section header: blue, with a thin rule beneath
+\newcommand{\sectionheader}[1]{%
+  \par\vspace{0.6em}%
+  {\Large\bfseries\color{accent}#1}\par%
+  \vspace{-0.3em}%
+  {\color{accent!50}\rule{\linewidth}{0.4pt}}\par%
+  \vspace{0.2em}%
+}
+
+% Entry: date column on the left, content on the right (minipage-based
+% so that line breaks inside the content do not break the table).
+\newlength{\datecolwidth}\setlength{\datecolwidth}{3.6cm}
+\newcommand{\entry}[2]{%
+  \noindent
+  \begin{minipage}[t]{\datecolwidth}%
+    \small\color{datecolor}#1%
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{\dimexpr\linewidth-\datecolwidth-0.4cm\relax}%
+    #2%
+  \end{minipage}%
+  \par\vspace{0.5em}%
+}
+
+\pagestyle{empty}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% ---------- Header ----------
+{\Huge\bfseries\color{accent}Chiu Edward}\par
+\vspace{0.4em}
+{\small edwarddiou@gmail.com \quad\textbar\quad +886 966911217 \quad\textbar\quad 1995年2月8日 \quad\textbar\quad \href{https://linkedin.com/in/edward-chiu-a3315b177}{linkedin.com/in/edward-chiu-a3315b177}}\par
+\vspace{0.3em}
+{\large\bfseries\color{accent}$\rightarrow$\ Portfolio: \href{https://edwarddiou.github.io/}{edwarddiou.github.io}}\par
+\vspace{1em}
+
+% ---------- Summary ----------
+\noindent
+AI engineer specializing in \textbf{LLM post-training and alignment} --- hands-on with
+\textbf{SFT, DPO/IPO, RLHF/PPO}, and parameter-efficient methods (\textbf{LoRA, QLoRA}).
+Shipped \textbf{3 LLM-driven products from 0 to 1} across two companies; reduced
+hallucination from \textbf{55\% to near 0\%} and improved RAG accuracy from
+\textbf{$\sim$50\% to 95\%}. Currently researching \textbf{Knowledge Graph $\times$ LLM
+joint training} as a path toward stronger structured reasoning and factual grounding.
+Background spans NLP, Transformer architectures, GNNs, and classical ML --- combined with
+modern post-training methods to build controllable, reasoning-aware AI systems.
+
+% ---------- Core Skills ----------
+\vspace{0.3em}
+\noindent
+{\small\textbf{\color{accent}Core:}\ LLM post-training (SFT / DPO / IPO / PPO / RLHF) \,$\cdot$\, Reinforcement Learning \,$\cdot$\, Knowledge Graph Injection \,$\cdot$\, LoRA / QLoRA \,$\cdot$\, Multi-reasoning systems \,$\cdot$\, RAG \,$\cdot$\, Knowledge Graphs \,$\cdot$\, GNNs}\\
+{\small\textbf{\color{accent}Stack:}\ PyTorch \,$\cdot$\, Transformers \,$\cdot$\, PEFT \,$\cdot$\, LangGraph}
+
+% ============================================================
+\sectionheader{Education}
+\entry{2020年1月—2025年1月}{%
+  \textbf{Graduate Education}\\
+  {\color{accent}\textbf{National Taiwan University of Science and Technology (NTUST)}}\\
+  {\color{accent}\textit{台灣科技大學 — 資訊工程系 (CSIE)}}\\
+  Graduate studies specializing in NLP, GNNs, and LLMs, with research focused
+  on LLM post-training and RAG systems.
+  \begin{itemize}
+    \item Served as a Teaching Assistant for Linear Algebra for 2 semesters.
+  \end{itemize}
+}
+\entry{2013年1月—2018年1月}{%
+  \textbf{Undergraduate Education}\\
+  {\color{accent}\textbf{Tunghai University (THU)}}\\
+  {\color{accent}\textit{東海大學 — 工業工程與經營資訊學系 (IEEI)}}\\
+  Industrial Engineering major, with a primary focus on manufacturing management,
+  including production management and quality management.
+}
+
+% ============================================================
+\sectionheader{Work Experience}
+
+\entry{2025.10 — 2026.4}{%
+  \textbf{Algorithm Engineer}\\
+  {\color{accent}\textbf{TPIsoftware}} \,---\, 台灣 臺北市\\
+  Core architect on the Algorithm Team for \textit{Coach}, TPIsoftware's flagship
+  business-training simulation product. Responsible for end-to-end design of the
+  LLM-side core logic, including system architecture, AI pipeline design, and
+  customization for client requirements. Drove the product from zero to one over
+  seven months, earning client trust and contributing to the product's commercial
+  success and industry recognition.
+  \begin{itemize}
+    \item \textbf{[Within 7 months, 0$\to$1]:} Designed and shipped the LLM-side core
+      architecture from initial design through production deployment, taking the
+      product from zero to one.
+    \item \textbf{Hallucination reduction:} Reduced LLM hallucination rate from
+          \textbf{55\% to near 0\%} through targeted architectural and
+          post-training improvements.
+    \item \textbf{Simulation fidelity:} Improved the realism of the chat
+          simulation, raising the internal QA pass rate from \textbf{30\% to 85\%}.
+    \item Designed and implemented a memory-aware, reasoning-capable Multi-Agent
+          chat system that goes beyond standalone LLMs, enabling deeper context
+          tracking and decision-making.
+  \end{itemize}
+}
+
+\entry{2024.9 — 2025.6}{%
+  \textbf{NLP Engineer}\\
+  {\color{accent}\textbf{Tenfold AI}} \,---\, 台北 台北市\\
+  AI Engineer at a startup specializing in end-to-end AI product development and system
+  integration, having delivered \textbf{2 production AI products from 0 to 1}. Skilled
+  across the full AI stack---including AI agents, RAG architectures, LLM integration,
+  custom model training, NLP applications, and AWS deployment---focused on delivering
+  scalable, reliable, and high-quality AI systems.
+  \begin{itemize}
+    \item \textbf{[Within 1 month]:} Built a LangGraph-based RAG chatbot \textbf{from 0 to 1},
+          along with an automated evaluation method to validate LLM response quality,
+          establishing the foundation for iterative improvements.
+    \item \textbf{[Over 6 months]:} Improved RAG chatbot accuracy from $\sim$\textbf{50\%}
+          (naive RAG baseline) to \textbf{95\%} through workflow redesign, reduced
+          end-to-end LLM response latency by \textbf{35\%}, and cut token consumption by
+          $\sim$\textbf{60\%} under a multi-step architecture; additionally shipped
+          token-usage tracking and a reranking module.
+    \item \textbf{[Within 4 months]:} Designed and built a customizable confidence scoring
+          system \textbf{from 0 to 1}, evolving from generic LLM-based scoring to a
+          domain-adaptive architecture that enables training domain-specific confidence
+          models for different clients.
+    \end{itemize}
+}
+
+% ============================================================
+\sectionheader{Project}
+
+\entry{2026.5—Present}{%
+  \textbf{[Research] KG Injection $\times$ LLM Fine-Tuning for Domain LLMs} \,---\, Insurance advisory case study\\
+  {\small\textbf{\color{accent}白話說明:}\ \textit{Teaching an LLM to think like an insurance advisor --- not by looking things up at query time, but by training the domain knowledge directly into the model itself.}}\\
+  {\small\textbf{\color{accent}專案連結:}\ \href{https://edwarddiou.github.io/projects/insurance-advisor/}{Insurance Advisor}}\\
+  Internalizing structured domain knowledge into LLM weights via KG-LLM joint training (a hybrid path beyond pure RAG and pure fine-tuning).
+  \begin{itemize}
+    \item \textbf{Full post-training pipeline:} CLM $\to$ SFT $\to$ DPO/IPO $\to$ PPO --- training the model step by step, from base language ability up to advisor-style reasoning.
+    \item \textbf{Step-by-step PPO design} that gradually sharpens the model's reasoning ability, reaching a level of nuance that SFT or DPO alone cannot.
+    \item Validated KG injection through a clean controlled comparison: with the graph, the model stops giving generic answers and starts reasoning like an advisor --- explicitly flagging what information is still missing before making a recommendation.
+    \item \textbf{Stack:} PyTorch, Transformers, LLM Fine-Tuning, PEFT, LoRA, Knowledge Graph Injection.
+  \end{itemize}
+}
+
+\entry{2025.10—2026.4}{%
+  \textbf{[Product] AI Customer Simulator} \,---\, Enterprise Sales Training System \\
+  {\small\textbf{\color{accent}白話說明:}\ \textit{A sales training system: the user plays the rep against an AI that acts like a real customer; after each session the system scores the rep's performance and returns actionable feedback.}}\\
+  {\small\textbf{\color{accent}專案連結:}\ \href{https://edwarddiou.github.io/projects/ai_customer_simulator/}{AI Customer Simulator}}\\
+  Sales training system where the user plays the rep against a multi-agent AI customer, with post-session multi-dimensional scoring; led end-to-end LLM-side architecture from 0 to 1.
+  \begin{itemize}
+    \item \textbf{Multi-step reasoning pipeline} (Persona $\to$ Mood $\to$ Reason $\to$ Flow) that breaks each customer response into separate dimensions --- so the simulated customer behaves like a specific person, not an averaged-out polite assistant.
+    \item \textbf{Three-tier memory module} (persona / dialogue / long-term state) that keeps the customer consistent across turns and tracks how their attitude shifts over the whole conversation.
+    \item \textbf{Multi-dimensional scoring module} that evaluates the sales rep on 5 dimensions with traceable rubrics --- closing the loop from dialogue to feedback to actionable training.
+    \item \textbf{Stack:} LLM orchestration, multi-agent design, prompt engineering, memory design.
+  \end{itemize}
+}
+
+
+
+\entry{2024.9—2025.6}{%
+  \textbf{[Research \& Product] Multi-Agent RAG Chatbot + Custom Confidence Scoring}\\
+  {\small\textbf{\color{accent}白話說明:}\ \textit{A chatbot that answers from the user's documents, the company's knowledge base, and live web data --- and tells the user how confident each answer actually is.}}\\
+  Multi-agent RAG integrating user docs, proprietary knowledge, and real-time web data; built a domain-adaptive confidence scoring system where each client can train their own scoring model. Production metrics in Tenfold AI work experience above.
+}
+
+\entry{2023.7—2025.2}{%
+  \textbf{[Research] Master's Thesis --- G3-RAG} \,---\, Knowledge-Graph-Guided Multi-step RAG\\
+  {\small\textbf{\color{accent}白話說明:}\ \textit{A retrieval method that walks through a knowledge graph step by step, helping an LLM connect multiple pieces of information instead of getting lost in long text.}}\\
+  Graph-guided RAG framework with multi-hop retrieval and reasoning over knowledge graphs --- improving answer accuracy, consistency, and evidence traceability in LLMs.
+}
+
+% ============================================================
+\end{document}
